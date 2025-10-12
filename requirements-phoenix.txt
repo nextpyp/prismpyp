@@ -1,0 +1,5 @@
+arize-phoenix==0.0.28
+pandas
+ipykernel
+matplotlib
+seaborn

@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - arize-phoenix==0.0.28
+  - pandas
+  - ipykernel
+  - matplotlib
+  - seaborn
