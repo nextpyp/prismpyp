@@ -343,7 +343,7 @@ def stitch_imgs(image1, image2, output_path, basename):
     new_image.paste(image2, (width1, 0))
 
     # Save the new image
-    path_to_save = os.path.join(output_path, 'thumbnail_images', basename + '.combined.png')
+    path_to_save = os.path.join(output_path, 'thumbnail_images', basename + '.combined.webp')
     new_image.save(path_to_save)
     
     

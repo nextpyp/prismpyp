@@ -162,9 +162,9 @@ The following instructions assume a directory structure similar to the one above
 
   * Model checkpoints (```.pth.tar```) for the epoch with the lowest loss (```checkpoints/model_best.pth.tar```), the epoch with the lowest collapse (```checkpoints/model_lowest_collapse.pth.tar```), and the last epoch (```checkpoints/model_last.pth.tar```)
   
-  * Loss during training (```total_loss.png```)
+  * Loss during training (```total_loss.webp```)
     * This plot is good to look at to confirm that training converged. If it has, then the loss line will stabilize. Lower (more negative) numbers are better.
-  * Collapse level during training (```collapse_level.png```)
+  * Collapse level during training (```collapse_level.webp```)
     * This plot is good to look at to conform that the model has not learned nonsensical representations of image features. Higher numbers are better.
   * The settings for training (```training_config.yaml```)
   
@@ -250,9 +250,9 @@ The following instructions assume a directory structure similar to the one above
 
    Inference will output the following files to a folder ```/path/to/output/<real or fft>/inference```:
    * ```embeddings.pth```: The high-dimensional feature vectors produced during inference for the images in the dataset.
-   * ```nearest_neighbors_x.png```: The 8 nearest neighbors (points in the high-dimensional embedding space with the smallest Euclidean distance) of a randomly-sampled point in the dataset.
-   * ```scatter_plot_<method>.png```: A point cloud scatter plot produced by projecting the high-dimensional data to 2D using either PCA, UMAP, or tSNE.
-   * ```thumbnail_plot_<method>_<ps or mg>.png```: Same as the scatter plot above, but instead of representing each image with a point, we show either the micrograph (```mg```) or the power spectrum (```ps```) as a static 2D preview of the embedding space. Useful for determining general areas or visual patterns in the data.
+   * ```nearest_neighbors_x.webp```: The 8 nearest neighbors (points in the high-dimensional embedding space with the smallest Euclidean distance) of a randomly-sampled point in the dataset.
+   * ```scatter_plot_<method>.webp```: A point cloud scatter plot produced by projecting the high-dimensional data to 2D using either PCA, UMAP, or tSNE.
+   * ```thumbnail_plot_<method>_<ps or mg>.webp```: Same as the scatter plot above, but instead of representing each image with a point, we show either the micrograph (```mg```) or the power spectrum (```ps```) as a static 2D preview of the embedding space. Useful for determining general areas or visual patterns in the data.
   
 ### Creating 3D interactive visualizations
    

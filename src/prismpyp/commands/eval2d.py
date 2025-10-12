@@ -250,7 +250,7 @@ def plot_projections(projection, actual_assignments, title, path_to_save, cmap, 
     num_neighbors = args.num_neighbors if num_neighbors is None else num_neighbors
     min_dist_umap = args.min_dist_umap if min_dist_umap is None else min_dist_umap
     title = title.split(" ")[0]
-    save_title = f"scatter_plot_{title}.png"
+    save_title = f"scatter_plot_{title}.webp"
     
     if not args.distributed or args.rank % ngpus_per_node == 0:
         plt.savefig(os.path.join(path_to_save, save_title))
@@ -258,7 +258,7 @@ def plot_projections(projection, actual_assignments, title, path_to_save, cmap, 
         plt.gca().set_title("")  # Remove title
         plt.axis('off')  # Turn off axes
         plt.gca().legend().remove()  # Remove legend
-        new_save_title = f"scatter_plot_{title}_no_labels.png"
+        new_save_title = f"scatter_plot_{title}_no_labels.webp"
         plt.savefig(os.path.join(path_to_save, new_save_title), bbox_inches='tight', pad_inches=0)
     plt.clf()
     
@@ -393,11 +393,11 @@ def get_scatter_plot_with_thumbnails_real_fft(
         if is_wandb:
             wandb.log({f"scatter_plot_{method}_{suffix}": wandb.Image(fig)})
         elif not args.distributed or args.rank % ngpus_per_node == 0:
-            fig.savefig(f"{path_to_save}/thumbnail_plot_{method}_{suffix}.png")
+            fig.savefig(f"{path_to_save}/thumbnail_plot_{method}_{suffix}.webp")
             ax.axis('off')
             ax.set_title("")
             ax.legend().remove()
-            fig.savefig(f"{path_to_save}/thumbnail_plot_{method}_{suffix}_no_labels.png", bbox_inches='tight', pad_inches=0, transparent=True)
+            fig.savefig(f"{path_to_save}/thumbnail_plot_{method}_{suffix}_no_labels.webp", bbox_inches='tight', pad_inches=0, transparent=True)
 
         plt.close(fig)
     
@@ -494,12 +494,12 @@ def get_scatter_plot_with_thumbnails(
     if is_wandb:
         wandb.log({f"scatter_plot_{method}": wandb.Image(plt)})
     elif not args.distributed or args.rank % ngpus_per_node == 0:
-        plt.savefig(f"{path_to_save}/thumbnail_plot_{method}.png")
+        plt.savefig(f"{path_to_save}/thumbnail_plot_{method}.webp")
         
         ax.axis('off')  # Turn off axes
         ax.set_title("")  # Remove title
         ax.legend().remove()  # Remove legend
-        plt.savefig(f"{path_to_save}/thumbnail_plot_{method}_no_labels.png", bbox_inches='tight', pad_inches=0)
+        plt.savefig(f"{path_to_save}/thumbnail_plot_{method}_no_labels.webp", bbox_inches='tight', pad_inches=0)
     plt.clf()
 
     
@@ -549,7 +549,7 @@ def plot_nearest_neighbors_3x3(args, embeddings, test_dataset, example_idx, i, p
     
     if path_to_save:
         if not args.distributed or args.rank % ngpus_per_node == 0:
-            plt.savefig(f"{path_to_save}/nearest_neighbors_{i + 1}.png")
+            plt.savefig(f"{path_to_save}/nearest_neighbors_{i + 1}.webp")
         
         
 def validate(val_loader, model, args):

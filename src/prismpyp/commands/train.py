@@ -351,8 +351,8 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
 
     if not args.multiprocessing_distributed or (args.multiprocessing_distributed 
                                                 and args.rank % ngpus_per_node == 0):
-        plot(epoch_losses, args, 'Total Loss', 'Total Loss', 'total_loss.png')
-        plot(collapse_level, args, 'Collapse Level', 'Collapse Level', 'collapse_level.png')
+        plot(epoch_losses, args, 'Total Loss', 'Total Loss', 'total_loss.webp')
+        plot(collapse_level, args, 'Collapse Level', 'Collapse Level', 'collapse_level.webp')
         
     # Write all args to a .yaml file
     if not args.multiprocessing_distributed or (args.multiprocessing_distributed 
