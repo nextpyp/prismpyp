@@ -7,27 +7,24 @@ Because of the dependency on CUDA and PyTorch-GPU, all of the following instruct
 
 This setup process and code has been tested with ```PyTorch/2.4.0``` and  ```cuda/12.1```.
 
-### Install Conda
+### Install conda
    Download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) (recommended) or [Anaconda](https://www.anaconda.com/).
 
-### Clone the Repository
+### Clone the repository
    ```bash
    git clone git@github.com:nextpyp/prismpyp.git
    cd prismpyp
    ```
    
-   Confirm which branch you are on: ```git status```
-   
-   If you aren't on the ```dev``` branch, change branches: ```git checkout dev```
-
-### Set up the Environment
+### Set up the environment
    
    Using pip:
    ```bash
    conda create -n prismpyp -c conda-forge python=3.12 pip
    conda activate prismpyp
-   python -m pip install -r requirements-gpu.txt # If GPU is available, otherwise, use requirements-cpu.txt
-
+   
+   python -m pip install . --extra-index-url https://download.pytorch.org/whl/cu121
+   
    conda install -c pytorch -c conda-forge faiss-gpu=1.9.0 # The pip wheel for faiss-gpu does not support python/3.12
    ```
 
@@ -41,17 +38,18 @@ This setup process and code has been tested with ```PyTorch/2.4.0``` and  ```cud
 
 ## 🧪 Training the model
 
-### Download the Test Data
-We will use the ```example_data.tar.gz``` file containing micrograph and power spectra images, and metadata from EMPIAR-10379 as an example test case of self-supervised micrograph sorting. The file is available in this GitLab repository, and will be available on Zenodo shortly. 
+### Download the test data
+We will use the ```example_data.tar.gz``` file containing micrograph and power spectra images, and metadata from EMPIAR-10379 as an example test case of self-supervised micrograph sorting. The file is available on Zenodo. 
 
-After cloning the repository, unpack the data into a new folder ```example_data``` by running
+
+After downloading the test data, unpack the files into a new folder ```example_data``` by running
 ```bash
 mkdir example_data
 tar -xvzf example_data.tar.gz -C example_data
 ```
 
 This command extracts the data into a folder ```example_data``` with the following folders and files:
-* ```pkl``` contains the metadata from pre-processing EMPIAR-10379 in NextPYP
+* ```pkl``` contains the metadata from pre-processing EMPIAR-10379 in nextPYP
 * ```webp``` contains ```512 x 512``` images of the micrographs and their corresponding power spectra
 * The ```.cs``` file contains metadata from the Manual Curation job in CryoSPARC
 * The ```.toml``` file contains microscope data such as the pixel size of the micrographs
@@ -78,13 +76,8 @@ example_data/
 
 The following instructions assume a directory structure similar to the one above. If your directory structure is different, please note that you may need to change the commands in order to run them properly.
 
-### Build the Metadata Table
-   1. Make sure your Conda environment is active! Change directories to the location where you have the code cloned:
-   ```bash
-   cd prismpyp
-   ```
-
-   2. Make the metadata directory: 
+### Build the metadata table
+   1. Make the metadata directory: 
    ```bash
    mkdir -p metadata
    ```
@@ -96,7 +89,7 @@ The following instructions assume a directory structure similar to the one above
 
    3. Run:
    ```bash
-   python -m prismpyp metadata \
+   prismpyp metadata \
     --pkl-path example_data/pkl \
     --output-file metadata/micrograph_table.csv \
     --cryosparc-path example_data/J7_exposures_accepted_exported.cs
@@ -113,7 +106,7 @@ The following instructions assume a directory structure similar to the one above
   * ```num_particles```
   * ```mean_defocus```
 
-### Train the SimSiam Model
+### Train the SimSiam model
    1. Download the ResNet50 pre-trained weights:
    ```bash
    mkdir -p pretrained_weights
@@ -122,7 +115,7 @@ The following instructions assume a directory structure similar to the one above
 
    2. To train the model on real-domain images:
    ```bash
-   python -m prismpyp train \
+   prismpyp train \
     --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output-path output_dir/real \
     --metadata-path metadata/micrograph_table.csv \
@@ -143,7 +136,7 @@ The following instructions assume a directory structure similar to the one above
 
    3. For Fourier-domain images:
    ```bash
-   python -m prismpyp train \
+   prismpyp train \
     --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output-path output_dir/fft \
     --metadata-path metadata/micrograph_table.csv \
@@ -176,13 +169,13 @@ The following instructions assume a directory structure similar to the one above
   * The settings for training (```training_config.yaml```)
   
 ## 🖼️ Visualizing your dataset
-### Generate Embeddings and 2D Visualizations for the Entire Dataset
+### Generate embeddings and 2D visualizations for the entire dataset
 
    Once the model has finished training, we can generate static 2D visualizations of the feature vectors to examine the different types of micrograph and power spectrum features present in the dataset.
 
    1. To perform inference on real-domain images:
    ```bash
-   python -m prismpyp eval2d \
+   prismpyp eval2d \
     --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output_dir output_dir/real \
     --metadata_path metadata/micrograph_table.csv \
@@ -206,7 +199,7 @@ The following instructions assume a directory structure similar to the one above
 
    2. To perform inference on Fourier-domain images:
    ```bash
-   python -m prismpyp eval2d \
+   prismpyp eval2d \
     --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output_dir output_dir/fft \
     --metadata_path metadata/micrograph_table.csv \
@@ -231,7 +224,7 @@ The following instructions assume a directory structure similar to the one above
 
    3. If you have already produced embeddings, you can skip the inference step and simply project the embedding vectors onto 2D by providing a path to the embeddings file, like so:
    ```bash
-   python -m prismpyp eval2d \
+   prismpyp eval2d \
     --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output_dir output_dir/fft \
     --metadata_path metadata/micrograph_table.csv \
@@ -261,13 +254,13 @@ The following instructions assume a directory structure similar to the one above
    * ```scatter_plot_<method>.png```: A point cloud scatter plot produced by projecting the high-dimensional data to 2D using either PCA, UMAP, or tSNE.
    * ```thumbnail_plot_<method>_<ps or mg>.png```: Same as the scatter plot above, but instead of representing each image with a point, we show either the micrograph (```mg```) or the power spectrum (```ps```) as a static 2D preview of the embedding space. Useful for determining general areas or visual patterns in the data.
   
-### Creating 3D Interactive Visualizations
+### Creating 3D interactive visualizations
    
    Similar to the section above, 3D visualization allows us to interact with high-dimensional data in a lower-dimensional plane. In 3D interactive visualization, you can go a step further and manually examine images in the point cloud to determine the composition of regions of the embedding space. You can also select images containing high-quality features and export them for further processing.
 
    1. If you have already done 2D visualization, you can skip the embedding generation, and simply provide a path to the ```embedding.pth``` file:
    ```bash
-   python -m prismpyp eval3d \
+   prismpyp eval3d \
     --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output_dir output_dir/real \
     --metadata_path metadata/metadata_table.csv \
@@ -292,7 +285,7 @@ The following instructions assume a directory structure similar to the one above
 
    2. Otherwise, the embeddings will need to be generated from scratch:
    ```bash
-   python -m prismpyp eval3d \
+   prismpyp eval3d \
     --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output_dir output_dir/real \
     --metadata_path metadata/metadata_table.csv \
@@ -316,13 +309,13 @@ The following instructions assume a directory structure similar to the one above
 
    Add the ```--use-fft``` flag according to the domain that your input images are in.
 
-   If this is the first time you have run the ```map_embeddings_3d.py``` file, you will most likely also want to generate the zipped image thumbnails for visualization. This can be done using the flag ```--zip-images```. It is recommended that you only do this once and reuse the zipped images for future visualizations, unless your micrographs have changed between embeddings, since the process of zipping the images takes a couple of minutes.
+   If this is the first time you have run the ```prismpyp eval3d``` file, you will most likely also want to generate the zipped image thumbnails for visualization. This can be done using the flag ```--zip-images```. It is recommended that you only do this once and reuse the zipped images for future visualizations, unless your micrographs have changed between embeddings, since the process of zipping the images takes a couple of minutes.
 
    At the end of 3D visualization, the following files will be outputted to ```/path/to/outputs/inference```:
    * ```data_for_export.parquet.zip```: A metadata file containing columns such as ```micrograph_name```, ```embeddings``` (the high-dimensional embedding vector), traditional heuristic metadata like CTF fit, estimated resolution, mean defocus, and ice thickness (if applicable)
    * ```zipped_thumbnail_images.tar.gz```: A zipfile containing a composite image of the micrograph and its corresponding power spectrum.
 
-## Visualizing 3D Results in Phoenix
+## Visualizing 3D results in Phoenix
 
 We use Phoenix to do interactive visualization and selection of good micrographs. For the best visualization experience, Phoenix should be installed locally (i.e.: not on a remote cluster). As such, the following steps are recommended to be carried out on your local machine.
 
@@ -410,7 +403,7 @@ python visualizer.py \
 
 For both domains, the lasso selection output will be saved and downloaded to a ```.parquet``` file, e.g., ```real/real_good_export.parquet``` or ```fft/fft_good_export.parquet```
 
-## Performing Dual-Domain Filtering
+## Performing dual-domain filtering
 After you have selected the high-quality subsets in both the real and Fourier domains, we can take the intersection to find the images that have high-quality features in both domains.
 
 If you wish to run this on a remote cluster, transfer the .parquet files from your local machine to the cluster.
@@ -427,7 +420,7 @@ mkdir intersection
 
 3. Take the intersection of the exported ```.parquet``` files:
 ```bash
-python -m prismpyp intersect \
+prismpyp intersect \
     --parquet_files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
     --output_folder intersection \
     --link_type soft \
@@ -443,4 +436,4 @@ The Zenodo link for this project contains the following files:
 * ```fft_good_export.parquet```: Data points that have high-quality features in the Fourier domain
 * ```real_good_export.parquet```: Data points that have high-qualtiy features in the real domain
 
-By taking the intersection of ```fft_good_export.parquet``` and ```real_good_export.parquet```, you can obtain the 862 micrographs that were used to obtain the 2.6A structure shown in Fig. 4 of the paper
+By taking the intersection of ```fft_good_export.parquet``` and ```real_good_export.parquet```, you can obtain the 862 micrographs that were used to obtain the 2.9A structure in the paper.
