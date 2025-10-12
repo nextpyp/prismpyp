@@ -346,8 +346,10 @@ cd real
 python -m http.server 5004
 ```
 
-5. In another Bash window, start the visualization code:
+5. In another Bash window, download the visualization script and start the visualization code:
 ```bash
+wget https://github.com/nextpyp/prismpyp/blob/main/scripts/visualizer.py
+
 python visualizer.py \
     real/data_for_export.parquet.zip \
     --port 5004 \
