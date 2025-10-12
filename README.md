@@ -39,10 +39,10 @@ This setup process and code has been tested with ```PyTorch/2.4.0``` and  ```cud
 ## 🧪 Training the model
 
 ### Download the test data
-We will use the ```example_data.tar.gz``` file containing micrograph and power spectra images, and metadata from EMPIAR-10379 as an example test case of self-supervised micrograph sorting. The file is available on Zenodo. 
+We will use the ```example_data.tar.gz``` file containing micrograph and power spectra images, and metadata from EMPIAR-10379 as an example test case of self-supervised micrograph sorting. The file is available on [Zenodo](https://doi.org/10.5281/zenodo.17161604). 
 
 
-After downloading the test data, unpack the files into a new folder ```example_data``` by running
+Select an appropiate location on your file system, create a new folder named ```example_data```, download and unpack the files from zenodo into it:
 ```bash
 mkdir example_data
 tar -xvzf example_data.tar.gz -C example_data
@@ -77,17 +77,13 @@ example_data/
 The following instructions assume a directory structure similar to the one above. If your directory structure is different, please note that you may need to change the commands in order to run them properly.
 
 ### Build the metadata table
-   1. Make the metadata directory: 
+   1. Make the metadata and the training output directory: 
    ```bash
    mkdir -p metadata
-   ```
-
-   And optionally, the training output directory (if you skip this step, the outputs will be written by default to a folder ```outputs```):
-   ```bash
    mkdir -p output_dir
    ```
 
-   3. Run:
+   2. Then, run:
    ```bash
    prismpyp metadata \
     --pkl-path example_data/pkl \
@@ -95,11 +91,11 @@ The following instructions assume a directory structure similar to the one above
     --cryosparc-path example_data/J7_exposures_accepted_exported.cs
    ```
 
-   You can omit ```--cryosparc_path``` if you don’t need relative ice thickness visualization.
+   You can omit ```--cryosparc-path``` if you don’t need relative ice thickness visualization.
   
-  This will output a ```.csv``` file that populates, for each image in your dataset, the:
+  This command will produce a ```.csv``` file that populates, for each image in your dataset, the:
   * ```micrograph_name```
-  * ```rel_ice_thickness``` (If you provide ```--cryosparc_path```)
+  * ```rel_ice_thickness``` (If you provide ```--cryosparc-path```)
   * ```ctf_fit```
   * ```est_resolution```
   * ```avg_motion```
@@ -113,7 +109,7 @@ The following instructions assume a directory structure similar to the one above
    wget https://dl.fbaipublicfiles.com/simsiam/models/100ep/pretrain/checkpoint_0099.pth.tar -P pretrained_weights/
    ```
 
-   2. To train the model on real-domain images:
+   2. To train the model on real-domain images, run:
    ```bash
    prismpyp train \
     --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
@@ -134,7 +130,7 @@ The following instructions assume a directory structure similar to the one above
     --rank 0
    ```
 
-   3. For Fourier-domain images:
+   3. For Fourier-domain images, run:
    ```bash
    prismpyp train \
     --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
@@ -176,9 +172,9 @@ The following instructions assume a directory structure similar to the one above
    1. To perform inference on real-domain images:
    ```bash
    prismpyp eval2d \
-    --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
-    --output_dir output_dir/real \
-    --metadata_path metadata/micrograph_table.csv \
+    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --output-path output_dir/real \
+    --metadata-path metadata/micrograph_table.csv \
     -a resnet50 \
     --dist-url "tcp://localhost:10059" \
     --world-size 1 \
@@ -200,9 +196,9 @@ The following instructions assume a directory structure similar to the one above
    2. To perform inference on Fourier-domain images:
    ```bash
    prismpyp eval2d \
-    --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
-    --output_dir output_dir/fft \
-    --metadata_path metadata/micrograph_table.csv \
+    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --output-path output_dir/fft \
+    --metadata-path metadata/micrograph_table.csv \
     -a resnet50 \
     --dist-url "tcp://localhost:10050" \
     --world-size 1 \
@@ -225,9 +221,9 @@ The following instructions assume a directory structure similar to the one above
    3. If you have already produced embeddings, you can skip the inference step and simply project the embedding vectors onto 2D by providing a path to the embeddings file, like so:
    ```bash
    prismpyp eval2d \
-    --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
-    --output_dir output_dir/fft \
-    --metadata_path metadata/micrograph_table.csv \
+    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --output-path output_dir/fft \
+    --metadata-path metadata/micrograph_table.csv \
     --embedding-path output_dir/fft/inference/embeddings.pth \
     -a resnet50 \
     --dist-url "tcp://localhost:10048" \
@@ -261,9 +257,9 @@ The following instructions assume a directory structure similar to the one above
    1. If you have already done 2D visualization, you can skip the embedding generation, and simply provide a path to the ```embedding.pth``` file:
    ```bash
    prismpyp eval3d \
-    --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
-    --output_dir output_dir/real \
-    --metadata_path metadata/metadata_table.csv \
+    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --output-path output_dir/real \
+    --metadata-path metadata/metadata_table.csv \
     --embedding-path output_dir/real/inference/embeddings.pth \
     -a resnet50 \
     --dist-url 'tcp://localhost:10038' \
@@ -286,9 +282,9 @@ The following instructions assume a directory structure similar to the one above
    2. Otherwise, the embeddings will need to be generated from scratch:
    ```bash
    prismpyp eval3d \
-    --micrograph_list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
-    --output_dir output_dir/real \
-    --metadata_path metadata/metadata_table.csv \
+    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --output-path output_dir/real \
+    --metadata-path metadata/metadata_table.csv \
     -a resnet50 \
     --dist-url 'tcp://localhost:10028' \
     --world-size 1 \
