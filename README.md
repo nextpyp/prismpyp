@@ -1,6 +1,8 @@
 # Self-Supervised Learning for Automatic Cryo-EM Micrograph Exploration
 
-This repository implements a SimSiam-based self-supervised pipeline for classifying cryo-EM micrographs based on both real-space and Fourier-space features. The goal is to uncover image quality categories such as vitreous ice, crystalline ice, contaminants, and support film without using manual labels.
+This repository implements a SimSiam-based self-supervised pipeline for classifying cryo-EM micrographs based on both real-space and Fourier-space features. The goal is to uncover image quality categories such as vitreous ice, crystalline ice, contaminants, and support film without using labels. 
+
+The code uses a [PyTorch implementation of SimSiam](https://github.com/facebookresearch/simsiam) distributed under the [Attribution-NonCommercial 4.0 International](https://github.com/facebookresearch/simsiam/blob/main/LICENSE) license.
 
 ## ⚙️ Setting up the environment
 Because of the dependency on CUDA and PyTorch-GPU, all of the following instructions should be run from a computer with a GPU. 
