@@ -240,7 +240,7 @@ The following instructions assume a directory structure similar to the one above
     --n-clusters 10 \
     --num-neighbors 10 \
     --min-dist-umap 0 \
-    --nextpyp-preproc example_data
+    --nextpyp-preproc example_data \
    ```
    Include the ```--use-fft``` flag if you are running on Fourier-domain data.
 
@@ -317,7 +317,7 @@ We use Phoenix to do interactive visualization and selection of good micrographs
 
 Install Phoenix from either the ```.yml``` file:
 ```bash
-wget https://github.com/nextpyp/prismpyp/blob/main/phoenix.yml
+wget https://github.com/nextpyp/prismpyp/blob/main/phoenix.yml -O phoenix.yml
 conda env create -f phoenix.yml -n phoenix
 conda activate phoenix
 ```
@@ -326,7 +326,7 @@ Or using pip:
 ```bash
 conda create -n phoenix -c conda-forge python=3.8 pip
 conda activate phoenix
-wget https://github.com/nextpyp/prismpyp/blob/main/requirements-phoenix.txt
+wget https://github.com/nextpyp/prismpyp/blob/main/requirements-phoenix.txt -O requirements-phoenix.txt
 python -m pip install -r requirements-phoenix.txt
 ```
 
@@ -424,10 +424,10 @@ prismpyp intersect \
     --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
     --output-folder intersection \
     --link-type soft \
-    --data-dir example_data/webp
+    --data-path example_data/webp
 ```
 
-The files in common will be symlinked (if ```--link-type``` is set to ```soft```) or copied (if ```--link-type``` is set to ```hard```) to the ```--output-folder``` ```intersection```. The metadata associated with the files in common will be written to ```intersection/intersection.parquet```, and a list of the files in common will be written to ```intersection/files_in_common.txt```.
+The files in common will be symlinked (if ```--link-type``` is set to ```soft```) or copied (if ```--link-type``` is set to ```hard```) to the ```output_folder``` ```intersection```. The metadata associated with the files in common will be written to ```intersection/intersection.parquet```, and a list of the files in common will be written to ```intersection/files_in_common.txt```.
 
 ## Zenodo Files
 

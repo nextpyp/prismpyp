@@ -17,7 +17,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='Output folder')
     parser.add_argument('--link-type', type=str, choices=['hard', 'soft'], 
                         help='Link type (hard or soft)')
-    parser.add_argument("--data-dir", type=str, 
+    parser.add_argument("--data-path", type=str, 
                         help="Path to where the original .mrc files are")
  
     return parser
@@ -59,15 +59,15 @@ def main(args):
         
         list_of_files.append(filename)
         
-        # Search for filename in data_dir
-        if not os.path.exists(os.path.join(args.data_dir, filename)):
+        # Search for filename in data_path
+        if not os.path.exists(os.path.join(args.data_path, filename)):
             print("File not found: ", filename)
         else:
             new_path = os.path.join(args.output_folder, "files", filename)
             if args.link_type == 'hard':
-                os.link(os.path.join(args.data_dir, filename), new_path)
+                os.link(os.path.join(args.data_path, filename), new_path)
             else:
-                os.symlink(os.path.join(args.data_dir, filename), new_path)
+                os.symlink(os.path.join(args.data_path, filename), new_path)
     
     with open(os.path.join(args.output_folder, 'files_in_common.txt'), 'w') as f:
         for item in list_of_files:
