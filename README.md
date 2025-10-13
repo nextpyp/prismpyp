@@ -222,9 +222,9 @@ The following instructions assume a directory structure similar to the one above
    ```bash
    prismpyp eval2d \
     --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
-    --output-path output_dir/fft \
+    --output-path output_dir/real \
     --metadata-path metadata/micrograph_table.csv \
-    --embedding-path output_dir/fft/inference/embeddings.pth \
+    --embedding-path output_dir/real/inference/embeddings.pth \
     -a resnet50 \
     --dist-url "tcp://localhost:10048" \
     --world-size 1 \
@@ -233,7 +233,7 @@ The following instructions assume a directory structure similar to the one above
     --workers 1 \
     --gpu 0 \
     --fix-pred-lr \
-    --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
+    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
     --evaluate \
     --dim 512 \
     --pred-dim 256 \
@@ -421,17 +421,17 @@ mkdir intersection
 3. Take the intersection of the exported ```.parquet``` files:
 ```bash
 prismpyp intersect \
-    --parquet_files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
-    --output_folder intersection \
-    --link_type soft \
-    --data_dir example_data/webp
+    --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
+    --output-folder intersection \
+    --link-type soft \
+    --data-dir example_data/webp
 ```
 
-The files in common will be symlinked (if ```--link_type``` is set to ```soft```) or copied (if ```--link_type``` is set to ```hard```) to the ```output_folder``` ```intersection```. The metadata associated with the files in common will be written to ```intersection/intersection.parquet```, and a list of the files in common will be written to ```intersection/files_in_common.txt```.
+The files in common will be symlinked (if ```--link-type``` is set to ```soft```) or copied (if ```--link-type``` is set to ```hard```) to the ```--output-folder``` ```intersection```. The metadata associated with the files in common will be written to ```intersection/intersection.parquet```, and a list of the files in common will be written to ```intersection/files_in_common.txt```.
 
 ## Zenodo Files
 
-The Zenodo link for this project contains the following files:
+The Zenodo link for this project (https://doi.org/10.5281/zenodo.17161604) contains the following files:
 * ```model_weights.tar.gz```: Trained model weights for the real domain input (```real_model_best.pth.tar```) and the Fourier domain input (```fft_model_best.pth.tar```)
 * ```fft_good_export.parquet```: Data points that have high-quality features in the Fourier domain
 * ```real_good_export.parquet```: Data points that have high-qualtiy features in the real domain
