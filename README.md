@@ -317,6 +317,7 @@ We use Phoenix to do interactive visualization and selection of good micrographs
 
 Install Phoenix from either the ```.yml``` file:
 ```bash
+wget https://github.com/nextpyp/prismpyp/blob/main/phoenix.yml
 conda env create -f phoenix.yml -n phoenix
 conda activate phoenix
 ```
@@ -325,6 +326,7 @@ Or using pip:
 ```bash
 conda create -n phoenix -c conda-forge python=3.8 pip
 conda activate phoenix
+wget https://github.com/nextpyp/prismpyp/blob/main/requirements-phoenix.txt
 python -m pip install -r requirements-phoenix.txt
 ```
 
