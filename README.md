@@ -114,7 +114,7 @@ The following instructions assume a directory structure similar to the one above
    2. To train the model on real-domain images, run:
    ```bash
    prismpyp train \
-    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --micrographs-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output-path output_dir/real \
     --metadata-path metadata/micrograph_table.csv \
     -a resnet50 \
@@ -135,7 +135,7 @@ The following instructions assume a directory structure similar to the one above
    3. For Fourier-domain images, run:
    ```bash
    prismpyp train \
-    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --micrographs-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output-path output_dir/fft \
     --metadata-path metadata/micrograph_table.csv \
     -a resnet50 \
@@ -174,7 +174,7 @@ The following instructions assume a directory structure similar to the one above
    1. To perform inference on real-domain images:
    ```bash
    prismpyp eval2d \
-    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --micrographs-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output-path output_dir/real \
     --metadata-path metadata/micrograph_table.csv \
     -a resnet50 \
@@ -198,7 +198,7 @@ The following instructions assume a directory structure similar to the one above
    2. To perform inference on Fourier-domain images:
    ```bash
    prismpyp eval2d \
-    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --micrographs-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output-path output_dir/fft \
     --metadata-path metadata/micrograph_table.csv \
     -a resnet50 \
@@ -223,7 +223,7 @@ The following instructions assume a directory structure similar to the one above
    3. If you have already produced embeddings, you can skip the inference step and simply project the embedding vectors onto 2D by providing a path to the embeddings file, like so:
    ```bash
    prismpyp eval2d \
-    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --micrographs-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output-path output_dir/real \
     --metadata-path metadata/micrograph_table.csv \
     --embedding-path output_dir/real/inference/embeddings.pth \
@@ -259,7 +259,7 @@ The following instructions assume a directory structure similar to the one above
    1. If you have already done 2D visualization, you can skip the embedding generation, and simply provide a path to the ```embedding.pth``` file:
    ```bash
    prismpyp eval3d \
-    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --micrographs-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output-path output_dir/real \
     --metadata-path metadata/metadata_table.csv \
     --embedding-path output_dir/real/inference/embeddings.pth \
@@ -284,7 +284,7 @@ The following instructions assume a directory structure similar to the one above
    2. Otherwise, the embeddings will need to be generated from scratch:
    ```bash
    prismpyp eval3d \
-    --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
+    --micrographs-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
     --output-path output_dir/real \
     --metadata-path metadata/metadata_table.csv \
     -a resnet50 \
