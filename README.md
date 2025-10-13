@@ -222,7 +222,7 @@ The following instructions assume a directory structure similar to the one above
    ```bash
    prismpyp eval2d \
     --micrograph-list example_data/sp-preprocessing-fhgRaEnEqUsEFrUj.micrographs \
-    --output-path output_dir/fft \
+    --output-path output_dir/real \
     --metadata-path metadata/micrograph_table.csv \
     --embedding-path output_dir/real/inference/embeddings.pth \
     -a resnet50 \
@@ -233,7 +233,7 @@ The following instructions assume a directory structure similar to the one above
     --workers 1 \
     --gpu 0 \
     --fix-pred-lr \
-    --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
+    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
     --evaluate \
     --dim 512 \
     --pred-dim 256 \
@@ -431,7 +431,7 @@ The files in common will be symlinked (if ```--link-type``` is set to ```soft```
 
 ## Zenodo Files
 
-The Zenodo link for this project contains the following files:
+The Zenodo link for this project (https://doi.org/10.5281/zenodo.17161604) contains the following files:
 * ```model_weights.tar.gz```: Trained model weights for the real domain input (```real_model_best.pth.tar```) and the Fourier domain input (```fft_model_best.pth.tar```)
 * ```fft_good_export.parquet```: Data points that have high-quality features in the Fourier domain
 * ```real_good_export.parquet```: Data points that have high-qualtiy features in the real domain
