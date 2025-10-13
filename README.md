@@ -25,17 +25,11 @@ This setup process and code has been tested with ```PyTorch/2.4.0``` and  ```cud
    conda create -n prismpyp -c conda-forge python=3.12 pip
    conda activate prismpyp
    
-   python -m pip install . --extra-index-url https://download.pytorch.org/whl/cu121
+   python -m pip install -e . --extra-index-url https://download.pytorch.org/whl/cu121
    
    conda install -c pytorch -c conda-forge faiss-gpu=1.9.0 # The pip wheel for faiss-gpu does not support python/3.12
    ```
 
-   Or, using Conda (slower, not recommended):
-   ```bash
-   conda env create -f environment.yml -n prismpyp
-   conda activate prismpyp
-   ```
-  
   Your Conda environment should now be active.
 
 ## 🧪 Training the model
