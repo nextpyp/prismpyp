@@ -239,7 +239,7 @@ def main_worker(gpu, ngpus_per_node, args):
         
         # Save data_for_export as zip file
         if args.output_path and (not args.distributed or args.rank % ngpus_per_node == 0):
-            path_to_save = os.path.join(output_path, 'data_for_export.parquet.zip')
+            path_to_save = os.path.join(output_path, 'data_for_export.parquet')
             data_for_export_df.to_parquet(path_to_save, compression='gzip')
             print(f"Data for export saved to {path_to_save}")
         
