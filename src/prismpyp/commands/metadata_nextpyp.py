@@ -124,6 +124,18 @@ def build_table(path_to_pkls, path_to_cs_file, output_dir):
         shutil.copyfile(micrographs_list_file, dest_file)
         print(f"Copied {micrographs_list_file} to {dest_file}")
     
+    # Copy webp dir to metadata dir
+    webp_dir = os.path.join(preprocessing_path, 'webp')
+    if os.path.exists(webp_dir) and os.path.isdir(webp_dir):
+        dest_webp_dir = os.path.join(output_dir, 'webp')
+        if os.path.exists(dest_webp_dir):
+            print(f"Warning! Webp directory {dest_webp_dir} already exists. Overwriting...")
+            shutil.rmtree(dest_webp_dir)
+        shutil.copytree(webp_dir, dest_webp_dir)
+        print(f"Copied {webp_dir} to {dest_webp_dir}")
+    else:
+        print(f"No webp directory found at {webp_dir}. Skipping copy.")
+        
     return
 
 def main(args):
