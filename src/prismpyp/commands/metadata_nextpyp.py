@@ -69,9 +69,9 @@ def build_table(path_to_pkls, path_to_cs_file, output_dir):
         ice_thickness_dict = dict(zip(micrograph_name, ice_thickness))
         
         # Retrieve pixel size and write to file
-        if "micrograph_blob/psize_A" in curate_exposures.columns:
+        if "micrograph_blob/psize_A" in curate_exposures.dtype.names:
             pixel_size = curate_exposures["micrograph_blob/psize_A"][0]
-        elif "micrograph_blob_non_dw/psize_A" in curate_exposures.columns:
+        elif "micrograph_blob_non_dw/psize_A" in curate_exposures.dtype.names:
             pixel_size = curate_exposures["micrograph_blob_non_dw/psize_A"][0]
         else:
             raise KeyError("Could not find pixel size column in the .cs file")
@@ -119,7 +119,7 @@ def main(args):
     csparc_path = args.cryosparc_path
     output_dir = args.output_dir
     
-    os.path.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     
     build_table(input_path, csparc_path, output_dir)
     return
