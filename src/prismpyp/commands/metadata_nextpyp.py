@@ -1,5 +1,7 @@
 import argparse
+import glob
 import re
+import shutil
 import numpy as np
 import pandas as pd
 import os
@@ -112,6 +114,16 @@ def build_table(path_to_pkls, path_to_cs_file, output_dir):
     if os.path.exists(output_file):
         print("Warning! Output file {} already exists. Overwriting...".format(output_file))
     dbase_df.to_csv(output_file, index=False)
+    
+    # Search preprocessing dir for .micrographs file and copy to metadata dir under 'all_micrographs_list.micrographs'
+    preprocessing_path = os.path.dirname(path_to_pkls)
+    micrographs_list_file = glob.glob(os.path.join(preprocessing_path, '*.micrographs'))
+    if len(micrographs_list_file) > 0:
+        micrographs_list_file = micrographs_list_file[0]
+        dest_file = os.path.join(output_dir, 'all_micrographs_list.micrographs')
+        shutil.copyfile(micrographs_list_file, dest_file)
+        print(f"Copied {micrographs_list_file} to {dest_file}")
+    
     return
 
 def main(args):
