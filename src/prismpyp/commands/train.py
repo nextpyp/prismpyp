@@ -205,12 +205,12 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
     if args.use_fft:
         augmentation = [
             transforms.Resize((224, 224)),  # Resize image to 224x224
-            # cryst_xforms.HPF(
-            #     pixel_size=pyp_params.get('scope_pixel', 1) * (224/512), 
-            #     cutoff=20 * (224/512), 
-            #     prob=0.5
-            # ),
-            # cryst_xforms.RandomCLAHEOrSharpen(prob_clahe=0.3, prob_sharpen=0.3),
+            cryst_xforms.HPF(
+                pixel_size=pyp_params.get('scope_pixel', 1) * (224/512), 
+                cutoff=20 * (224/512), 
+                prob=0.5
+            ),
+            cryst_xforms.RandomCLAHEOrSharpen(prob_clahe=0.3, prob_sharpen=0.3),
             transforms.RandomResizedCrop(224, (0.9, 1)),  # Keep image the same dimension
             transforms.RandomHorizontalFlip(0.5),
             transforms.RandomVerticalFlip(0.5),
