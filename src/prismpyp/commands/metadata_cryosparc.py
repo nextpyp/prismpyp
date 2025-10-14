@@ -82,7 +82,7 @@ def save_mrcs_to_webp(files, all_mg_list, out_dir):
 
 def main(args):
     output_dir = args.output_dir
-    os.path.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
     
     print("Output files will be written to directory: {}".format(output_dir))
     patch_ctf_file = args.patch_ctf_file
@@ -147,6 +147,7 @@ def main(args):
         ctffind_mrc_files = glob.glob(os.path.join(ctffind_mrc_dir, "*_ctffind.mrc"))
         save_mrcs_to_webp(ctffind_mrc_files, os.path.join(output_dir, "webp"))
     
+    # Write imported micrographs to .webp images
     if args.imported_dir is not None:
         imported_mrc_dir = args.imported_dir
         imported_mrc_files = glob.glob(os.path.join(imported_mrc_dir, "*.mrc"))
