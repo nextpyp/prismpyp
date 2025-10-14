@@ -39,8 +39,6 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     parser.add_argument('--metadata-path', metavar='METADATA_PATH', help='path to metadata file')
     parser.add_argument('--embedding-path', metavar='EMBEDDING_PATH', nargs='?', default=None,
                         help='optional path to precomputed embeddings')
-    parser.add_argument('label_path', metavar='LABEL_PATH', nargs='?', default=None,
-                        help='optional path to precomputed labels')
     
     # General configurations
     parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet50',
