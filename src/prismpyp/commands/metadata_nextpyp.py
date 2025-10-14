@@ -6,6 +6,7 @@ import os
 import pickle
 from tqdm import tqdm
 
+
 def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.ArgumentParser:
     if parser is None:
         # this script is called directly; need to create a parser
@@ -18,7 +19,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='Path to the pkl files')
     parser.add_argument('--cryosparc-path', type=str, default=None, 
                         help='Path to CryoSPARC Curate Exposure job exported .cs file (optional)')
-    parser.add_argument('--output-file', type=str, help='Output file name')
+    parser.add_argument('--output-dir', type=str, help='Output file name')
     parser.add_argument('--micrographs-list', type=str, default=None,
                         help='Optional path to a text file containing a list of micrograph names (one per line) to filter the output')
 
@@ -42,7 +43,7 @@ def calculate_avg_motion(pkl):
     
     return avg_drift
 
-def build_table(path_to_pkls, path_to_cs_file, output_file):
+def build_table(path_to_pkls, path_to_cs_file, output_dir):
     if path_to_cs_file is not None:
         curate_exposures = np.load(path_to_cs_file)
         # Retrieve ice thickness entry --> key: 'ctf_stats/ice_thickness_rel'
@@ -66,6 +67,17 @@ def build_table(path_to_pkls, path_to_cs_file, output_file):
             
         ice_thickness = curate_exposures['ctf_stats/ice_thickness_rel']
         ice_thickness_dict = dict(zip(micrograph_name, ice_thickness))
+        
+        # Retrieve pixel size and write to file
+        if "micrograph_blob/psize_A" in curate_exposures.columns:
+            pixel_size = curate_exposures["micrograph_blob/psize_A"][0]
+        elif "micrograph_blob_non_dw/psize_A" in curate_exposures.columns:
+            pixel_size = curate_exposures["micrograph_blob_non_dw/psize_A"][0]
+        else:
+            raise KeyError("Could not find pixel size column in the .cs file")
+        pixel_size_file = os.path.join(output_dir, 'pixel_size.txt')
+        with open(pixel_size_file, 'w') as f:
+            f.write(str(pixel_size) + '\n')
     
     pkl_files = os.listdir(path_to_pkls)
     dbase = {}
@@ -96,6 +108,7 @@ def build_table(path_to_pkls, path_to_cs_file, output_file):
     dbase_df = pd.DataFrame.from_dict(dbase, orient='index')
     dbase_df.reset_index(inplace=True)
     dbase_df.rename(columns={'index': 'micrograph_name'}, inplace=True)
+    output_file = os.path.join(output_dir, 'micrograph_metadata.csv')
     if os.path.exists(output_file):
         print("Warning! Output file {} already exists. Overwriting...".format(output_file))
     dbase_df.to_csv(output_file, index=False)
@@ -104,9 +117,11 @@ def build_table(path_to_pkls, path_to_cs_file, output_file):
 def main(args):
     input_path = args.pkl_path
     csparc_path = args.cryosparc_path
-    output_file = args.output_file
+    output_dir = args.output_dir
     
-    build_table(input_path, csparc_path, output_file)
+    os.path.makedirs(output_dir, exist_ok=True)
+    
+    build_table(input_path, csparc_path, output_dir)
     return
     
 if __name__ == '__main__':
