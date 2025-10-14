@@ -58,7 +58,7 @@ def get_clean_file_name(filename, all_filenames):
     # print("basename: {}".format(basename))
     
     for name in all_filenames:
-        name = os.path.basename(name)[:-4]  # remove .mrc extension
+        # name = os.path.basename(name)[:-4]  # remove .mrc extension
         if name in basename:
             # print("Found matching name")
             return name
