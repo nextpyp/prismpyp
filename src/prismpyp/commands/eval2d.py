@@ -176,20 +176,24 @@ def main_worker(gpu, ngpus_per_node, args):
             transforms.ToTensor(),
         ]
     
+    trainfiles = os.path.join(args.metadata_path, 'all_micrographs_list.micrographs')
+    assert os.path.exists(trainfiles), f".micrographs list does not exist at {args.metadata_path}."
+
     test_dataset = MRCDataset(
-        args.micrographs_list, 
+        trainfiles, 
         transform=transforms.Compose(augmentations),
         is_fft=args.use_fft,
-        webp_dir=os.path.join(args.nextpyp_preproc, 'webp'),
-        metadata_path=args.metadata_path
+        webp_dir=os.path.join(args.metadata_path, 'webp'),
+        metadata_path=os.path.join(args.metadata_path, 'micrograph_metadata.csv')
     )
         
     test_loader = torch.utils.data.DataLoader(
         test_dataset, batch_size=args.batch_size, shuffle=False,
         num_workers=args.workers, pin_memory=True)
-        
+    
+    output_path = os.path.join(args.output_path, 'inference')
+    
     if args.output_path and (not args.distributed or args.rank % ngpus_per_node == 0):
-        output_path = os.path.join(args.output_path, 'inference')
         if not os.path.exists(output_path):
             os.makedirs(output_path, exist_ok=True)
         if args.distributed:
@@ -232,11 +236,11 @@ def main_worker(gpu, ngpus_per_node, args):
                                         method="umap", K=n_clusters, ngpus_per_node=ngpus_per_node)
 
         
-        tsne_reducer = TSNE(n_components=2, perplexity=args.num_neighbors, verbose=1, random_state=args.seed, n_iter_without_progress=1000)
-        tsne_fit = tsne_reducer.fit_transform(normed_embeddings)
-        plot_projections(tsne_fit, actual_assignments, "t-SNE Projection", output_path, cmap, args, ngpus_per_node)
-        get_scatter_plot_with_thumbnails_real_fft(args, tsne_fit, cmap, actual_assignments, test_dataset, path_to_save=output_path, 
-                                        method="tsne", K=n_clusters, ngpus_per_node=ngpus_per_node)
+        # tsne_reducer = TSNE(n_components=2, perplexity=args.num_neighbors, verbose=1, random_state=args.seed, n_iter_without_progress=1000)
+        # tsne_fit = tsne_reducer.fit_transform(normed_embeddings)
+        # plot_projections(tsne_fit, actual_assignments, "t-SNE Projection", output_path, cmap, args, ngpus_per_node)
+        # get_scatter_plot_with_thumbnails_real_fft(args, tsne_fit, cmap, actual_assignments, test_dataset, path_to_save=output_path, 
+        #                                 method="tsne", K=n_clusters, ngpus_per_node=ngpus_per_node)
         
         for i in range(5):
             random_idx = random.randint(0, len(test_dataset) - 1)
@@ -326,10 +330,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
         else:
             raise FileNotFoundError(f"Missing webp or ctffit file for {basename}")
 
-    if args.nextpyp_preproc is None:
-        raise ValueError("No webp directory found. Please provide a valid path.")
-
-    webp_dir = os.path.join(args.nextpyp_preproc, "webp")
+    webp_dir = os.path.join(args.metadata_path, "webp")
     
     # Normalize embeddings
     M = np.max(embeddings_2d, axis=0)
@@ -409,9 +410,8 @@ def get_scatter_plot_with_thumbnails_real_fft(
 def get_scatter_plot_with_thumbnails(
     args, embeddings_2d, cmap, labels, test_dataset, path_to_save, method, K, is_mrc=True, ngpus_per_node=1, is_wandb=False
 ):
-    # Use nextpyp-postprocessed .webp micrograph thumbnails for real images
-    if args.nextpyp_preproc is not None:
-        webp_dir =  os.path.join(args.nextpyp_preproc, "webp")
+    # Use .webp micrograph thumbnails for real images
+    webp_dir = os.path.join(args.metadata_dir, "webp")
     
     # Normalize embeddings
     M = np.max(embeddings_2d, axis=0)
@@ -438,19 +438,16 @@ def get_scatter_plot_with_thumbnails(
     ax.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=labels, cmap=cmap, s=10, alpha=0.8)
 
     for idx in shown_images_idx:
-        if args.nextpyp_preproc is not None:
-            webp_dir = os.path.join(args.nextpyp_preproc, 'webp')
-            img_path = test_dataset.file_paths[idx]
-            basename = os.path.basename(img_path)
-            ctf_file = os.path.join(webp_dir, basename[:-4] + '_ctffit.webp')
-            mg_file = os.path.join(webp_dir, basename[:-4] + '.webp')
+        webp_dir = os.path.join(args.metadata_dir, "webp")
+        img_path = test_dataset.file_paths[idx]
+        basename = os.path.basename(img_path)
+        ctf_file = os.path.join(webp_dir, basename[:-4] + '_ctffit.webp')
+        mg_file = os.path.join(webp_dir, basename[:-4] + '.webp')
             
-            if os.path.exists(ctf_file) and os.path.exists(mg_file):
-                ctf_img = Image.open(ctf_file)
-                mg_img = Image.open(mg_file)
-                img = crop_and_stitch_imgs(ctf_img, mg_img)
-            else:
-                raise ValueError("No webp directory found. Please provide a valid path.")
+        if os.path.exists(ctf_file) and os.path.exists(mg_file):
+            ctf_img = Image.open(ctf_file)
+            mg_img = Image.open(mg_file)
+            img = crop_and_stitch_imgs(ctf_img, mg_img)
         else:
             raise ValueError("No webp directory found. Please provide a valid path.")
         
@@ -518,28 +515,16 @@ def plot_nearest_neighbors_3x3(args, embeddings, test_dataset, example_idx, i, p
     for plot_offset, plot_idx in enumerate(nearest_neighbors):
         ax = fig.add_subplot(3, 3, plot_offset + 1)
         
-        if args.nextpyp_preproc is not None:
-            webp_dir = os.path.join(args.nextpyp_preproc, 'webp')
-            img_path = test_dataset.file_paths[plot_idx]
-            basename = img_path #os.path.basename(img_path)
-            ctf_file = os.path.join(webp_dir, basename + '_ctffit.webp')
-            mg_file = os.path.join(webp_dir, basename + '.webp')
-            
-            if os.path.exists(ctf_file) and os.path.exists(mg_file):
-                ctf_img = Image.open(ctf_file)
-                mg_img = Image.open(mg_file)
-                img = crop_and_stitch_imgs(ctf_img, mg_img)
-        else:
-            tmp = test_dataset[plot_idx]
-            if len(tmp) == 2:
-                img, _ = tmp
-            else:
-                img = tmp
-            # img, _ = test_dataset[plot_idx]
-            img = img.permute(1, 2, 0).numpy() if img.ndimension() == 3 else img.numpy()
-            img = soft_normalize(img)
-            img = (img * 255).astype('uint8') if img.max() <= 1 else img        
+        webp_dir = os.path.join(args.metadata_path, 'webp')
+        img_path = test_dataset.file_paths[plot_idx]
+        basename = img_path #os.path.basename(img_path)
+        ctf_file = os.path.join(webp_dir, basename + '_ctffit.webp')
+        mg_file = os.path.join(webp_dir, basename + '.webp')
         
+        ctf_img = Image.open(ctf_file)
+        mg_img = Image.open(mg_file)
+        img = crop_and_stitch_imgs(ctf_img, mg_img)
+
         if plot_offset == 0:
             ax.set_title(f"Example Image")
             plt.imshow(img, cmap="gray")
