@@ -48,9 +48,11 @@ def main(args):
     for i, row in intersection.iterrows():
         # Get filename from url
         filename = row['url'].split('/')[-1]
-        # Filename is of format: xyz.mrc.combined.jpg
-        # Trim off the .mrc.combined.jpg part
-        filename = filename.replace(".combined.jpg",".webp")
+        # Handle edge cases for filename
+        if filename.endswith(".mrc.combined.jpg"):
+            filename = filename.replace(".mrc.combined.jpg", ".webp")
+        elif filename.endswith(".combined.jpg"):
+            filename = filename.replace(".combined.jpg", ".webp")
         
         if filename.endswith('.webp'):
             filename = filename
