@@ -194,19 +194,20 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
     
-    trainfiles = args.micrographs_list
+    trainfiles = os.path.join(args.metadata_path, 'all_micrographs_list.micrographs')
+    assert os.path.exists(trainfiles), f".micrographs list does not exist at {args.metadata_path}."
     
     # MoCo v2's aug: similar to SimCLR https://arxiv.org/abs/2002.05709
-    # Load parameters from a .toml file
-    toml_file_path = os.path.join(args.nextpyp_preproc, '.pyp_config.toml')
-    with open(toml_file_path, 'r') as toml_file:
-        pyp_params = toml.load(toml_file)
+    # Load pixel size from metadata folder
+    with open(os.path.join(args.metadata_path, 'pixel_size.txt'), 'r') as f:
+        pixel_size = float(f.readline().strip())
+    
 
     if args.use_fft:
         augmentation = [
             transforms.Resize((224, 224)),  # Resize image to 224x224
             cryst_xforms.HPF(
-                pixel_size=pyp_params.get('scope_pixel', 1) * (224/512), 
+                pixel_size=pixel_size * (224/512), 
                 cutoff=20 * (224/512), 
                 prob=0.5
             ),
@@ -237,10 +238,10 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
     train_dataset = MRCDataset(
         mrc_dir=trainfiles, 
         transform=simsiam_loader.TwoCropsTransform(transforms.Compose(augmentation)),
-        webp_dir=os.path.join(args.nextpyp_preproc, 'webp'),
+        webp_dir=os.path.join(args.metadata_path, 'webp'),
         is_fft=args.use_fft,
-        metadata_path=args.metadata_path,
-        pixel_size=pyp_params.get('scope_pixel', 1)
+        metadata_path=os.path.join(args.metadata_path, 'micrograph_metadata.csv'),
+        pixel_size=pixel_size
     )
 
     if args.distributed:
