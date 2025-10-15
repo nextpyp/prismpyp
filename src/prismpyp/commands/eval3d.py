@@ -172,12 +172,15 @@ def main_worker(gpu, ngpus_per_node, args):
             transforms.ToTensor(),
         ]
     
+    trainfiles = os.path.join(args.metadata_path, 'all_micrographs_list.micrographs')
+    assert os.path.exists(trainfiles), f"Micrographs list file {trainfiles} does not exist."
+    
     test_dataset = MRCDataset(
-        args.micrographs_list, 
+        trainfiles, 
         transform=transforms.Compose(augmentations),
         is_fft=args.use_fft,
-        webp_dir=os.path.join(args.nextpyp_preproc, 'webp'),
-        metadata_path=args.metadata_path
+        webp_dir=os.path.join(args.metadata_path, 'webp'),
+        metadata_path=os.path.join(args.metadata_path, 'micrograph_metadata.csv'),
     )
         
     test_loader = torch.utils.data.DataLoader(
@@ -219,11 +222,14 @@ def main_worker(gpu, ngpus_per_node, args):
         data_for_export["umap_fit_y"] = umap_fit[:, 1]
         data_for_export["umap_fit_z"] = umap_fit[:, 2]
         
-        tsne_reducer = TSNE(n_components=3, perplexity=args.num_neighbors, verbose=1, random_state=args.seed, n_iter_without_progress=1000)
-        tsne_fit = tsne_reducer.fit_transform(normed_embeddings)
-        data_for_export["tsne_fit_x"] = tsne_fit[:, 0]
-        data_for_export["tsne_fit_y"] = tsne_fit[:, 1]
-        data_for_export["tsne_fit_z"] = tsne_fit[:, 2]
+        if len(normed_embeddings) > 1000:
+            tsne_reducer = TSNE(n_components=3, perplexity=args.num_neighbors, verbose=1, random_state=args.seed, n_iter_without_progress=1000)
+            tsne_fit = tsne_reducer.fit_transform(normed_embeddings)
+            data_for_export["tsne_fit_x"] = tsne_fit[:, 0]
+            data_for_export["tsne_fit_y"] = tsne_fit[:, 1]
+            data_for_export["tsne_fit_z"] = tsne_fit[:, 2]
+        else:
+            print("Skipping t-SNE since there are less than 1000 samples.")
             
         # Save metadata in prep for exporting
         data_for_export['image_thumbnails'] = []
@@ -239,7 +245,7 @@ def main_worker(gpu, ngpus_per_node, args):
         
         # Save data_for_export as zip file
         if args.output_path and (not args.distributed or args.rank % ngpus_per_node == 0):
-            path_to_save = os.path.join(output_path, 'data_for_export.parquet.zip')
+            path_to_save = os.path.join(output_path, 'data_for_export.parquet')
             data_for_export_df.to_parquet(path_to_save, compression='gzip')
             print(f"Data for export saved to {path_to_save}")
         
@@ -259,20 +265,10 @@ def main_worker(gpu, ngpus_per_node, args):
                 mg_img = Image.open(mg_file)
                 crop_and_stitch_imgs(ctf_img, mg_img, output_path, basename)
 
-        def process_without_webp(img_path):
-            img_arr = mrcfile.read(img_path)
-            basename = img_path #os.path.basename(img_path)
-            img = transforms.ToPILImage()(soft_normalize(img_arr)).resize((256, 256))
-            img.save(os.path.join(thumbnail_dir, basename + '.jpg'), "JPEG", quality=100, optimize=True, progressive=True)
-
         if args.zip_images:
-            if args.nextpyp_preproc is not None:
-                webp_dir = os.path.join(args.nextpyp_preproc, 'webp')
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    executor.map(process_with_webp, test_dataset.file_paths)
-            else:
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    executor.map(process_without_webp, test_dataset.file_paths)
+            webp_dir = os.path.join(args.metadata_path, 'webp')
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                executor.map(process_with_webp, test_dataset.file_paths)
 
             if args.output_path and (not args.distributed or args.rank % ngpus_per_node == 0):
                 dest = os.path.join(output_path, 'zipped_thumbnail_images')
@@ -428,71 +424,6 @@ def validate(val_loader, model, args):
 
     return all_embeddings
 
-# Function to train and evaluate based on configurations
-def start_sweep(test_dataset, all_embeddings, args):
-    num_elements = len(test_dataset)
-    num_neighbors = [0, int(0.2 * num_elements), int(0.4 * num_elements), int(0.6 * num_elements), int(0.8 * num_elements)]
-    min_dist_umap = [0.0, 0.1, 0.25, 0.5, 0.8, 0.99]
-    num_clusters = [2, 5, 10]
-    
-    sweep_config = {
-        'method': 'grid',
-        'parameters': {
-            'num_neighbors': {'values': num_neighbors},
-            'min_dist_umap': {'values': min_dist_umap},
-            'num_clusters': {'values': num_clusters}
-        },
-    }
-    sweep_id = wandb.sweep(sweep_config, project="simsiam_clICEification")
-    
-    def param_sweep(config=None):
-        with wandb.init(config=config):
-            config = wandb.config
-            
-            temp_args = args
-
-            actual_assignments = kmeans_clustering(temp_args, all_embeddings, n_clusters=config.num_clusters)
-            # UMAP dimensionality reduction
-            umap_reducer = umap.UMAP(
-                n_neighbors=config.num_neighbors,
-                min_dist=config.min_dist_umap,
-                random_state=temp_args.seed
-            )
-            umap_fit = umap_reducer.fit_transform(all_embeddings)
-
-            # t-SNE dimensionality reduction
-            tsne_reducer = TSNE(
-                n_components=2,
-                perplexity=config.num_neighbors,
-                random_state=temp_args.seed
-            )
-            tsne_fit = tsne_reducer.fit_transform(all_embeddings)
-
-            # Visualize UMAP results
-            plt.scatter(umap_fit[:, 0], umap_fit[:, 1], c=actual_assignments, cmap='tab10')
-            plt.title("UMAP Projection")
-            wandb.log({"UMAP Projection": wandb.Image(plt)})
-            plt.clf()
-            
-            get_scatter_plot_with_thumbnails(temp_args, umap_fit, plt.get_cmap('tab10', config.num_clusters), actual_assignments, test_dataset, path_to_save=None, method="umap", K=config.num_clusters, ngpus_per_node=0, is_wandb=True)
-            plt.clf()
-
-            # Visualize t-SNE results
-            plt.scatter(tsne_fit[:, 0], tsne_fit[:, 1], c=actual_assignments, cmap='tab10')
-            plt.title("t-SNE Projection")
-            wandb.log({"t-SNE Projection": wandb.Image(plt)})
-            plt.clf()
-            
-            get_scatter_plot_with_thumbnails(temp_args, tsne_fit, plt.get_cmap('tab10', config.num_clusters), actual_assignments, test_dataset, path_to_save=None, method="tsne", K=config.num_clusters, ngpus_per_node=0, is_wandb=True)
-
-            # Log configuration and clustering results
-            wandb.log({
-                "num_neighbors": config.num_neighbors,
-                "min_dist_umap": config.min_dist_umap,
-                "num_clusters": config.num_clusters
-            })
-    wandb.agent(sweep_id, function=param_sweep)
-    return
     
 class AverageMeter(object):
     """Computes and stores the average and current value"""
