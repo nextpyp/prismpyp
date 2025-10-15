@@ -235,18 +235,21 @@ def main_worker(gpu, ngpus_per_node, args):
         get_scatter_plot_with_thumbnails_real_fft(args, umap_fit, cmap, actual_assignments, test_dataset, path_to_save=output_path, 
                                         method="umap", K=n_clusters, ngpus_per_node=ngpus_per_node)
 
-        
-        # tsne_reducer = TSNE(n_components=2, perplexity=args.num_neighbors, verbose=1, random_state=args.seed, n_iter_without_progress=1000)
-        # tsne_fit = tsne_reducer.fit_transform(normed_embeddings)
-        # plot_projections(tsne_fit, actual_assignments, "t-SNE Projection", output_path, cmap, args, ngpus_per_node)
-        # get_scatter_plot_with_thumbnails_real_fft(args, tsne_fit, cmap, actual_assignments, test_dataset, path_to_save=output_path, 
-        #                                 method="tsne", K=n_clusters, ngpus_per_node=ngpus_per_node)
+        if len(normed_embeddings) > 1000:
+            tsne_reducer = TSNE(n_components=2, perplexity=args.num_neighbors, verbose=1, random_state=args.seed, n_iter_without_progress=1000)
+            tsne_fit = tsne_reducer.fit_transform(normed_embeddings)
+            plot_projections(tsne_fit, actual_assignments, "t-SNE Projection", output_path, cmap, args, ngpus_per_node)
+            get_scatter_plot_with_thumbnails_real_fft(args, tsne_fit, cmap, actual_assignments, test_dataset, path_to_save=output_path, 
+                                            method="tsne", K=n_clusters, ngpus_per_node=ngpus_per_node)
+        else:
+            print("Skipping t-SNE plot since there are less than 1000 samples.")
         
         for i in range(5):
             random_idx = random.randint(0, len(test_dataset) - 1)
             plot_nearest_neighbors_3x3(args, normed_embeddings, test_dataset, example_idx=random_idx, i=i, 
                                         path_to_save=output_path, ngpus_per_node=ngpus_per_node)
         
+        return
         
 def plot_projections(projection, actual_assignments, title, path_to_save, cmap, args, ngpus_per_node, num_neighbors=None, min_dist_umap=None):
     plt.scatter(projection[:, 0], projection[:, 1], c=actual_assignments, cmap=cmap, s=10, alpha=0.8)
