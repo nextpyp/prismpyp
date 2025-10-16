@@ -164,7 +164,7 @@ def main(args):
     if args.ctffind_dir is not None:
         os.makedirs(os.path.join(output_dir, "webp"), exist_ok=True)
         ctffind_mrc_dir = args.ctffind_dir
-        ctffind_mrc_files = glob.glob(os.path.join(ctffind_mrc_dir, "*_ctffit.mrc"))
+        ctffind_mrc_files = glob.glob(os.path.join(ctffind_mrc_dir, "*.mrc"))
         save_mrcs_to_webp(ctffind_mrc_files, all_mg_list, os.path.join(output_dir, "webp"), is_ctffind=True)
     
     # Write imported micrographs to .webp images
