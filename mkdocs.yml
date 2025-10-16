@@ -2,7 +2,7 @@
 site_name: "" 
 site_url: "https://laura-he.github.io/prismpyp/"
 site_dir: public
-repo_url: "https://gitlab.com/nextpyp/prismpyp"
+repo_url: "https://github.com/nextpyp/prismpyp"
 nav:
   - Getting Started:
     - Installation: env_setup.md
