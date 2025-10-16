@@ -4,14 +4,18 @@ site_url: "https://laura-he.github.io/prismpyp/"
 site_dir: public
 repo_url: "https://github.com/nextpyp/prismpyp"
 nav:
+  - Home: index.md
   - Getting Started:
-    - Installation: env_setup.md
-    - Gathering Input Data: metadata.md
-    - Label-Free Feature Learning: train.md
-    - 2D Embedding Generation: eval2d.md
-    - 3D Embedding Generation: eval3d.md
-    - Interactive Visualization: phoenix.md
-    - Dual-Domain Filtering: intersect.md
+      - Installation: env_setup.md
+      - Gathering Input Data: metadata.md
+  - Model Training:
+      - Label-Free Feature Learning: train.md
+  - Embedding Generation:
+      - 2D Embedding Generation: eval2d.md
+      - 3D Embedding Generation: eval3d.md
+  - Visualization and Filtering:
+      - Interactive Visualization (Phoenix): phoenix.md
+      - Dual-Domain Filtering: intersect.md
 markdown_extensions:
   - abbr
   - admonition
