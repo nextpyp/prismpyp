@@ -14,7 +14,7 @@ from prismpyp.utils.imageio import load_mrc, mrc2png
 def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.ArgumentParser:
     if parser is None:
         # this script is called directly; need to create a parser
-        parser = argparse.ArgumentParser(description='Parse .pkl files to retrieve CTF fit/estimated resolution/average drift/number of particles metadata')
+        parser = argparse.ArgumentParser(description='Parse .cs files to retrieve CTF fit/estimated resolution/average drift/number of particles metadata')
     else:
         # this script is called from prismpyp.__main__ entry point, in which case a parser is already created
         pass
@@ -31,17 +31,6 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
 
     return parser
 
-
-"""
-def parse_args():
-    parser = argparse.ArgumentParser(description='Parse .pkl files to retrieve CTF fit/estimated resolution/average drift/number of particles metadata')
-    parser.add_argument('pkl_path', type=str, 
-                        help='Path to the pkl files')
-    parser.add_argument('--cryosparc_path', type=str, default=None, 
-                        help='Path to CryoSPARC Curate Exposure job exported .cs file (optional)')
-    parser.add_argument('output_file', type=str, help='Output file name')
-    return parser.parse_args()
-"""
 
 def get_pixel_size(viewer):
     if "micrograph_blob/psize_A" in viewer.columns:
