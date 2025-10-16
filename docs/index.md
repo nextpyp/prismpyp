@@ -46,6 +46,7 @@ example_data/
 ## 📦 Zenodo Files
 
 The Zenodo link (https://doi.org/10.5281/zenodo.17161604) contains the following files:
+
 * ```model_weights.tar.gz```: Trained model weights for the real domain input (```real_model_best.pth.tar```) and the Fourier domain input (```fft_model_best.pth.tar```)
 * ```fft_good_export.parquet```: Data points that have high-quality features in the Fourier domain
 * ```real_good_export.parquet```: Data points that have high-qualtiy features in the real domain
