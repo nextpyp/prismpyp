@@ -62,7 +62,11 @@ def get_clean_file_name(filename, all_filenames):
             return name
         
 def save_mrcs_to_webp(files, all_mg_list, out_dir, is_ctffind=False, contrast_stretch=False):
-    for file in tqdm(files, desc="Converting .mrc files to .webp images"):
+    if is_ctffind:
+        desc = "Converting CTFFIND .mrc files to .webp images"
+    else:
+        desc = "Converting .mrc files to .webp images"
+    for file in tqdm(files, desc=desc):
         if not file.endswith('.mrc'):
             print(f"Skipping non-.mrc file: {file}")
             continue
