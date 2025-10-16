@@ -1,61 +1,94 @@
-## Build the metadata table
+# 🧾 Gathering Input Data and Building Metadata
 
-   1. Make the training output directory: 
-   ```bash
-   mkdir -p output_dir
-   ```
-### Using pre-processing outputs from nextPYP
+This section describes how to prepare the **metadata table** used for prismPYP training and embedding generation.  
+You can build metadata using either **NextPYP preprocessing outputs** or **CryoSPARC outputs**.
 
-   1. Make the metadata output directory:
+> 💡 The resulting metadata table consolidates microscope parameters, CTF statistics, and motion information across all micrographs in your dataset.
+
+---
+
+## 🧱 1. Build the Metadata Table
+
+Before starting, create a directory to store all generated outputs:
+
+```bash
+mkdir -p output_dir
+```
+
+---
+
+## ⚙️ 2. Using Preprocessing Outputs from NextPYP
+
+1. Create an output directory for NextPYP-derived metadata:
    ```bash
    mkdir -p metadata_from_nextpyp
    ```
-   2. To build the metadata using information from nextPYP's preprocessing, run:
+
+2. Run the following command to assemble metadata from NextPYP preprocessing results:
    ```bash
    prismpyp metadata_nextpyp \
-    --pkl-path example_data/pkl \
-    --output-dir metadata_from_nextpyp \
-    --cryosparc-path example_data/J7_exposures_accepted_exported.cs
+      --pkl-path example_data/pkl \
+      --output-dir metadata_from_nextpyp \
+      --cryosparc-path example_data/J7_exposures_accepted_exported.cs
    ```
 
-   You can omit ```--cryosparc-path``` if you don’t need relative ice thickness visualization.
-  
-### Using cryoSPARC outputs
+   > 🧠 You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
 
-We build the metadata from cryoSPARC by using the outputs of the Patch CTF Estimation and CTFFIND4 jobs. Since these jobs both take aligned micrographs as inputs, you may also need to perform frame averaging and run Motion Correction to convert from raw frames to aligned micrographs. For the test dataset, the data is deposited in EMPIAR as aligned frames, so we skip the frame averaging and motion correction steps.
-  1. Export the outputs of the ```Import```, ```Patch CTF Estimation```, and ```CTFFIND4``` jobs. Note the location of the resulting ```.cs``` file.
-     1. For the sake of this example, let's assume:
-        1. The ```Import Micrographs``` job is ```J1```
-        2. ```Patch CTF Estimation``` is ```J2```
-        3. ```CTFFIND``` is ```J3```
-        4. The cryoSPARC project directory is located at the absolute path ```/cryosparc/output/dir```.
-  2. Make the metadata output directory:
+---
+
+## 🧊 3. Using CryoSPARC Outputs
+
+To build metadata directly from **CryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
+
+> 🔬 For the test dataset (EMPIAR-10379), the deposited data already contains aligned micrographs, so you can skip motion correction.
+
+1. Export the outputs of the following jobs and note their locations:
+   - **Import Micrographs** → `J1`
+   - **Patch CTF Estimation** → `J2`
+   - **CTFFIND4** → `J3`
+   - CryoSPARC project directory → `/cryosparc/output/dir`
+
+2. Create the metadata directory:
    ```bash
    mkdir -p metadata_from_cryosparc
    ```
-  3. Build the metadata from cryoSPARC outputs:
+
+3. Build the metadata table:
    ```bash
    prismpyp metadata_cryosparc \
       --imported-dir "/cryosparc/output/dir/J1/imported" \
       --patch-ctf-file "/cryosparc/output/dir/J2/J2_passthrough_exposures_accepted.cs" \
       --ctffind-dir "/cryosparc/output/dir/J3/ctffind_output" \
-      --ctffind-file "/cryosparc/output/dir/exports/groups/J3_exposures_success/J3_exposures_success_exported.cs" \
+      --ctffind-file "/cryosparc/output/dir/exports/groups J3_exposures_success/J3_exposures_success_exported.cs" \
       --output-dir metadata_from_cryosparc
    ```
 
-### Code outputs
-Both commands will produce a ```micrograph_metadata.csv``` file that populates, for each image in your dataset, the:
-   * ```micrograph_name```
-   * ```rel_ice_thickness``` (If you provide ```--cryosparc-path```)
-   * ```ctf_fit```
-   * ```est_resolution```
-   * ```avg_motion```
-   * ```num_particles```
-   * ```mean_defocus```
+---
 
-In addition, it will also produce the following files:
-* ```pixel_size.txt```: A text file containing the microscope's pixel size for this experiment.
-* ```all_micrographs_list.micrographs```: A list of all micrographs, without the file extension
-* ```webp```: A directory containing ```.webp``` image files for the micrographs and power spectra estimated from CTFFIND4.
+## 📂 4. Code Outputs
 
-For the subsequent commands, we will use ```metadata_from_nextpyp``` as the metadata location. But, you can easily specify another location by changing ```--metadata-path``` to either ```metadata_from_nextpyp``` or ```metadata_from_cryosparc```, depending on which software you used to process your images.
+Both metadata-building commands will produce a file named `micrograph_metadata.csv`, containing:
+
+| Column | Description |
+|---------|--------------|
+| `micrograph_name` | Name of each micrograph |
+| `rel_ice_thickness` | Relative ice thickness (if `--cryosparc-path` is provided) |
+| `ctf_fit` | CTF fit correlation coefficient |
+| `est_resolution` | Estimated resolution in Å |
+| `avg_motion` | Average beam-induced motion |
+| `num_particles` | Number of picked particles |
+| `mean_defocus` | Mean defocus (Å) |
+
+In addition, the following files are generated:
+
+- `pixel_size.txt` — microscope pixel size for this dataset  
+- `all_micrographs_list.micrographs` — list of all micrographs (no extensions)  
+- `webp/` — directory of `.webp` images for both micrographs and their CTFFIND4-derived power spectra
+
+> 💾 For the remainder of this tutorial, we’ll assume you’re using the `metadata_from_nextpyp` directory.  
+> You can easily switch to another dataset by setting `--metadata-path` to `metadata_from_nextpyp` or `metadata_from_cryosparc`, depending on your source.
+
+---
+
+### Next Steps
+⬅️ [Back: Environment Setup](env_setup.md) | ➡️ [Next: Label-Free Feature Learning](train.md)

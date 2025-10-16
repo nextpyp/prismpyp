@@ -1,8 +1,15 @@
-## 🖼️ Visualizing your dataset: Generate embeddings and 2D visualizations for the entire dataset
+# 🖼️ 2D Embedding Generation and Visualization
 
-   Once the model has finished training, we can generate static 2D visualizations of the feature vectors to examine the different types of micrograph and power spectrum features present in the dataset.
+Once the model has finished training, you can generate **static 2D visualizations** of learned feature vectors.  
+These embeddings reveal structural patterns across your dataset — highlighting variations in ice type, contamination, or support film quality.
 
-   1. To perform inference on real-domain images:
+> 💡 The following steps can be applied to both **real-domain** and **Fourier-domain** models.
+
+---
+
+## 🧩 1. Generate 2D Embeddings for Real-Domain Images
+
+Perform inference on the trained **real-domain** model:
    ```bash
    prismpyp eval2d \
     --output-path output_dir/real \
@@ -23,8 +30,15 @@
     --num-neighbors 10 \
     --min-dist-umap 0
    ```
+> 🧠 Use the same model architecture and feature dimensions as in training.  
+> The embeddings will be saved to `output_dir/real/inference`.
 
-   2. To perform inference on Fourier-domain images:
+---
+
+## 🌈 2. Generate 2D Embeddings for Fourier-Domain Images
+
+For Fourier-domain embeddings, include the `--use-fft` flag:
+
    ```bash
    prismpyp eval2d \
     --output-path output_dir/fft \
@@ -46,8 +60,13 @@
     --min-dist-umap 0 \
     --use-fft
    ```
+> 📊 This produces a 2D projection of the learned Fourier-domain embeddings, highlighting frequency-based variation across micrographs.
 
-   3. If you have already produced embeddings, you can skip the inference step and simply project the embedding vectors onto 2D by providing a path to the embeddings file, like so:
+---
+
+## 🧮 3. Project Precomputed Embeddings
+
+If you have already generated embeddings, you can skip the inference step and directly project them to 2D:
    ```bash
    prismpyp eval2d \
     --output-path output_dir/real \
@@ -69,10 +88,29 @@
     --num-neighbors 10 \
     --min-dist-umap 0
    ```
-   Include the ```--use-fft``` flag if you are running on Fourier-domain data.
+Include the `--use-fft` flag if projecting **Fourier-domain** embeddings.
 
-   Inference will output the following files to a folder ```/path/to/output/<real or fft>/inference```:
-   * ```embeddings.pth```: The high-dimensional feature vectors produced during inference for the images in the dataset.
-   * ```nearest_neighbors_x.webp```: The 8 nearest neighbors (points in the high-dimensional embedding space with the smallest Euclidean distance) of a randomly-sampled point in the dataset.
-   * ```scatter_plot_<method>.webp```: A point cloud scatter plot produced by projecting the high-dimensional data to 2D using either PCA, UMAP, or tSNE.
-   * ```thumbnail_plot_<method>_<ps or mg>.webp```: Same as the scatter plot above, but instead of representing each image with a point, we show either the micrograph (```mg```) or the power spectrum (```ps```) as a static 2D preview of the embedding space. Useful for determining general areas or visual patterns in the data.
+---
+
+## 📁 4. Output Files
+
+Each inference run creates an `inference/` directory inside your chosen output path, containing:
+
+| File | Description |
+|------|--------------|
+| `embeddings.pth` | High-dimensional feature vectors for all images |
+| `nearest_neighbors_x.webp` | Visualization of 8 nearest neighbors to a random point in embedding space |
+| `scatter_plot_<method>.webp` | 2D scatter plot (PCA, UMAP, or t-SNE projection) |
+| `thumbnail_plot_<method>_<ps or mg>.webp` | Same as above, but displays micrograph (`mg`) or power spectrum (`ps`) thumbnails instead of points |
+
+These visualizations are useful for spotting image-quality clusters or distinct artifact types.
+
+---
+
+Your 2D embeddings are now ready for exploration and validation! 🎉  
+Next, you’ll learn how to generate **3D embeddings** for higher-dimensional visualization.
+
+---
+
+### Next Steps
+⬅️ [Back: Label-Free Feature Learning](train.md) | ➡️ [Next: 3D Embedding Generation](eval3d.md)
