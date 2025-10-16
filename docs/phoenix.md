@@ -1,4 +1,4 @@
-# 🐦‍🔥 Visualizing 3D Results in Phoenix
+# Visualizing 3D Results in Phoenix 🐦‍🔥 
 
 Phoenix enables **interactive 3D visualization and manual selection** of micrographs directly within the embedding space.  
 For the best performance, Phoenix should be installed and run **locally** (not on a remote cluster).
@@ -7,7 +7,7 @@ For the best performance, Phoenix should be installed and run **locally** (not o
 
 ---
 
-## ⚙️ 1. Install Phoenix
+## 1. Install Phoenix
 
 Install Phoenix using either the provided Conda environment file or `pip`.
 
@@ -30,7 +30,7 @@ python -m pip install -r requirements-phoenix.txt
 
 ---
 
-## 🧩 2. Prepare Real-Domain Visualization
+## 2. Prepare Real-Domain Visualization
 
 These instructions assume inference results from **real-domain inputs**.
 
@@ -85,7 +85,7 @@ You can now access the interactive visualization at [http://localhost:54116/](ht
 
 ---
 
-## 🔄 3. Visualize Fourier-Domain Results
+## 3. Visualize Fourier-Domain Results
 
 You can repeat the same steps for Fourier-domain inputs.
 
@@ -127,7 +127,7 @@ You can repeat the same steps for Fourier-domain inputs.
 
 ---
 
-## 💾 4. Lasso Selections and Output
+## 4. Lasso Selections and Output
 
 For both domains, interactive **lasso selections** will be saved as downloadable `.parquet` files:
 

@@ -1,4 +1,4 @@
-# 🤖 Label-Free Feature Learning (Training the SimSiam Model)
+# Label-Free Feature Learning (Training the SimSiam Model)
 
 This section describes how to train **SimSiam models** on both **real-domain** and **Fourier-domain** cryo-EM micrographs.
 
@@ -6,7 +6,7 @@ This section describes how to train **SimSiam models** on both **real-domain** a
 
 ---
 
-## 🧩 1. Download Pretrained Weights
+## 1. Download Pretrained Weights
 
 Before training, download the pretrained **ResNet-50** backbone weights from the official SimSiam repository:
 
@@ -15,12 +15,12 @@ mkdir -p pretrained_weights
 wget https://dl.fbaipublicfiles.com/simsiam/models/100ep/pretrain/checkpoint_0099.pth.tar -P pretrained_weights/
 ```
 
-> 🧠 Using pretrained weights speeds up convergence and stabilizes representation learning.  
+> Using pretrained weights speeds up convergence and stabilizes representation learning.  
 > If you prefer to train from scratch, you can omit the `--resume` flag.
 
 ---
 
-## 🌌 2. Training on Real-Domain Images
+## 2. Training on Real-Domain Images
 
 Train the SimSiam model on **real-space micrograph images**:
 
@@ -41,11 +41,11 @@ Train the SimSiam model on **real-space micrograph images**:
     --world-size 1 \
     --rank 0
   ```
-> ⚙️ Adjust the `--batch-size` and `--workers` arguments based on GPU memory and available CPU cores.
+> Adjust the `--batch-size` and `--workers` arguments based on GPU memory and available CPU cores.
 
 ---
 
-## 🌈 3. Training on Fourier-Domain Images
+## 3. Training on Fourier-Domain Images
 
 For **Fourier-space inputs**, use the `--use-fft` flag:
    ```bash
@@ -67,11 +67,11 @@ For **Fourier-space inputs**, use the `--use-fft` flag:
     --use-fft
    ```
 
-> 🧮 The `--use-fft` flag enables Fourier-domain preprocessing, which is useful for training frequency-based representations.
+> The `--use-fft` flag enables Fourier-domain preprocessing, which is useful for training frequency-based representations.
 
 ---
 
-## 🧠 4. Notes on Checkpoints
+## 4. Notes on Checkpoints
 
 If you’d rather start from scratch or use your own pretrained model, omit the `--resume` flag or point it to a different `.pth.tar` checkpoint.
 
@@ -88,7 +88,7 @@ During training, **per-batch loss** and **collapse level** are printed in the te
 
 ---
 
-Your models are now trained and ready for embedding generation. 🎉  
+Your models are now trained and ready for embedding generation.
 Proceed to compute **2D embeddings** for visualization and analysis.
 
 ---

@@ -1,13 +1,13 @@
-# 🗽 3D Interactive Embedding Visualization
+# 3D Interactive Embedding Visualization
 
 3D visualization extends the 2D projection step by allowing **interactive exploration** of your dataset’s embedding space.  
 Here, you can manually inspect micrographs within clusters, identify distinct regions (e.g., vitreous vs. crystalline ice), and export high-quality subsets for further analysis.
 
-> 💡 Use this step to interpret learned representations and select data subsets for refinement or reconstruction.
+> Use this step to interpret learned representations and select data subsets for refinement or reconstruction.
 
 ---
 
-## 🧭 1. Visualize Precomputed Embeddings
+## 1. Visualize Precomputed Embeddings
 
 If you already generated 2D embeddings, you can skip re-computation and directly visualize them in 3D:
 
@@ -33,11 +33,11 @@ prismpyp eval3d \
    --min-dist-umap 0
 ```
 
-> 🧠 Reuse embeddings from the `eval2d` step to speed up processing and maintain consistency across visualization scales.
+> Reuse embeddings from the `eval2d` step to speed up processing and maintain consistency across visualization scales.
 
 ---
 
-## 🌌 2. Generate New 3D Embeddings from Scratch
+## 2. Generate New 3D Embeddings from Scratch
 
 If you haven’t yet produced embeddings, you can create them during the 3D visualization process:
 
@@ -66,7 +66,7 @@ Add the `--use-fft` flag to process Fourier-domain data.
 
 ---
 
-## 🖼️ 3. Generate Thumbnails for Visualization
+## 3. Generate Thumbnails for Visualization
 
 If this is your first time running `prismpyp eval3d`, you may want to generate **zipped image thumbnails** for interactive rendering:
 
@@ -84,7 +84,7 @@ prismpyp eval3d \
 
 ---
 
-## 📁 4. Output Files
+## 4. Output Files
 
 At the end of visualization, the following files will be created in `/path/to/outputs/inference`:
 
@@ -95,7 +95,7 @@ At the end of visualization, the following files will be created in `/path/to/ou
 
 ---
 
-Your 3D embeddings are now ready for interactive inspection in **Phoenix** — the visualization tool described in the next section. 🎉
+Your 3D embeddings are now ready for interactive inspection in **Phoenix** — the visualization tool described in the next section.
 
 ---
 

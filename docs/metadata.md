@@ -1,4 +1,4 @@
-# 🧾 Gathering Input Data and Building Metadata
+# Gathering Input Data and Building Metadata
 
 This section describes how to prepare the **metadata table** used for prismPYP training and embedding generation.  
 You can build metadata using either **NextPYP preprocessing outputs** or **CryoSPARC outputs**.
@@ -7,7 +7,7 @@ You can build metadata using either **NextPYP preprocessing outputs** or **CryoS
 
 ---
 
-## 🧱 1. Build the Metadata Table
+## 1. Build the Metadata Table
 
 Before starting, create a directory to store all generated outputs:
 
@@ -17,7 +17,7 @@ mkdir -p output_dir
 
 ---
 
-## ⚙️ 2. Using Preprocessing Outputs from NextPYP
+## 2. Using Preprocessing Outputs from NextPYP
 
 1. Create an output directory for NextPYP-derived metadata:
    ```bash
@@ -32,15 +32,15 @@ mkdir -p output_dir
       --cryosparc-path example_data/J7_exposures_accepted_exported.cs
    ```
 
-   > 🧠 You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
+   > You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
 
 ---
 
-## 🧊 3. Using CryoSPARC Outputs
+## 3. Using CryoSPARC Outputs
 
 To build metadata directly from **CryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
 
-> 🔬 For the test dataset (EMPIAR-10379), the deposited data already contains aligned micrographs, so you can skip motion correction.
+> For the test dataset (EMPIAR-10379), the deposited data already contains aligned micrographs, so you can skip motion correction.
 
 1. Export the outputs of the following jobs and note their locations:
    - **Import Micrographs** → `J1`
@@ -65,7 +65,7 @@ To build metadata directly from **CryoSPARC** outputs, you’ll need data from t
 
 ---
 
-## 📂 4. Code Outputs
+## 4. Code Outputs
 
 Both metadata-building commands will produce a file named `micrograph_metadata.csv`, containing:
 
@@ -85,7 +85,7 @@ In addition, the following files are generated:
 - `all_micrographs_list.micrographs` — list of all micrographs (no extensions)  
 - `webp/` — directory of `.webp` images for both micrographs and their CTFFIND4-derived power spectra
 
-> 💾 For the remainder of this tutorial, we’ll assume you’re using the `metadata_from_nextpyp` directory.  
+> For the remainder of this tutorial, we’ll assume you’re using the `metadata_from_nextpyp` directory.  
 > You can easily switch to another dataset by setting `--metadata-path` to `metadata_from_nextpyp` or `metadata_from_cryosparc`, depending on your source.
 
 ---

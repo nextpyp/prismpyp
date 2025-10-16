@@ -1,4 +1,4 @@
-# 🖼️ 2D Embedding Generation and Visualization
+# 2D Embedding Generation and Visualization
 
 Once the model has finished training, you can generate **static 2D visualizations** of learned feature vectors.  
 These embeddings reveal structural patterns across your dataset — highlighting variations in ice type, contamination, or support film quality.
@@ -7,7 +7,7 @@ These embeddings reveal structural patterns across your dataset — highlighting
 
 ---
 
-## 🧩 1. Generate 2D Embeddings for Real-Domain Images
+## 1. Generate 2D Embeddings for Real-Domain Images
 
 Perform inference on the trained **real-domain** model:
    ```bash
@@ -30,12 +30,12 @@ Perform inference on the trained **real-domain** model:
     --num-neighbors 10 \
     --min-dist-umap 0
    ```
-> 🧠 Use the same model architecture and feature dimensions as in training.  
+> Use the same model architecture and feature dimensions as in training.  
 > The embeddings will be saved to `output_dir/real/inference`.
 
 ---
 
-## 🌈 2. Generate 2D Embeddings for Fourier-Domain Images
+## 2. Generate 2D Embeddings for Fourier-Domain Images
 
 For Fourier-domain embeddings, include the `--use-fft` flag:
 
@@ -60,11 +60,11 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
     --min-dist-umap 0 \
     --use-fft
    ```
-> 📊 This produces a 2D projection of the learned Fourier-domain embeddings, highlighting frequency-based variation across micrographs.
+> This produces a 2D projection of the learned Fourier-domain embeddings, highlighting frequency-based variation across micrographs.
 
 ---
 
-## 🧮 3. Project Precomputed Embeddings
+## 3. Project Precomputed Embeddings
 
 If you have already generated embeddings, you can skip the inference step and directly project them to 2D:
    ```bash
@@ -92,7 +92,7 @@ Include the `--use-fft` flag if projecting **Fourier-domain** embeddings.
 
 ---
 
-## 📁 4. Output Files
+## 4. Output Files
 
 Each inference run creates an `inference/` directory inside your chosen output path, containing:
 
@@ -107,7 +107,7 @@ These visualizations are useful for spotting image-quality clusters or distinct 
 
 ---
 
-Your 2D embeddings are now ready for exploration and validation! 🎉  
+Your 2D embeddings are now ready for exploration and validation!
 Next, you’ll learn how to generate **3D embeddings** for higher-dimensional visualization.
 
 ---
