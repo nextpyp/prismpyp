@@ -55,12 +55,10 @@ def get_pixel_size(viewer):
 
 def get_clean_file_name(filename, all_filenames):
     basename = os.path.basename(filename)
-    # print("basename: {}".format(basename))
     
     for name in all_filenames:
         # name = os.path.basename(name)[:-4]  # remove .mrc extension
         if name in basename:
-            # print("Found matching name")
             return name
         
 def save_mrcs_to_webp(files, all_mg_list, out_dir, is_ctffind=False, contrast_stretch=False):
@@ -78,26 +76,19 @@ def save_mrcs_to_webp(files, all_mg_list, out_dir, is_ctffind=False, contrast_st
                     print(f"Warning: {file} has more than one slice ({data.shape[0]}). Using the first slice.")
                     data = data[0]
             
-            # print("data shape: {}".format(data.shape))
             this_file_name = get_clean_file_name(file, all_mg_list)
             if is_ctffind:
                 if not this_file_name.endswith('_ctffind'):
                     this_file_name += "_ctffind"
-            # print(f"file: {file}")
-            # print(f"this_file_name: {this_file_name}")
             
             if os.path.splitext(this_file_name)[1] == '':
                 out_img_file = os.path.join(out_dir, this_file_name + '.webp')
             elif not this_file_name.endswith('.mrc'):
                 out_img_file = os.path.join(out_dir, this_file_name.replace('.mrc', '.webp'))
-            # print("Saving image to: {}".format(out_img_file))
             mrc2png(data, output_dims=(512, 512), outname=out_img_file, contrast_stretch=contrast_stretch)
         except Exception as e:
             print(f"Could not process file: {file}: {e}")
-            # print("Done!")
-            # while True:
-            #     count = 0
-            #     count += 1
+
 
 def main(args):
     output_dir = args.output_dir
@@ -140,7 +131,6 @@ def main(args):
     # Collate CTF info
     all_ctf_info = pd.merge(patch_ctf_df, ctffind_df, how='outer', left_on='trimmed_path', right_on='trimmed_path', suffixes=('_patch', '_ctffind'))
     
-    print(all_ctf_info.columns)
     dbase_df = all_ctf_info[[
         'ctf_stats/ice_thickness_rel', 
         'ctf/cross_corr_ctffind4_ctffind', 
@@ -155,11 +145,6 @@ def main(args):
         'ctf/df1_A_ctffind': 'mean_defocus'
     }, inplace=True)
     
-    print("[DEBUGGING] len(dbase_df['rel_ice_thickness']): {}".format(len(dbase_df['rel_ice_thickness'])))
-    print("[DEBUGGING] len(dbase_df['ctf_fit']): {}".format(len(dbase_df['ctf_fit'])))
-    print("[DEBUGGING] len(dbase_df['est_resolution']): {}".format(len(dbase_df['est_resolution'])))
-    print("[DEBUGGING] len(dbase_df['mean_defocus']): {}".format(len(dbase_df['mean_defocus'])))
-    print(len(patch_ctf_viewer.trimmed_path))
     dbase_df['micrograph_name'] = patch_ctf_viewer.trimmed_path
     dbase_df['num_particles'] = 0
     dbase_df['avg_motion'] = 0.0
