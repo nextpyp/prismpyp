@@ -48,7 +48,7 @@ The following outputs will be written to the `intersection/` directory:
 |------|--------------|
 | `intersection.parquet` | Metadata table containing information for all intersected micrographs |
 | `files_in_common.txt` | List of intersected file names |
-| Symlinked or copied images | The actual intersected micrographs |
+| `files` | The actual intersected micrographs (either symlinked or copied) |
 
 ---
 
