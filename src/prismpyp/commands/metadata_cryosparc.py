@@ -131,23 +131,27 @@ def main(args):
     # Collate CTF info
     all_ctf_info = pd.merge(patch_ctf_df, ctffind_df, how='outer', left_on='trimmed_path', right_on='trimmed_path', suffixes=('_patch', '_ctffind'))
     
-    dbase_df = all_ctf_info[[
-        'ctf_stats/ice_thickness_rel', 
-        'ctf/cross_corr_ctffind4_ctffind', 
-        'ctf/ctf_fit_to_A_ctffind', 
-        'ctf/df1_A_ctffind'
-    ]]
+    dbase_df = (
+        all_ctf_info[[
+            'ctf_stats/ice_thickness_rel', 
+            'ctf/cross_corr_ctffind4_ctffind', 
+            'ctf/ctf_fit_to_A_ctffind', 
+            'ctf/df1_A_ctffind'
+        ]]
+        .rename(columns={
+            'ctf_stats/ice_thickness_rel': 'rel_ice_thickness',
+            'ctf/cross_corr_ctffind4_ctffind': 'ctf_fit',
+            'ctf/ctf_fit_to_A_ctffind': 'est_resolution',
+            'ctf/df1_A_ctffind': 'mean_defocus'
+        })
+        .copy()  # avoid SettingWithCopyWarning
+    )
 
-    dbase_df.rename(columns={
-        'ctf_stats/ice_thickness_rel': 'rel_ice_thickness',
-        'ctf/cross_corr_ctffind4_ctffind': 'ctf_fit',
-        'ctf/ctf_fit_to_A_ctffind': 'est_resolution',
-        'ctf/df1_A_ctffind': 'mean_defocus'
-    }, inplace=True)
-    
-    dbase_df['micrograph_name'] = patch_ctf_viewer.trimmed_path
-    dbase_df['num_particles'] = 0
-    dbase_df['avg_motion'] = 0.0
+    dbase_df = dbase_df.assign(
+        micrograph_name=patch_ctf_viewer.trimmed_path,
+        num_particles=0,
+        avg_motion=0.0,
+    )
     dbase_df.reset_index(drop=True, inplace=True)
 
     metadata_file = os.path.join(output_dir, "micrograph_metadata.csv")
