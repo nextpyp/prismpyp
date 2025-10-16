@@ -331,7 +331,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
             
             return mg, right_half
         else:
-            raise FileNotFoundError(f"Missing webp or ctffit file for {basename}")
+            raise FileNotFoundError(f"Missing webp or CTFFIND file for {basename}")
 
     webp_dir = os.path.join(args.metadata_path, "webp")
     

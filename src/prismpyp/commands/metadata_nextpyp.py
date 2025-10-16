@@ -27,16 +27,6 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
 
     return parser
 
-"""
-def parse_args():
-    parser = argparse.ArgumentParser(description='Parse .pkl files to retrieve CTF fit/estimated resolution/average drift/number of particles metadata')
-    parser.add_argument('pkl_path', type=str, 
-                        help='Path to the pkl files')
-    parser.add_argument('--cryosparc_path', type=str, default=None, 
-                        help='Path to CryoSPARC Curate Exposure job exported .cs file (optional)')
-    parser.add_argument('output_file', type=str, help='Output file name')
-    return parser.parse_args()
-"""
     
 def calculate_avg_motion(pkl):
     avg_dx = np.mean(np.abs(pkl['drift']['dx']))
