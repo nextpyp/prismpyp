@@ -184,7 +184,7 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
     else:
         optim_params = model.parameters()
 
-    optimizer = torch.optim.SGD(optim_params, 1e-4,
+    optimizer = torch.optim.SGD(optim_params, init_lr,
                                 momentum=args.momentum,
                                 weight_decay=args.weight_decay)
 
