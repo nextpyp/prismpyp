@@ -321,7 +321,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
     
     def load_img_pair(img_path, webp_dir):
         basename = img_path #os.path.basename(img_path)
-        ctf_file = os.path.join(webp_dir, basename + '_ctffit.webp')
+        ctf_file = os.path.join(webp_dir, basename + '_ctffind.webp')
         mg_file = os.path.join(webp_dir, basename + '.webp')
         if os.path.exists(ctf_file) and os.path.exists(mg_file):
             mg = Image.open(mg_file)
@@ -331,7 +331,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
             
             return mg, right_half
         else:
-            raise FileNotFoundError(f"Missing webp or ctffit file for {basename}")
+            raise FileNotFoundError(f"Missing webp or CTFFIND file for {basename}")
 
     webp_dir = os.path.join(args.metadata_path, "webp")
     
@@ -444,7 +444,7 @@ def get_scatter_plot_with_thumbnails(
         webp_dir = os.path.join(args.metadata_dir, "webp")
         img_path = test_dataset.file_paths[idx]
         basename = os.path.basename(img_path)
-        ctf_file = os.path.join(webp_dir, basename[:-4] + '_ctffit.webp')
+        ctf_file = os.path.join(webp_dir, basename[:-4] + '_ctffind.webp')
         mg_file = os.path.join(webp_dir, basename[:-4] + '.webp')
             
         if os.path.exists(ctf_file) and os.path.exists(mg_file):
@@ -521,7 +521,7 @@ def plot_nearest_neighbors_3x3(args, embeddings, test_dataset, example_idx, i, p
         webp_dir = os.path.join(args.metadata_path, 'webp')
         img_path = test_dataset.file_paths[plot_idx]
         basename = img_path #os.path.basename(img_path)
-        ctf_file = os.path.join(webp_dir, basename + '_ctffit.webp')
+        ctf_file = os.path.join(webp_dir, basename + '_ctffind.webp')
         mg_file = os.path.join(webp_dir, basename + '.webp')
         
         ctf_img = Image.open(ctf_file)

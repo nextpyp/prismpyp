@@ -46,7 +46,7 @@ class MRCDataset(Dataset):
         basename = img_path # os.path.basename(img_path)
         
         if self.is_fft:
-            path_to_powerspectrum = os.path.join(self.webp_dir, basename + '_ctffit.webp')
+            path_to_powerspectrum = os.path.join(self.webp_dir, basename + '_ctffind.webp')
             powerspectrum = Image.open(path_to_powerspectrum)
             img = self.crop_and_mirror_image(powerspectrum)
         else:
@@ -70,7 +70,7 @@ class MRCDataset(Dataset):
     def get_fft_image(self, idx):
         img_path = self.file_paths[idx]
         basename = img_path #os.path.basename(img_path)
-        path_to_mg = os.path.join(self.webp_dir, basename + '_ctffit.webp')
+        path_to_mg = os.path.join(self.webp_dir, basename + '_ctffind.webp')
         ctf_img = Image.open(path_to_mg)
         fft_img = self.crop_and_mirror_image(ctf_img)
         return fft_img
@@ -178,7 +178,7 @@ class WeakSupMRCDataset(Dataset):
         basename = os.path.basename(img_path)
         
         if self.is_fft:
-            path_to_powerspectrum = os.path.join(self.webp_dir, basename.replace('.mrc', '_ctffit.webp'))
+            path_to_powerspectrum = os.path.join(self.webp_dir, basename.replace('.mrc', '_ctffind.webp'))
             powerspectrum = Image.open(path_to_powerspectrum)
             img = self.crop_and_mirror_image(powerspectrum)
         else:
@@ -224,7 +224,7 @@ class WeakSupMRCDataset(Dataset):
     def get_fft_image(self, idx):
         img_path = self.filtered_file_paths[idx]
         basename = os.path.basename(img_path)
-        path_to_mg = os.path.join(self.webp_dir, basename.replace('.mrc', '_ctffit.webp'))
+        path_to_mg = os.path.join(self.webp_dir, basename.replace('.mrc', '_ctffind.webp'))
         ctf_img = Image.open(path_to_mg)
         fft_img = self.crop_and_mirror_image(ctf_img)
         return fft_img
