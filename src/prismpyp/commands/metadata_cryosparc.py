@@ -83,7 +83,7 @@ def save_mrcs_to_webp(files, all_mg_list, out_dir, is_ctffind=False, contrast_st
             this_file_name = get_clean_file_name(file, all_mg_list)
             if is_ctffind:
                 if not this_file_name.endswith('_ctffind'):
-                    this_file_name += "_ctffind"
+                    this_file_name = this_file_name.replace('ctffind', 'ctffit') # Follow same naming convention as nextpyp files
             
             if os.path.splitext(this_file_name)[1] == '':
                 out_img_file = os.path.join(out_dir, this_file_name + '.webp')

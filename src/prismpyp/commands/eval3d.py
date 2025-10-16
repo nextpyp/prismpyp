@@ -257,7 +257,7 @@ def main_worker(gpu, ngpus_per_node, args):
         # Save images to zip file
         def process_with_webp(img_path):
             basename = img_path #os.path.basename(img_path)
-            ctf_file = os.path.join(webp_dir, basename + '_ctffind.webp')
+            ctf_file = os.path.join(webp_dir, basename + '_ctffit.webp')
             mg_file = os.path.join(webp_dir, basename + '.webp')
             
             if os.path.exists(ctf_file) and os.path.exists(mg_file):
