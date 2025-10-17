@@ -6,8 +6,8 @@ before_script:
 docs:
   stage: deploy
   script:
-    # - mkdocs build --strict --verbose
-    - mkdocs build --verbose
+    - mkdocs build --strict --verbose
+    # - mkdocs build --verbose
   artifacts:
     paths:
       - public
