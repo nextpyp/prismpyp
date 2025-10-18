@@ -11,7 +11,7 @@ These embeddings reveal structural patterns across your dataset — highlighting
 
 Perform inference on the trained **real-domain** model:
 
-=== Inputs from nextPYP 
+=== "Inputs from nextPYP" 
    ```bash
    prismpyp eval2d \
     --output-path output_dir/real \
@@ -33,7 +33,7 @@ Perform inference on the trained **real-domain** model:
     --min-dist-umap 0
    ```
 
-=== Inputs from cryoSPARC 
+=== "Inputs from cryoSPARC" 
    ```bash
    prismpyp eval2d \
     --output-path output_dir/real \
@@ -63,7 +63,7 @@ Perform inference on the trained **real-domain** model:
 
 For Fourier-domain embeddings, include the `--use-fft` flag:
 
-=== Inputs from nextPYP
+=== "Inputs from nextPYP"
    ```bash
    prismpyp eval2d \
     --output-path output_dir/fft \
@@ -86,7 +86,7 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
     --use-fft
    ```
 
-=== Inputs from cryoSPARC
+=== "Inputs from cryoSPARC"
    ```bash
    prismpyp eval2d \
     --output-path output_dir/fft \
@@ -116,7 +116,7 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
 
 If you have already generated embeddings, you can skip the inference step and directly project them to 2D:
 
-=== Inputs from nextPYP
+=== "Inputs from nextPYP"
    ```bash
    prismpyp eval2d \
     --output-path output_dir/real \
@@ -139,7 +139,7 @@ If you have already generated embeddings, you can skip the inference step and di
     --min-dist-umap 0
    ```
 
-=== Inputs from cryoSPARC
+=== "Inputs from cryoSPARC"
    ```bash
    prismpyp eval2d \
     --output-path output_dir/real \

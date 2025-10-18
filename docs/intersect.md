@@ -28,12 +28,22 @@ mkdir intersection
 
 Run the following command to take the intersection between real and Fourier domain selections:
 
+=== "Inputs from nextPYP"
 ```bash
 prismpyp intersect \
    --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
    --output-folder intersection \
    --link-type soft \
-   --data-path example_data/webp
+   --data-path metadata_from_nextpyp/webp
+```
+
+=== "Inputs from cryoSPARC"
+```bash
+prismpyp intersect \
+   --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
+   --output-folder intersection \
+   --link-type soft \
+   --data-path metadata_from_cryosparc/webp
 ```
 
 > Use `--link-type soft` to create symbolic links or `--link-type hard` to copy the files instead.

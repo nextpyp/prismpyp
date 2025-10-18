@@ -70,7 +70,7 @@ Train the SimSiam model on **real-space micrograph images**:
 
 For **Fourier-space inputs**, use the `--use-fft` flag:
 
-=== Inputs from nextPYP
+=== "Inputs from nextPYP"
    ```bash
    prismpyp train \
     --output-path output_dir/fft \
@@ -90,7 +90,7 @@ For **Fourier-space inputs**, use the `--use-fft` flag:
     --use-fft
    ```
 
-=== Inputs from cryoSPARC
+=== "Inputs from cryoSPARC"
 
    ```bash
    prismpyp train \
