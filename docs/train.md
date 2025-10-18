@@ -24,44 +24,44 @@ wget https://dl.fbaipublicfiles.com/simsiam/models/100ep/pretrain/checkpoint_009
 
 Train the SimSiam model on **real-space micrograph images**:
 
-=== Metadata from nextPYP
-```bash
-   prismpyp train \
-    --output-path output_dir/real \
-    --metadata-path metadata_from_nextpyp \
-    -a resnet50 \
-    --epochs 100 \
-    --batch-size 512 \
-    --workers 1 \
-    --dim 512 \
-    --pred-dim 256 \
-    --lr 0.05 \
-    --resume pretrained_weights/checkpoint_0099.pth.tar \
-    --multiprocessing-distributed \
-    --dist-url 'tcp://localhost:10057' \
-    --world-size 1 \
-    --rank 0
-  ```
+=== "Inputs from nextPYP"
+    ```bash
+    prismpyp train \
+      --output-path output_dir/real \
+      --metadata-path metadata_from_nextpyp \
+      -a resnet50 \
+      --epochs 100 \
+      --batch-size 512 \
+      --workers 1 \
+      --dim 512 \
+      --pred-dim 256 \
+      --lr 0.05 \
+      --resume pretrained_weights/checkpoint_0099.pth.tar \
+      --multiprocessing-distributed \
+      --dist-url 'tcp://localhost:10057' \
+      --world-size 1 \
+      --rank 0
+    ```
 
-=== Metadata from cryoSPARC
+=== "Inputs from cryoSPARC"
+    ```bash
+    prismpyp train \
+      --output-path output_dir/real \
+      --metadata-path metadata_from_cryosparc \
+      -a resnet50 \
+      --epochs 100 \
+      --batch-size 512 \
+      --workers 1 \
+      --dim 512 \
+      --pred-dim 256 \
+      --lr 0.05 \
+      --resume pretrained_weights/checkpoint_0099.pth.tar \
+      --multiprocessing-distributed \
+      --dist-url 'tcp://localhost:10057' \
+      --world-size 1 \
+      --rank 0
+    ```
 
-  ```bash
-   prismpyp train \
-    --output-path output_dir/real \
-    --metadata-path metadata_from_cryosparc \
-    -a resnet50 \
-    --epochs 100 \
-    --batch-size 512 \
-    --workers 1 \
-    --dim 512 \
-    --pred-dim 256 \
-    --lr 0.05 \
-    --resume pretrained_weights/checkpoint_0099.pth.tar \
-    --multiprocessing-distributed \
-    --dist-url 'tcp://localhost:10057' \
-    --world-size 1 \
-    --rank 0
-  ```
 > Adjust the `--batch-size` and `--workers` arguments based on GPU memory and available CPU cores.
 
 ---
@@ -71,45 +71,44 @@ Train the SimSiam model on **real-space micrograph images**:
 For **Fourier-space inputs**, use the `--use-fft` flag:
 
 === "Inputs from nextPYP"
-   ```bash
-   prismpyp train \
-    --output-path output_dir/fft \
-    --metadata-path metadata_from_nextpyp \
-    -a resnet50 \
-    --epochs 100 \
-    --batch-size 512 \
-    --workers 1 \
-    --dim 512 \
-    --pred-dim 256 \
-    --lr 0.05 \
-    --resume pretrained_weights/checkpoint_0099.pth.tar \
-    --multiprocessing-distributed \
-    --dist-url 'tcp://localhost:10058' \
-    --world-size 1 \
-    --rank 0 \
-    --use-fft
-   ```
+    ```bash
+    prismpyp train \
+      --output-path output_dir/fft \
+      --metadata-path metadata_from_nextpyp \
+      -a resnet50 \
+      --epochs 100 \
+      --batch-size 512 \
+      --workers 1 \
+      --dim 512 \
+      --pred-dim 256 \
+      --lr 0.05 \
+      --resume pretrained_weights/checkpoint_0099.pth.tar \
+      --multiprocessing-distributed \
+      --dist-url 'tcp://localhost:10058' \
+      --world-size 1 \
+      --rank 0 \
+      --use-fft
+    ```
 
 === "Inputs from cryoSPARC"
-
-   ```bash
-   prismpyp train \
-    --output-path output_dir/fft \
-    --metadata-path metadata_from_cryosparc \
-    -a resnet50 \
-    --epochs 100 \
-    --batch-size 512 \
-    --workers 1 \
-    --dim 512 \
-    --pred-dim 256 \
-    --lr 0.05 \
-    --resume pretrained_weights/checkpoint_0099.pth.tar \
-    --multiprocessing-distributed \
-    --dist-url 'tcp://localhost:10058' \
-    --world-size 1 \
-    --rank 0 \
-    --use-fft
-   ```
+    ```bash
+    prismpyp train \
+      --output-path output_dir/fft \
+      --metadata-path metadata_from_cryosparc \
+      -a resnet50 \
+      --epochs 100 \
+      --batch-size 512 \
+      --workers 1 \
+      --dim 512 \
+      --pred-dim 256 \
+      --lr 0.05 \
+      --resume pretrained_weights/checkpoint_0099.pth.tar \
+      --multiprocessing-distributed \
+      --dist-url 'tcp://localhost:10058' \
+      --world-size 1 \
+      --rank 0 \
+      --use-fft
+    ```
 
 > The `--use-fft` flag enables Fourier-domain preprocessing, which is useful for training frequency-based representations.
 
@@ -144,4 +143,4 @@ Proceed to compute **2D embeddings** for visualization and analysis.
 ---
 
 ### Next Steps
-⬅️ [Back: Gathering Input Data](metadata.md) | ➡️ [Next: 2D Embedding Generation](eval2d.md)
+⬅️ [Back: Formatting Experiment Metadata](metadata.md) | ➡️ [Next: 2D Embedding Generation](eval2d.md)

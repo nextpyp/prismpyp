@@ -11,49 +11,50 @@ These embeddings reveal structural patterns across your dataset — highlighting
 
 Perform inference on the trained **real-domain** model:
 
-=== "Inputs from nextPYP" 
-   ```bash
-   prismpyp eval2d \
-    --output-path output_dir/real \
-    --metadata-path metadata_from_nextpyp \
-    -a resnet50 \
-    --dist-url "tcp://localhost:10059" \
-    --world-size 1 \
-    --rank 0 \
-    --batch-size 512 \
-    --workers 1 \
-    --gpu 0 \
-    --fix-pred-lr \
-    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-    --evaluate \
-    --dim 512 \
-    --pred-dim 256 \
-    --n-clusters 10 \
-    --num-neighbors 10 \
-    --min-dist-umap 0
-   ```
+=== "Inputs from nextPYP"
+    ```bash
+    prismpyp eval2d \
+      --output-path output_dir/real \
+      --metadata-path metadata_from_nextpyp \
+      -a resnet50 \
+      --dist-url "tcp://localhost:10059" \
+      --world-size 1 \
+      --rank 0 \
+      --batch-size 512 \
+      --workers 1 \
+      --gpu 0 \
+      --fix-pred-lr \
+      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+      --evaluate \
+      --dim 512 \
+      --pred-dim 256 \
+      --n-clusters 10 \
+      --num-neighbors 10 \
+      --min-dist-umap 0
+    ```
 
-=== "Inputs from cryoSPARC" 
-   ```bash
-   prismpyp eval2d \
-    --output-path output_dir/real \
-    --metadata-path metadata_from_cryosparc \
-    -a resnet50 \
-    --dist-url "tcp://localhost:10059" \
-    --world-size 1 \
-    --rank 0 \
-    --batch-size 512 \
-    --workers 1 \
-    --gpu 0 \
-    --fix-pred-lr \
-    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-    --evaluate \
-    --dim 512 \
-    --pred-dim 256 \
-    --n-clusters 10 \
-    --num-neighbors 10 \
-    --min-dist-umap 0
-   ```
+=== "Inputs from cryoSPARC"
+    ```bash
+    prismpyp eval2d \
+      --output-path output_dir/real \
+      --metadata-path metadata_from_cryosparc \
+      -a resnet50 \
+      --dist-url "tcp://localhost:10059" \
+      --world-size 1 \
+      --rank 0 \
+      --batch-size 512 \
+      --workers 1 \
+      --gpu 0 \
+      --fix-pred-lr \
+      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+      --evaluate \
+      --dim 512 \
+      --pred-dim 256 \
+      --n-clusters 10 \
+      --num-neighbors 10 \
+      --min-dist-umap 0
+    ```
+
 > Use the same model architecture and feature dimensions as in training.  
 > The embeddings will be saved to `output_dir/real/inference`.
 
@@ -64,50 +65,51 @@ Perform inference on the trained **real-domain** model:
 For Fourier-domain embeddings, include the `--use-fft` flag:
 
 === "Inputs from nextPYP"
-   ```bash
-   prismpyp eval2d \
-    --output-path output_dir/fft \
-    --metadata-path metadata_from_nextpyp \
-    -a resnet50 \
-    --dist-url "tcp://localhost:10050" \
-    --world-size 1 \
-    --rank 0 \
-    --batch-size 512 \
-    --workers 1 \
-    --gpu 0 \
-    --fix-pred-lr \
-    --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
-    --evaluate \
-    --dim 512 \
-    --pred-dim 256 \
-    --n-clusters 10 \
-    --num-neighbors 10 \
-    --min-dist-umap 0 \
-    --use-fft
-   ```
+    ```bash
+    prismpyp eval2d \
+      --output-path output_dir/fft \
+      --metadata-path metadata_from_nextpyp \
+      -a resnet50 \
+      --dist-url "tcp://localhost:10050" \
+      --world-size 1 \
+      --rank 0 \
+      --batch-size 512 \
+      --workers 1 \
+      --gpu 0 \
+      --fix-pred-lr \
+      --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
+      --evaluate \
+      --dim 512 \
+      --pred-dim 256 \
+      --n-clusters 10 \
+      --num-neighbors 10 \
+      --min-dist-umap 0 \
+      --use-fft
+    ```
 
 === "Inputs from cryoSPARC"
-   ```bash
-   prismpyp eval2d \
-    --output-path output_dir/fft \
-    --metadata-path metadata_from_cryosparc \
-    -a resnet50 \
-    --dist-url "tcp://localhost:10050" \
-    --world-size 1 \
-    --rank 0 \
-    --batch-size 512 \
-    --workers 1 \
-    --gpu 0 \
-    --fix-pred-lr \
-    --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
-    --evaluate \
-    --dim 512 \
-    --pred-dim 256 \
-    --n-clusters 10 \
-    --num-neighbors 10 \
-    --min-dist-umap 0 \
-    --use-fft
-   ```
+    ```bash
+    prismpyp eval2d \
+      --output-path output_dir/fft \
+      --metadata-path metadata_from_cryosparc \
+      -a resnet50 \
+      --dist-url "tcp://localhost:10050" \
+      --world-size 1 \
+      --rank 0 \
+      --batch-size 512 \
+      --workers 1 \
+      --gpu 0 \
+      --fix-pred-lr \
+      --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
+      --evaluate \
+      --dim 512 \
+      --pred-dim 256 \
+      --n-clusters 10 \
+      --num-neighbors 10 \
+      --min-dist-umap 0 \
+      --use-fft
+    ```
+
 > This produces a 2D projection of the learned Fourier-domain embeddings, highlighting frequency-based variation across micrographs.
 
 ---
@@ -117,50 +119,50 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
 If you have already generated embeddings, you can skip the inference step and directly project them to 2D:
 
 === "Inputs from nextPYP"
-   ```bash
-   prismpyp eval2d \
-    --output-path output_dir/real \
-    --metadata-path metadata_from_nextpyp \
-    --embedding-path output_dir/real/inference/embeddings.pth \
-    -a resnet50 \
-    --dist-url "tcp://localhost:10048" \
-    --world-size 1 \
-    --rank 0 \
-    --batch-size 512 \
-    --workers 1 \
-    --gpu 0 \
-    --fix-pred-lr \
-    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-    --evaluate \
-    --dim 512 \
-    --pred-dim 256 \
-    --n-clusters 10 \
-    --num-neighbors 10 \
-    --min-dist-umap 0
-   ```
+    ```bash
+    prismpyp eval2d \
+      --output-path output_dir/real \
+      --metadata-path metadata_from_nextpyp \
+      --embedding-path output_dir/real/inference/embeddings.pth \
+      -a resnet50 \
+      --dist-url "tcp://localhost:10048" \
+      --world-size 1 \
+      --rank 0 \
+      --batch-size 512 \
+      --workers 1 \
+      --gpu 0 \
+      --fix-pred-lr \
+      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+      --evaluate \
+      --dim 512 \
+      --pred-dim 256 \
+      --n-clusters 10 \
+      --num-neighbors 10 \
+      --min-dist-umap 0
+    ```
 
 === "Inputs from cryoSPARC"
-   ```bash
-   prismpyp eval2d \
-    --output-path output_dir/real \
-    --metadata-path metadata_from_cryosparc \
-    --embedding-path output_dir/real/inference/embeddings.pth \
-    -a resnet50 \
-    --dist-url "tcp://localhost:10048" \
-    --world-size 1 \
-    --rank 0 \
-    --batch-size 512 \
-    --workers 1 \
-    --gpu 0 \
-    --fix-pred-lr \
-    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-    --evaluate \
-    --dim 512 \
-    --pred-dim 256 \
-    --n-clusters 10 \
-    --num-neighbors 10 \
-    --min-dist-umap 0
-   ```
+    ```bash
+    prismpyp eval2d \
+      --output-path output_dir/real \
+      --metadata-path metadata_from_cryosparc \
+      --embedding-path output_dir/real/inference/embeddings.pth \
+      -a resnet50 \
+      --dist-url "tcp://localhost:10048" \
+      --world-size 1 \
+      --rank 0 \
+      --batch-size 512 \
+      --workers 1 \
+      --gpu 0 \
+      --fix-pred-lr \
+      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+      --evaluate \
+      --dim 512 \
+      --pred-dim 256 \
+      --n-clusters 10 \
+      --num-neighbors 10 \
+      --min-dist-umap 0
+    ```
 
 Include the `--use-fft` flag if projecting **Fourier-domain** embeddings.
 
@@ -179,18 +181,18 @@ Each inference run creates an `inference/` directory inside your chosen output p
 
 These visualizations are useful for spotting image-quality clusters or distinct artifact types.
 
-The UMAP distribution for real domain embeddings should look like this:
-![umap for micrographs](assets/thumbnail_plot_umap_mg.webp)
+The UMAP distribution for real domain embeddings should look like this:  
+![UMAP for micrographs](assets/thumbnail_plot_umap_mg.webp)
 
-And the UMAP distribution for Fourier domain embeddings could look like this:
-![umap for power spectra](assets/thumbnail_plot_umap_ps.webp)
+And the UMAP distribution for Fourier domain embeddings could look like this:  
+![UMAP for power spectra](assets/thumbnail_plot_umap_ps.webp)
 
 ---
 
-Your 2D embeddings are now ready for exploration and validation!
+Your 2D embeddings are now ready for exploration and validation!  
 Next, you’ll learn how to generate **3D embeddings** for higher-dimensional visualization.
 
 ---
 
 ### Next Steps
-⬅️ [Back: Label-Free Feature Learning](train.md) | ➡️ [Next: 3D Embedding Generation](eval3d.md)
+⬅️ [Back: Model Training](train.md) | ➡️ [Next: 3D Embedding Generation](eval3d.md)
