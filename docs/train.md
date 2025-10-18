@@ -24,10 +24,31 @@ wget https://dl.fbaipublicfiles.com/simsiam/models/100ep/pretrain/checkpoint_009
 
 Train the SimSiam model on **real-space micrograph images**:
 
-  ```bash
+=== Metadata from nextPYP
+```bash
    prismpyp train \
     --output-path output_dir/real \
     --metadata-path metadata_from_nextpyp \
+    -a resnet50 \
+    --epochs 100 \
+    --batch-size 512 \
+    --workers 1 \
+    --dim 512 \
+    --pred-dim 256 \
+    --lr 0.05 \
+    --resume pretrained_weights/checkpoint_0099.pth.tar \
+    --multiprocessing-distributed \
+    --dist-url 'tcp://localhost:10057' \
+    --world-size 1 \
+    --rank 0
+  ```
+
+=== Metadata from cryoSPARC
+
+  ```bash
+   prismpyp train \
+    --output-path output_dir/real \
+    --metadata-path metadata_from_cryosparc \
     -a resnet50 \
     --epochs 100 \
     --batch-size 512 \
@@ -48,10 +69,33 @@ Train the SimSiam model on **real-space micrograph images**:
 ## 3. Training on Fourier-Domain Images
 
 For **Fourier-space inputs**, use the `--use-fft` flag:
+
+=== Inputs from nextPYP
    ```bash
    prismpyp train \
     --output-path output_dir/fft \
     --metadata-path metadata_from_nextpyp \
+    -a resnet50 \
+    --epochs 100 \
+    --batch-size 512 \
+    --workers 1 \
+    --dim 512 \
+    --pred-dim 256 \
+    --lr 0.05 \
+    --resume pretrained_weights/checkpoint_0099.pth.tar \
+    --multiprocessing-distributed \
+    --dist-url 'tcp://localhost:10058' \
+    --world-size 1 \
+    --rank 0 \
+    --use-fft
+   ```
+
+=== Inputs from cryoSPARC
+
+   ```bash
+   prismpyp train \
+    --output-path output_dir/fft \
+    --metadata-path metadata_from_cryosparc \
     -a resnet50 \
     --epochs 100 \
     --batch-size 512 \
@@ -85,6 +129,12 @@ During training, **per-batch loss** and **collapse level** are printed in the te
 | `total_loss.webp` | Plot showing total loss per epoch (lower is better) |
 | `collapse_level.webp` | Plot showing collapse metric per epoch (higher is better) |
 | `training_config.yaml` | Copy of training parameters used for reproducibility |
+
+If training converges, the ```total_loss.webp``` plot should look something like this:
+![loss plot](assets/total_loss.webp)
+
+And if the model successfully learned to extract meaningful semantics from the input image, the total collapse plot can plateau, decrease, but should not approach 0:
+![collapse](assets/collapse_level.webp)
 
 ---
 

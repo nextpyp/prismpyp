@@ -84,9 +84,9 @@ In addition, the following files are generated:
 - `pixel_size.txt` — microscope pixel size for this dataset  
 - `all_micrographs_list.micrographs` — list of all micrographs (no extensions)  
 - `webp/` — directory of `.webp` images for both micrographs and their CTFFIND4-derived power spectra
-
+<!-- 
 > For the remainder of this tutorial, we’ll assume you’re using the `metadata_from_nextpyp` directory.  
-> You can easily switch to another dataset by setting `--metadata-path` to `metadata_from_nextpyp` or `metadata_from_cryosparc`, depending on your source.
+> You can easily switch to another dataset by setting `--metadata-path` to `metadata_from_nextpyp` or `metadata_from_cryosparc`, depending on your source. -->
 
 ---
 

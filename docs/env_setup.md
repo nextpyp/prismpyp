@@ -1,9 +1,6 @@
 # Setting Up the Environment
 
 This section describes how to prepare your environment for running **prismPYP**.  
-Because of its dependency on **CUDA** and **PyTorch-GPU**, all installation steps must be performed on a machine with a compatible **GPU**.
-
-> This setup has been tested with **PyTorch 2.4.0** and **CUDA 12.1**.  
 
 ---
 
@@ -18,7 +15,7 @@ conda --version
 
 ---
 
-## 2. Clone the Repository
+## 2. Clone the prismPYP Repository
 
 ```bash
 git clone git@github.com:nextpyp/prismpyp.git
@@ -33,7 +30,7 @@ cd prismpyp
 
 ---
 
-## 3. Create and Activate the Environment
+## 3. Create and Activate the prismPYP Environment
 
 Using **Conda** and **pip**:
 
@@ -62,7 +59,34 @@ conda install -c pytorch -c conda-forge faiss-gpu=1.9.0
 
 ---
 
-Your environment is now ready for use!
+## 5. Create and Install the Pheonix Environment
+Phoenix enables **interactive 3D visualization and manual selection** of micrographs directly within the embedding space.  
+For the best performance, Phoenix should be installed and run **locally** (not on a remote cluster).
+
+> 💡 Phoenix provides an intuitive interface to explore embeddings, filter high-quality micrographs, and export subsets for further refinement.
+
+Install Phoenix using either the provided Conda environment file or `pip`.
+
+### Option A — Conda YAML Installation
+
+```bash
+wget https://github.com/nextpyp/prismpyp/blob/main/phoenix.yml -O phoenix.yml
+conda env create -f phoenix.yml -n phoenix
+conda activate phoenix
+```
+
+### Option B — Pip Installation
+
+```bash
+conda create -n phoenix -c conda-forge python=3.8 pip
+conda activate phoenix
+wget https://github.com/nextpyp/prismpyp/blob/main/requirements-phoenix.txt -O requirements-phoenix.txt
+python -m pip install -r requirements-phoenix.txt
+```
+
+---
+
+Your environments are now ready for use!
 Continue to the next step to learn how to **gather and organize input data** for prismPYP.
 
 ---

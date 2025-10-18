@@ -11,10 +11,35 @@ Here, you can manually inspect micrographs within clusters, identify distinct re
 
 If you already generated 2D embeddings, you can skip re-computation and directly visualize them in 3D:
 
+
+=== Inputs from nextPYP
 ```bash
 prismpyp eval3d \
    --output-path output_dir/real \
    --metadata-path metadata_from_nextpyp \
+   --embedding-path output_dir/real/inference/embeddings.pth \
+   -a resnet50 \
+   --dist-url 'tcp://localhost:10038' \
+   --world-size 1 \
+   --rank 0 \
+   --batch-size 512 \
+   --workers 1 \
+   --gpu 0 \
+   --fix-pred-lr \
+   --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+   --evaluate \
+   --dim 512 \
+   --pred-dim 256 \
+   --n-clusters 10 \
+   --num-neighbors 10 \
+   --min-dist-umap 0
+```
+
+=== Inputs from cryoSPARC
+```bash
+prismpyp eval3d \
+   --output-path output_dir/real \
+   --metadata-path metadata_from_cryosparc \
    --embedding-path output_dir/real/inference/embeddings.pth \
    -a resnet50 \
    --dist-url 'tcp://localhost:10038' \
@@ -41,10 +66,33 @@ prismpyp eval3d \
 
 If you haven’t yet produced embeddings, you can create them during the 3D visualization process:
 
+=== Inputs from nextPYP
 ```bash
 prismpyp eval3d \
    --output-path output_dir/real \
    --metadata-path metadata_from_nextpyp \
+   -a resnet50 \
+   --dist-url 'tcp://localhost:10028' \
+   --world-size 1 \
+   --rank 0 \
+   --batch-size 512 \
+   --workers 1 \
+   --gpu 0 \
+   --fix-pred-lr \
+   --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+   --evaluate \
+   --dim 512 \
+   --pred-dim 256 \
+   --n-clusters 10 \
+   --num-neighbors 10 \
+   --min-dist-umap 0
+```
+
+=== Inputs from cryoSPARC
+```bash
+prismpyp eval3d \
+   --output-path output_dir/real \
+   --metadata-path metadata_from_cryosparc \
    -a resnet50 \
    --dist-url 'tcp://localhost:10028' \
    --world-size 1 \
@@ -70,10 +118,22 @@ Add the `--use-fft` flag to process Fourier-domain data.
 
 If this is your first time running `prismpyp eval3d`, you may want to generate **zipped image thumbnails** for interactive rendering:
 
+=== Inputs from nextPYP
 ```bash
 prismpyp eval3d \
    --output-path output_dir/real \
    --metadata-path metadata_from_nextpyp \
+   --embedding-path output_dir/real/inference/embeddings.pth \
+   -a resnet50 \
+   --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+   --zip-images
+```
+
+=== Inputs from cryoSPARC
+```bash
+prismpyp eval3d \
+   --output-path output_dir/real \
+   --metadata-path metadata_from_cryosparc \
    --embedding-path output_dir/real/inference/embeddings.pth \
    -a resnet50 \
    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \

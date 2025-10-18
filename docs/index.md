@@ -6,19 +6,7 @@ The goal is to automatically uncover image-quality categories such as vitreous i
 The framework builds on a [PyTorch implementation of SimSiam](https://github.com/facebookresearch/simsiam)  
 (distributed under the [Attribution-NonCommercial 4.0 International](https://github.com/facebookresearch/simsiam/blob/main/LICENSE) license).
 
----
-
-## 📘 Documentation
-
-Use the links below to explore each part of the workflow:
-
-- [Installation](env_setup.md)
-- [Gathering Input Data](metadata.md)
-- [Label-Free Feature Learning](train.md)
-- [2D Embedding Generation](eval2d.md)
-- [3D Embedding Generation](eval3d.md)
-- [Interactive Visualization (Phoenix)](phoenix.md)
-- [Dual-Domain Filtering](intersect.md)
+![Phoenix visualization](assets/phoenix_example.png)
 
 ---
 
@@ -43,9 +31,9 @@ example_data/
     └── .pyp_config.toml
 ```
 
-## 📦 Zenodo Files
+## 📦 Intermediate Results
 
-The Zenodo link (https://doi.org/10.5281/zenodo.17161604) contains the following files:
+The [Zenodo link](https://doi.org/10.5281/zenodo.17161604) also contains the following files:
 
 * ```model_weights.tar.gz```: Trained model weights for the real domain input (```real_model_best.pth.tar```) and the Fourier domain input (```fft_model_best.pth.tar```)
 * ```fft_good_export.parquet```: Data points that have high-quality features in the Fourier domain

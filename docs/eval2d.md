@@ -10,10 +10,34 @@ These embeddings reveal structural patterns across your dataset — highlighting
 ## 1. Generate 2D Embeddings for Real-Domain Images
 
 Perform inference on the trained **real-domain** model:
+
+=== Inputs from nextPYP 
    ```bash
    prismpyp eval2d \
     --output-path output_dir/real \
     --metadata-path metadata_from_nextpyp \
+    -a resnet50 \
+    --dist-url "tcp://localhost:10059" \
+    --world-size 1 \
+    --rank 0 \
+    --batch-size 512 \
+    --workers 1 \
+    --gpu 0 \
+    --fix-pred-lr \
+    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+    --evaluate \
+    --dim 512 \
+    --pred-dim 256 \
+    --n-clusters 10 \
+    --num-neighbors 10 \
+    --min-dist-umap 0
+   ```
+
+=== Inputs from cryoSPARC 
+   ```bash
+   prismpyp eval2d \
+    --output-path output_dir/real \
+    --metadata-path metadata_from_cryosparc \
     -a resnet50 \
     --dist-url "tcp://localhost:10059" \
     --world-size 1 \
@@ -39,10 +63,34 @@ Perform inference on the trained **real-domain** model:
 
 For Fourier-domain embeddings, include the `--use-fft` flag:
 
+=== Inputs from nextPYP
    ```bash
    prismpyp eval2d \
     --output-path output_dir/fft \
     --metadata-path metadata_from_nextpyp \
+    -a resnet50 \
+    --dist-url "tcp://localhost:10050" \
+    --world-size 1 \
+    --rank 0 \
+    --batch-size 512 \
+    --workers 1 \
+    --gpu 0 \
+    --fix-pred-lr \
+    --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
+    --evaluate \
+    --dim 512 \
+    --pred-dim 256 \
+    --n-clusters 10 \
+    --num-neighbors 10 \
+    --min-dist-umap 0 \
+    --use-fft
+   ```
+
+=== Inputs from cryoSPARC
+   ```bash
+   prismpyp eval2d \
+    --output-path output_dir/fft \
+    --metadata-path metadata_from_cryosparc \
     -a resnet50 \
     --dist-url "tcp://localhost:10050" \
     --world-size 1 \
@@ -67,6 +115,8 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
 ## 3. Project Precomputed Embeddings
 
 If you have already generated embeddings, you can skip the inference step and directly project them to 2D:
+
+=== Inputs from nextPYP
    ```bash
    prismpyp eval2d \
     --output-path output_dir/real \
@@ -88,6 +138,30 @@ If you have already generated embeddings, you can skip the inference step and di
     --num-neighbors 10 \
     --min-dist-umap 0
    ```
+
+=== Inputs from cryoSPARC
+   ```bash
+   prismpyp eval2d \
+    --output-path output_dir/real \
+    --metadata-path metadata_from_cryosparc \
+    --embedding-path output_dir/real/inference/embeddings.pth \
+    -a resnet50 \
+    --dist-url "tcp://localhost:10048" \
+    --world-size 1 \
+    --rank 0 \
+    --batch-size 512 \
+    --workers 1 \
+    --gpu 0 \
+    --fix-pred-lr \
+    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+    --evaluate \
+    --dim 512 \
+    --pred-dim 256 \
+    --n-clusters 10 \
+    --num-neighbors 10 \
+    --min-dist-umap 0
+   ```
+
 Include the `--use-fft` flag if projecting **Fourier-domain** embeddings.
 
 ---
@@ -104,6 +178,12 @@ Each inference run creates an `inference/` directory inside your chosen output p
 | `thumbnail_plot_<method>_<ps or mg>.webp` | Same as above, but displays micrograph (`mg`) or power spectrum (`ps`) thumbnails instead of points |
 
 These visualizations are useful for spotting image-quality clusters or distinct artifact types.
+
+The UMAP distribution for real domain embeddings should look like this:
+![umap for micrographs](assets/thumbnail_plot_umap_mg.webp)
+
+And the UMAP distribution for Fourier domain embeddings could look like this:
+![umap for power spectra](assets/thumbnail_plot_umap_ps.webp)
 
 ---
 
