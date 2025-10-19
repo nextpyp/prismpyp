@@ -6,7 +6,11 @@ pyarrow>=14
 scikit-learn>=1.3
 scikit-image==0.25.2
 umap-learn>=0.5
-opencv-python==4.10.0.84
+
+# hard guard to avoid GUI OpenCV leaking in
+opencv-python-headless==4.10.0.84
+opencv-python==0.0.0 ; python_version<'0'  # impossible marker to block the GUI build
+
 matplotlib>=3.8
 seaborn>=0.13
 plotly>=5.20
