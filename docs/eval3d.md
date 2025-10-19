@@ -18,7 +18,6 @@ If you already generated 2D embeddings, you can skip re-computation and directly
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
       --embedding-path output_dir/real/inference/embeddings.pth \
-      --dist-url 'tcp://localhost:10038' \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10
@@ -30,7 +29,6 @@ If you already generated 2D embeddings, you can skip re-computation and directly
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
       --embedding-path output_dir/real/inference/embeddings.pth \
-      --dist-url 'tcp://localhost:10038' \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10
@@ -49,7 +47,6 @@ If you haven’t yet produced embeddings, you can create them during the 3D visu
     prismpyp eval3d \
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
-      --dist-url 'tcp://localhost:10028' \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10
@@ -60,7 +57,6 @@ If you haven’t yet produced embeddings, you can create them during the 3D visu
     prismpyp eval3d \
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
-      --dist-url 'tcp://localhost:10028' \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10
