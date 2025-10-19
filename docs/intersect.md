@@ -6,15 +6,11 @@ This step combines the complementary strengths of real-space and frequency-space
 
 > Run this step on a **remote cluster** for large datasets. Transfer the `.parquet` files from your local Phoenix session to the cluster before starting.
 
----
-
 ## 1. Activate the Environment
 
 ```bash
 conda activate prismpyp
 ```
-
----
 
 ## 2. Create an Output Directory
 
@@ -22,25 +18,29 @@ conda activate prismpyp
 mkdir intersection
 ```
 
----
-
 ## 3. Compute the Intersection
 
 Run the following command to take the intersection between real and Fourier domain selections:
 
-=== "Inputs from nextPYP"
+=== "nextPYP"
     ```bash
-    prismpyp intersect       --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet       --output-folder intersection       --link-type soft       --data-path metadata_from_nextpyp/webp
+    prismpyp intersect \
+    --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
+    --output-folder intersection \
+    --link-type soft \
+    --data-path metadata_from_nextpyp/webp
     ```
 
-=== "Inputs from cryoSPARC"
+=== "cryoSPARC"
     ```bash
-    prismpyp intersect       --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet       --output-folder intersection       --link-type soft       --data-path metadata_from_cryosparc/webp
+    prismpyp intersect \
+    --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
+    --output-folder intersection \
+    --link-type soft \
+    --data-path metadata_from_cryosparc/webp
     ```
 
 > Use `--link-type soft` to create symbolic links or `--link-type hard` to copy the files instead.
-
----
 
 ## 4. Output Files
 
@@ -52,11 +52,4 @@ The following outputs will be written to the `intersection/` directory:
 | `files_in_common.txt` | List of intersected file names |
 | `files` | The actual intersected micrographs (either symlinked or copied) |
 
----
-
 This subset represents the most consistent and high-quality micrographs across both domains, suitable for subsequent refinement or reconstruction workflows.
-
----
-
-### Previous Steps
-⬅️ [Back: Interactive Visualization (Phoenix)](phoenix.md)

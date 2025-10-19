@@ -9,8 +9,6 @@ Additionally, this command parses the outputs of **Patch CTF Estimation** and **
 - Mean defocus  
 - Relative ice thickness  
 
----
-
 ## Usage
 ```bash
 usage: prismpyp metadata_cryosparc [-h] 
@@ -20,8 +18,6 @@ usage: prismpyp metadata_cryosparc [-h]
                                    [--imported-dir IMPORTED_DIR] 
                                    [--output-dir OUTPUT_DIR]
 ```
-
----
 
 ## Named Arguments
 

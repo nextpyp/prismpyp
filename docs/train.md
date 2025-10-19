@@ -1,10 +1,8 @@
-# Label-Free Feature Learning (Training the SimSiam Model)
+# Label-Free Feature Learning
 
 This section describes how to train **SimSiam models** on both **real-domain** and **Fourier-domain** cryo-EM micrographs.
 
-> 💡 The goal is to learn domain-specific embeddings that capture image-quality features (e.g., vitreous ice, crystalline ice, contaminants, and support film) without using labels.
-
----
+The goal is to learn domain-specific embeddings that capture image-quality features (e.g., vitreous ice, crystalline ice, contaminants, and support film) without using labels.
 
 ## 1. Download Pretrained Weights
 
@@ -15,104 +13,65 @@ mkdir -p pretrained_weights
 wget https://dl.fbaipublicfiles.com/simsiam/models/100ep/pretrain/checkpoint_0099.pth.tar -P pretrained_weights/
 ```
 
-> Using pretrained weights speeds up convergence and stabilizes representation learning.  
-> If you prefer to train from scratch, you can omit the `--resume` flag.
+Using pretrained weights speeds up convergence and stabilizes representation learning.  
 
----
+If you prefer to train from scratch, you can omit the `--resume` flag in the commands below.
 
 ## 2. Training on Real-Domain Images
 
 Train the SimSiam model on **real-space micrograph images**:
 
-=== "Inputs from nextPYP"
+=== "nextPYP"
     ```bash
     prismpyp train \
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
-      -a resnet50 \
-      --epochs 100 \
-      --batch-size 512 \
-      --workers 1 \
-      --dim 512 \
-      --pred-dim 256 \
-      --lr 0.05 \
       --resume pretrained_weights/checkpoint_0099.pth.tar \
       --multiprocessing-distributed \
       --dist-url 'tcp://localhost:10057' \
-      --world-size 1 \
       --rank 0
     ```
 
-=== "Inputs from cryoSPARC"
+=== "cryoSPARC"
     ```bash
     prismpyp train \
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
-      -a resnet50 \
-      --epochs 100 \
-      --batch-size 512 \
-      --workers 1 \
-      --dim 512 \
-      --pred-dim 256 \
-      --lr 0.05 \
       --resume pretrained_weights/checkpoint_0099.pth.tar \
       --multiprocessing-distributed \
       --dist-url 'tcp://localhost:10057' \
-      --world-size 1 \
       --rank 0
     ```
 
 > Adjust the `--batch-size` and `--workers` arguments based on GPU memory and available CPU cores.
 
----
-
 ## 3. Training on Fourier-Domain Images
 
 For **Fourier-space inputs**, use the `--use-fft` flag:
 
-=== "Inputs from nextPYP"
+=== "nextPYP"
     ```bash
     prismpyp train \
       --output-path output_dir/fft \
       --metadata-path metadata_from_nextpyp \
-      -a resnet50 \
-      --epochs 100 \
-      --batch-size 512 \
-      --workers 1 \
-      --dim 512 \
-      --pred-dim 256 \
-      --lr 0.05 \
       --resume pretrained_weights/checkpoint_0099.pth.tar \
       --multiprocessing-distributed \
       --dist-url 'tcp://localhost:10058' \
-      --world-size 1 \
-      --rank 0 \
       --use-fft
     ```
 
-=== "Inputs from cryoSPARC"
+=== "cryoSPARC"
     ```bash
     prismpyp train \
       --output-path output_dir/fft \
       --metadata-path metadata_from_cryosparc \
-      -a resnet50 \
-      --epochs 100 \
-      --batch-size 512 \
-      --workers 1 \
-      --dim 512 \
-      --pred-dim 256 \
-      --lr 0.05 \
       --resume pretrained_weights/checkpoint_0099.pth.tar \
       --multiprocessing-distributed \
       --dist-url 'tcp://localhost:10058' \
-      --world-size 1 \
-      --rank 0 \
       --use-fft
     ```
 
 > The `--use-fft` flag enables Fourier-domain preprocessing, which is useful for training frequency-based representations.
-
----
 
 ## 4. Notes on Checkpoints
 
@@ -135,12 +94,4 @@ If training converges, the ```total_loss.webp``` plot should look something like
 And if the model successfully learned to extract meaningful semantics from the input image, the total collapse plot can plateau, decrease, but should not approach 0:
 ![collapse](assets/collapse_level.webp)
 
----
-
-Your models are now trained and ready for embedding generation.
-Proceed to compute **2D embeddings** for visualization and analysis.
-
----
-
-### Next Steps
-⬅️ [Back: Formatting Experiment Metadata](metadata.md) | ➡️ [Next: 2D Embedding Generation](eval2d.md)
+Your models are now trained and ready for embedding generation!

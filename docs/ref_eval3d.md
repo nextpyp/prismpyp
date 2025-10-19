@@ -8,8 +8,6 @@ This command can:
 - Optionally resume from precomputed embeddings  
 - Save a ```.parquet``` file and thumbnail image ```.zip`` file for visualizing embedding points using Phoenix
 
----
-
 ## ⚙️ Usage
 ```bash
 usage: prismpyp eval2d [-h] [--output-path DIR] [--metadata-path METADATA_PATH] [--embedding-path [EMBEDDING_PATH]] [-a ARCH] [-j N] [--epochs N]
@@ -19,8 +17,6 @@ usage: prismpyp eval2d [-h] [--output-path DIR] [--metadata-path METADATA_PATH] 
                        [--pixel-size PIXEL_SIZE] [--size SIZE] [--evaluate] [--n-clusters N_CLUSTERS] [--num-neighbors NUM_NEIGHBORS]
                        [--min-dist-umap MIN_DIST_UMAP] [--n-components N_COMPONENTS] [--nextpyp-preproc NEXTPYP_PREPROC] [--zip-images]
 ```
-
----
 
 ## 🧩 Named Arguments
 

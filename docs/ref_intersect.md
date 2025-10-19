@@ -5,8 +5,6 @@ Compute the **intersection of micrograph embeddings** between images with high-q
 
 This command outputs images with high-quality features in both domains, with the aim of reducing false positive rates.
 
----
-
 ## Usage
 ```bash
 usage: prismpyp intersect [-h] 
@@ -15,8 +13,6 @@ usage: prismpyp intersect [-h]
                           [--link-type {hard,soft}]
                           [--data-path DATA_PATH]
 ```
-
----
 
 ## Named Arguments
 

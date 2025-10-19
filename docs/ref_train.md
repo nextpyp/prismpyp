@@ -10,8 +10,6 @@ When executed, this command creates an output subdirectory named `checkpoints` t
 - **Collapse** plot  
 - `training_config.yaml` — a record of all command-line arguments used during the run  
 
----
-
 ## Usage
 ```bash
 usage: prismpyp train [-h]
@@ -26,8 +24,6 @@ usage: prismpyp train [-h]
                       ...
 ```
 
----
-
 ## Named Arguments
 
 ### Commonly Changed Arguments
@@ -41,8 +37,6 @@ usage: prismpyp train [-h]
 | `--lr LR`, `--learning-rate LR` | Initial (base) learning rate | — |
 | `--resume PATH` | Path to latest checkpoint | `none` |
 | `--dist-url DIST_URL` | URL used to set up distributed training | — |
-
----
 
 ### Less Commonly Changed Arguments
 | Argument | Description | Default |
@@ -73,6 +67,6 @@ usage: prismpyp train [-h]
 | `--num-neighbors NUM_NEIGHBORS` | Number of neighbors for UMAP | — |
 | `--min-dist-umap MIN_DIST_UMAP` | Minimum distance for UMAP | — |
 | `--n-components N_COMPONENTS` | Number of UMAP components | — |
-| `--nextpyp-preproc NEXTPYP_PREPROC` | Path to NextPYP project pre-processing directory | — |
+| `--nextpyp-preproc NEXTPYP_PREPROC` | Path to nextPYP project pre-processing directory | — |
 | `--zip-images` | Save zipped image thumbnails | — |
 
