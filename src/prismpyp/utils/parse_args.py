@@ -78,8 +78,8 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     parser.add_argument('--seed', default=None, type=int,
                         help='seed for initializing training')
     parser.add_argument('--gpu', default=0, type=int, help='GPU id to use (default: 0)')
-    parser.add_argument('--multiprocessing-distributed', action='store_true',
-                        help='use multi-processing distributed training')
+    parser.add_argument('--multiprocessing-distributed', default=True, action='store_true',
+                        help='use multi-processing distributed training (default: True)')
 
     # SimSiam-specific configurations
     parser.add_argument('--dim', default=512, type=int,

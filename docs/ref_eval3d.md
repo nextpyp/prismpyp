@@ -4,6 +4,7 @@
 Generate metadata for visualizing the embeddings interactively in 3D.
 
 This command can:
+
 - Run 3D embedding evaluation on real-space or Fourier-space inputs  
 - Optionally resume from precomputed embeddings  
 - Save a ```.parquet``` file and thumbnail image ```.zip`` file for visualizing embedding points using Phoenix

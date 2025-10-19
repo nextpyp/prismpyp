@@ -17,7 +17,6 @@ Perform inference on the trained **real-domain** model:
     prismpyp eval2d \
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
-      --dist-url "tcp://localhost:10059" \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10
@@ -28,7 +27,6 @@ Perform inference on the trained **real-domain** model:
     prismpyp eval2d \
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
-      --dist-url "tcp://localhost:10059" \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10
@@ -48,7 +46,6 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
     prismpyp eval2d \
       --output-path output_dir/fft \
       --metadata-path metadata_from_nextpyp \
-      --dist-url "tcp://localhost:10050" \
       --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10 \
@@ -60,7 +57,6 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
     prismpyp eval2d \
       --output-path output_dir/fft \
       --metadata-path metadata_from_cryosparc \
-      --dist-url "tcp://localhost:10050" \
       --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10 \
@@ -81,7 +77,6 @@ If you have already generated embeddings, you can skip the inference step and di
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
       --embedding-path output_dir/real/inference/embeddings.pth \
-      --dist-url "tcp://localhost:10048" \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10
@@ -93,7 +88,6 @@ If you have already generated embeddings, you can skip the inference step and di
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
       --embedding-path output_dir/real/inference/embeddings.pth \
-      --dist-url "tcp://localhost:10048" \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
       --n-clusters 10 \
       --num-neighbors 10

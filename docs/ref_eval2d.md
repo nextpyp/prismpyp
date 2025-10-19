@@ -4,6 +4,7 @@
 Evaluate and visualize **2D embeddings** or model features from trained SimSiam networks.
 
 This command can:
+
 - Run 2D embedding evaluation on real-space or Fourier-space inputs  
 - Optionally resume from precomputed embeddings  
 - Perform clustering and UMAP dimensionality reduction  

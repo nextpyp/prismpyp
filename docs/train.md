@@ -27,8 +27,6 @@ Train the SimSiam model on **real-space micrograph images**:
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
       --resume pretrained_weights/checkpoint_0099.pth.tar \
-      --multiprocessing-distributed \
-      --dist-url 'tcp://localhost:10057' \
       --rank 0
     ```
 
@@ -38,8 +36,6 @@ Train the SimSiam model on **real-space micrograph images**:
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
       --resume pretrained_weights/checkpoint_0099.pth.tar \
-      --multiprocessing-distributed \
-      --dist-url 'tcp://localhost:10057' \
       --rank 0
     ```
 
@@ -57,8 +53,6 @@ For **Fourier-space inputs**, use the `--use-fft` flag:
       --output-path output_dir/fft \
       --metadata-path metadata_from_nextpyp \
       --resume pretrained_weights/checkpoint_0099.pth.tar \
-      --multiprocessing-distributed \
-      --dist-url 'tcp://localhost:10058' \
       --use-fft
     ```
 
@@ -68,8 +62,6 @@ For **Fourier-space inputs**, use the `--use-fft` flag:
       --output-path output_dir/fft \
       --metadata-path metadata_from_cryosparc \
       --resume pretrained_weights/checkpoint_0099.pth.tar \
-      --multiprocessing-distributed \
-      --dist-url 'tcp://localhost:10058' \
       --use-fft
     ```
 

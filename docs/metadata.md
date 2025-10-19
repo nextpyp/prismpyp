@@ -64,7 +64,7 @@ mkdir -p output_dir
          --cryosparc-path example_data/J7_exposures_accepted_exported.cs
       ```
 
-      > You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
+      You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
 
 === "cryoSPARC"
 
