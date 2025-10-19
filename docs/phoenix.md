@@ -44,7 +44,7 @@ These instructions assume inference results from **real-domain inputs**.
 
 !!! warning
 
-   Make sure that the ports used in steps 4 and 5 are identical.
+      Make sure that the ports used in steps 4 and 5 are identical.
 
 When launched successfully, you’ll see output like:
 

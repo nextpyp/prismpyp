@@ -6,7 +6,7 @@ You can build metadata using either **nextPYP preprocessing outputs** or **CryoS
 
 !!! info
 
-   The resulting metadata table consolidates microscope parameters, CTF statistics, and motion information across all micrographs in your dataset.
+      The resulting metadata table consolidates microscope parameters, CTF statistics, and motion information across all micrographs in your dataset.
 
 ## 1. Test Data and Results
 
@@ -51,49 +51,47 @@ mkdir -p output_dir
 
 === "nextPYP"
 
-   a. Create an output directory for nextPYP-derived metadata:
-   ```bash
-   mkdir -p metadata_from_nextpyp
-   ```
+      a. Create an output directory for nextPYP-derived metadata:
+      ```bash
+      mkdir -p metadata_from_nextpyp
+      ```
 
-   b. Run the following command to assemble metadata from nextPYP preprocessing results:
-   ```bash
-   prismpyp metadata_nextpyp \
-      --pkl-path example_data/pkl \
-      --output-dir metadata_from_nextpyp \
-      --cryosparc-path example_data/J7_exposures_accepted_exported.cs
-   ```
+      b. Run the following command to assemble metadata from nextPYP preprocessing results:
+      ```bash
+      prismpyp metadata_nextpyp \
+         --pkl-path example_data/pkl \
+         --output-dir metadata_from_nextpyp \
+         --cryosparc-path example_data/J7_exposures_accepted_exported.cs
+      ```
 
-   !!! note
-   
-      You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
+      > You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
 
 === "cryoSPARC"
 
-   To build metadata directly from **CryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
+      To build metadata directly from **CryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
 
-   For the test dataset (EMPIAR-10379), the deposited data already contains aligned micrographs, so you can skip motion correction.
+      For the test dataset (EMPIAR-10379), the deposited data already contains aligned micrographs, so you can skip motion correction.
 
-   a. Export the outputs of the following jobs and note their locations:
-      - **Import Micrographs** → `J1`
-      - **Patch CTF Estimation** → `J2`
-      - **CTFFIND4** → `J3`
-      - CryoSPARC project directory → `/cryosparc/output/dir`
+      a. Export the outputs of the following jobs and note their locations:
+         - **Import Micrographs** → `J1`
+         - **Patch CTF Estimation** → `J2`
+         - **CTFFIND4** → `J3`
+         - CryoSPARC project directory → `/cryosparc/output/dir`
 
-   b. Create the metadata directory:
-      ```bash
-      mkdir -p metadata_from_cryosparc
-      ```
+      b. Create the metadata directory:
+         ```bash
+         mkdir -p metadata_from_cryosparc
+         ```
 
-   c. Build the metadata table:
-      ```bash
-      prismpyp metadata_cryosparc \
-         --imported-dir "/cryosparc/output/dir/J1/imported" \
-         --patch-ctf-file "/cryosparc/output/dir/J2/J2_passthrough_exposures_accepted.cs" \
-         --ctffind-dir "/cryosparc/output/dir/J3/ctffind_output" \
-         --ctffind-file "/cryosparc/output/dir/exports/groups J3_exposures_success/J3_exposures_success_exported.cs" \
-         --output-dir metadata_from_cryosparc
-      ```
+      c. Build the metadata table:
+         ```bash
+         prismpyp metadata_cryosparc \
+            --imported-dir "/cryosparc/output/dir/J1/imported" \
+            --patch-ctf-file "/cryosparc/output/dir/J2/J2_passthrough_exposures_accepted.cs" \
+            --ctffind-dir "/cryosparc/output/dir/J3/ctffind_output" \
+            --ctffind-file "/cryosparc/output/dir/exports/groups J3_exposures_success/J3_exposures_success_exported.cs" \
+            --output-dir metadata_from_cryosparc
+         ```
 
 ## 3. Outputs
 
