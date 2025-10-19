@@ -15,6 +15,7 @@ COMMANDS = [
     "metadata_nextpyp",
     "metadata_cryosparc",
     "intersect",
+    "visualizer",
 ]
 
 OUT_DIR = Path("docs/cli")

@@ -2,6 +2,7 @@ image: python:3.12
 
 before_script:
     - pip install mkdocs-material
+    - pip install -r requirements-docs.txt # install all prismpyp requirements without cuda torch(vision)
     - pip install . # install the prismpyp package to generate cli docs
 
 docs:

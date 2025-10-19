@@ -21,7 +21,7 @@ nav:
     - train Command: cli/train.md
     - eval2d Command: cli/eval2d.md
     - eval3d Command: cli/eval3d.md
-    - phoenix Command: cli/phoenix.md
+    - phoenix Command: cli/visualizer.md
     - intersect Command: cli/intersect.md
 markdown_extensions:
   - abbr
