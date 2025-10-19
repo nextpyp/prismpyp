@@ -18,7 +18,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     parser.add_argument('--link-type', type=str, choices=['hard', 'soft'], 
                         help='Link type (hard or soft)')
     parser.add_argument("--data-path", type=str, 
-                        help="Path to where the original .mrc files are")
+                        help="Path to where the original .webp files are")
  
     return parser
 
