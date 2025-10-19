@@ -1,6 +1,6 @@
 # `prismpyp eval2d`
 
-## 🧠 Purpose
+## Purpose
 Generate metadata for visualizing the embeddings interactively in 3D.
 
 This command can:
@@ -8,7 +8,7 @@ This command can:
 - Optionally resume from precomputed embeddings  
 - Save a ```.parquet``` file and thumbnail image ```.zip`` file for visualizing embedding points using Phoenix
 
-## ⚙️ Usage
+## Usage
 ```bash
 usage: prismpyp eval2d [-h] [--output-path DIR] [--metadata-path METADATA_PATH] [--embedding-path [EMBEDDING_PATH]] [-a ARCH] [-j N] [--epochs N]
                        [--start-epoch N] [-b N] [--lr LR] [--momentum M] [--wd W] [-p N] [--resume PATH] [--feature-extractor-weights PATH]
@@ -18,7 +18,7 @@ usage: prismpyp eval2d [-h] [--output-path DIR] [--metadata-path METADATA_PATH] 
                        [--min-dist-umap MIN_DIST_UMAP] [--n-components N_COMPONENTS] [--nextpyp-preproc NEXTPYP_PREPROC] [--zip-images]
 ```
 
-## 🧩 Named Arguments
+## Named Arguments
 
 ### Commonly Changed Arguments
 | Argument | Description | Default |

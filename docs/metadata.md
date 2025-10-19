@@ -6,7 +6,7 @@ You can build metadata using either **nextPYP preprocessing outputs** or **CryoS
 
 > 💡 The resulting metadata table consolidates microscope parameters, CTF statistics, and motion information across all micrographs in your dataset.
 
-## 1. Test Data and Resuls
+## 1. Test Data and Results
 
 ### 🧪 Download the Test Data
 
@@ -47,24 +47,24 @@ Before starting, create a directory to store all generated outputs:
 mkdir -p output_dir
 ```
 
-=== "Using Preprocessing Outputs from nextPYP"
+=== "nextPYP"
 
    a. Create an output directory for nextPYP-derived metadata:
-      ```bash
-      mkdir -p metadata_from_nextpyp
-      ```
+   ```bash
+   mkdir -p metadata_from_nextpyp
+   ```
 
    b. Run the following command to assemble metadata from nextPYP preprocessing results:
-      ```bash
-      prismpyp metadata_nextpyp \
-         --pkl-path example_data/pkl \
-         --output-dir metadata_from_nextpyp \
-         --cryosparc-path example_data/J7_exposures_accepted_exported.cs
-      ```
+   ```bash
+   prismpyp metadata_nextpyp \
+      --pkl-path example_data/pkl \
+      --output-dir metadata_from_nextpyp \
+      --cryosparc-path example_data/J7_exposures_accepted_exported.cs
+   ```
 
-      > You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
+   > You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
 
-=== "Using CryoSPARC Outputs"
+=== "cryoSPARC"
 
    To build metadata directly from **CryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
 

@@ -1,6 +1,6 @@
 # `prismpyp eval2d`
 
-## 🧠 Purpose
+## Purpose
 Evaluate and visualize **2D embeddings** or model features from trained SimSiam networks.
 
 This command can:
@@ -9,7 +9,7 @@ This command can:
 - Perform clustering and UMAP dimensionality reduction  
 - Save visualizations, plots, and `.webp` image thumbnails  
 
-## ⚙️ Usage
+## Usage
 ```bash
 usage: prismpyp eval2d [-h] [--output-path DIR] [--metadata-path METADATA_PATH] [--embedding-path [EMBEDDING_PATH]] [-a ARCH] [-j N] [--epochs N]
                        [--start-epoch N] [-b N] [--lr LR] [--momentum M] [--wd W] [-p N] [--resume PATH] [--feature-extractor-weights PATH]
@@ -19,7 +19,7 @@ usage: prismpyp eval2d [-h] [--output-path DIR] [--metadata-path METADATA_PATH] 
                        [--min-dist-umap MIN_DIST_UMAP] [--n-components N_COMPONENTS] [--nextpyp-preproc NEXTPYP_PREPROC] [--zip-images]
 ```
 
-## 🧩 Named Arguments
+## Named Arguments
 
 ### Commonly Changed Arguments
 | Argument | Description | Default |

@@ -1,6 +1,7 @@
 # 2D Embedding Generation and Visualization
 
 Once the model has finished training, you can generate **static 2D visualizations** of learned feature vectors.  
+
 These embeddings reveal structural patterns across your dataset — highlighting variations in ice type, contamination, or support film quality.
 
 > 💡 The following steps can be applied to both **real-domain** and **Fourier-domain** models.
@@ -31,8 +32,10 @@ Perform inference on the trained **real-domain** model:
       --num-neighbors 10
     ```
 
-> Use the same model architecture and feature dimensions as in training.  
-> The embeddings will be saved to `output_dir/real/inference`.
+!!! tip
+
+    - Use the same model architecture and feature dimensions as in training.  
+    - The embeddings will be saved to `output_dir/real/inference`.
 
 ## 2. Generate 2D Embeddings for Fourier-Domain Images
 
@@ -62,7 +65,9 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
       --use-fft
     ```
 
-> This produces a 2D projection of the learned Fourier-domain embeddings, highlighting frequency-based variation across micrographs.
+!!! note
+
+  This produces a 2D projection of the learned Fourier-domain embeddings, highlighting frequency-based variation across micrographs.
 
 ## 3. Project Precomputed Embeddings
 
@@ -109,12 +114,12 @@ These visualizations are useful for spotting image-quality clusters or distinct 
 
 === "Real domain"
 
-  The UMAP distribution for real domain embeddings should look like this:  
-  ![UMAP for micrographs](assets/thumbnail_plot_umap_mg.webp)
+    The UMAP distribution for real domain embeddings should look like this:  
+    ![UMAP for micrographs](assets/thumbnail_plot_umap_mg.webp)
 
 === "Fourier domain"
 
-  And the UMAP distribution for Fourier domain embeddings could look like this:  
-  ![UMAP for power spectra](assets/thumbnail_plot_umap_ps.webp)
+    And the UMAP distribution for Fourier domain embeddings could look like this:  
+    ![UMAP for power spectra](assets/thumbnail_plot_umap_ps.webp)
 
 Your 2D embeddings are now ready for exploration and validation!

@@ -4,7 +4,9 @@ After selecting high-quality subsets in both the **real** and **Fourier** domain
 
 This step combines the complementary strengths of real-space and frequency-space representations to yield the most reliable set of high-quality images for downstream analysis.
 
-> Run this step on a **remote cluster** for large datasets. Transfer the `.parquet` files from your local Phoenix session to the cluster before starting.
+!!! tip
+
+    Run this step on a **remote cluster** for large datasets. Transfer the `.parquet` files from your local Phoenix session to the cluster before starting.
 
 ## 1. Activate the Environment
 
@@ -40,7 +42,9 @@ Run the following command to take the intersection between real and Fourier doma
     --data-path metadata_from_cryosparc/webp
     ```
 
-> Use `--link-type soft` to create symbolic links or `--link-type hard` to copy the files instead.
+!!! tip
+
+    Use `--link-type soft` to create symbolic links or `--link-type hard` to copy the files instead.
 
 ## 4. Output Files
 

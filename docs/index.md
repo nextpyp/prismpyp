@@ -1,3 +1,6 @@
+hide:
+    - navigation
+
 # 🔮 prismPYP: Power-spectrum and image domain learning for self-supervised micrograph evaluation
 
 **prismPYP** implements a SimSiam-based self-supervised pipeline for classifying cryo-EM micrographs using both real-space and Fourier-space features.  

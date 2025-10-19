@@ -1,6 +1,7 @@
 # 3D Interactive Embedding Visualization
 
 3D visualization extends the 2D projection step by allowing **interactive exploration** of your dataset’s embedding space.  
+
 Here, you can manually inspect micrographs within clusters, identify distinct regions (e.g., vitreous vs. crystalline ice), and export high-quality subsets for further analysis.
 
 > Use this step to interpret learned representations and select data subsets for refinement or reconstruction.
@@ -33,7 +34,9 @@ If you already generated 2D embeddings, you can skip re-computation and directly
       --num-neighbors 10
     ```
 
-> Reuse embeddings from the `eval2d` step to speed up processing and maintain consistency across visualization scales.
+!!! tip
+    
+    Reuse embeddings from the `eval2d` step to speed up processing and maintain consistency across visualization scales.
 
 ## 2. Generate New 3D Embeddings from Scratch
 
@@ -87,7 +90,9 @@ If this is your first time running `prismpyp eval3d`, you may want to generate *
       --zip-images
     ```
 
-> ⚠️ The zipping process may take a few minutes. Only rerun with `--zip-images` if your micrographs have changed since the last embedding.
+!!! warning
+
+    The zipping process may take a few minutes to run. Only rerun with `--zip-images` if your micrographs have changed since the last embedding.
 
 ## 4. Output Files
 

@@ -43,7 +43,9 @@ Train the SimSiam model on **real-space micrograph images**:
       --rank 0
     ```
 
-> Adjust the `--batch-size` and `--workers` arguments based on GPU memory and available CPU cores.
+!!! tip 
+
+    Adjust the `--batch-size` and `--workers` arguments based on GPU memory and available CPU cores.
 
 ## 3. Training on Fourier-Domain Images
 
@@ -88,10 +90,16 @@ During training, **per-batch loss** and **collapse level** are printed in the te
 | `collapse_level.webp` | Plot showing collapse metric per epoch (higher is better) |
 | `training_config.yaml` | Copy of training parameters used for reproducibility |
 
-If training converges, the ```total_loss.webp``` plot should look something like this:
-![loss plot](assets/total_loss.webp)
+## 5. Diagnostic Outputs
 
-And if the model successfully learned to extract meaningful semantics from the input image, the total collapse plot can plateau, decrease, but should not approach 0:
-![collapse](assets/collapse_level.webp)
+=== "Model loss"
+
+  If training converges, the ```total_loss.webp``` plot should look something like this:
+  ![loss plot](assets/total_loss.webp)
+
+=== "Collapse level"
+
+  If the model successfully learned to extract meaningful semantics from the input image, the total collapse plot can plateau, decrease, but should not approach 0:
+  ![collapse](assets/collapse_level.webp)
 
 Your models are now trained and ready for embedding generation!

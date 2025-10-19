@@ -42,7 +42,9 @@ These instructions assume inference results from **real-domain inputs**.
       --which-embedding umap
    ```
 
-> ⚠️ Make sure that the ports used in steps 4 and 5 are identical.
+!!! warning
+
+   Make sure that the ports used in steps 4 and 5 are identical.
 
 When launched successfully, you’ll see output like:
 

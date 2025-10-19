@@ -52,7 +52,7 @@ For the best performance, Phoenix should be installed and run **locally** (not o
 
 Install Phoenix using either the provided Conda environment file or `pip` (make sure Conda and pip are installed in your local environment).
 
-=== "Option A — Conda YAML Installation"
+=== "Conda YAML Installation"
 
     ```bash
     wget https://github.com/nextpyp/prismpyp/blob/main/phoenix.yml -O phoenix.yml
@@ -60,7 +60,7 @@ Install Phoenix using either the provided Conda environment file or `pip` (make 
     conda activate phoenix
     ```
 
-=== "Option B — Pip Installation"
+=== "Pip Installation"
 
     ```bash
     conda create -n phoenix -c conda-forge python=3.8 pip
@@ -71,4 +71,5 @@ Install Phoenix using either the provided Conda environment file or `pip` (make 
 
 
 Your environments are now ready for use!
-Continue to the next step to learn how to **gather and organize input data** for prismPYP.
+
+Continue to the next step to learn how to **prepare and organize input data** for prismPYP.

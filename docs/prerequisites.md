@@ -16,16 +16,16 @@ In addition, traditional metrics such as **CTF fit**, **estimated resolution**, 
 
 Before running prismPYP, micrographs must be pre-processed through **CTF estimation** to produce the necessary data.  
 
-This pre-processing can be performed in either [nextPYP](https://nextpyp.app) (Liu *et al.*, 2023) or [cryoSPARC](https;?/cryosparc.com) (Punjani *et al.*, 2017).
+This pre-processing can be performed in either [nextPYP](https://nextpyp.app) or [cryoSPARC](https://cryosparc.com):
 
-=== "Pre-Processing Workflow in nextPYP"
+=== "nextPYP"
 
     The following steps from the [single-particle workflow](https://nextpyp.app/files/pyp/latest/docs/tutorials/spa_empiar_10025.html) must be executed:
 
     1. **Import Raw Data**  
     2. **Pre-Processing**
 
-=== "Pre-Processing Workflow in cryoSPARC"
+=== "cryoSPARC"
 
     The following steps must be executed:
 
