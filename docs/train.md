@@ -73,8 +73,6 @@ For **Fourier-space inputs**, use the `--use-fft` flag:
       --use-fft
     ```
 
-> The `--use-fft` flag enables Fourier-domain preprocessing, which is useful for training frequency-based representations.
-
 ## 4. Notes on Checkpoints
 
 If you’d rather start from scratch or use your own pretrained model, omit the `--resume` flag or point it to a different `.pth.tar` checkpoint.
@@ -94,12 +92,12 @@ During training, **per-batch loss** and **collapse level** are printed in the te
 
 === "Model loss"
 
-  If training converges, the ```total_loss.webp``` plot should look something like this:
-  ![loss plot](assets/total_loss.webp)
+    If training converges, the ```total_loss.webp``` plot should look something like this:
+    ![loss plot](assets/total_loss.webp)
 
 === "Collapse level"
 
-  If the model successfully learned to extract meaningful semantics from the input image, the total collapse plot can plateau, decrease, but should not approach 0:
-  ![collapse](assets/collapse_level.webp)
+    If the model successfully learned to extract meaningful semantics from the input image, the total collapse plot can plateau, decrease, but should not approach 0:
+    ![collapse](assets/collapse_level.webp)
 
 Your models are now trained and ready for embedding generation!

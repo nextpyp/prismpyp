@@ -4,7 +4,9 @@
 
 Here, you can manually inspect micrographs within clusters, identify distinct regions (e.g., vitreous vs. crystalline ice), and export high-quality subsets for further analysis.
 
-> Use this step to interpret learned representations and select data subsets for refinement or reconstruction.
+!!! tip
+
+    Use this step to interpret learned representations and select data subsets for refinement or reconstruction.
 
 ## 1. Visualize Precomputed Embeddings
 

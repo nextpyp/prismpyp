@@ -6,7 +6,9 @@ This section outlines the computational and data-processing requirements needed 
 
 Because prismPYP depends on **CUDA** and **PyTorch-GPU**, all installation, training, and embedding-generation steps must be performed on a machine with a compatible **GPU**.
 
-> 🧠 This setup has been tested with **PyTorch 2.4.0** and **CUDA 12.1** on an **NVIDIA A6000** GPU.
+!!! note
+
+    This setup has been tested with **PyTorch 2.4.0** and **CUDA 12.1** on an **NVIDIA A6000** GPU.
 
 ## 🧪 Data Processing Prerequisites
 

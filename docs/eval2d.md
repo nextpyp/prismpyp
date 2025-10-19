@@ -4,7 +4,9 @@ Once the model has finished training, you can generate **static 2D visualization
 
 These embeddings reveal structural patterns across your dataset — highlighting variations in ice type, contamination, or support film quality.
 
-> 💡 The following steps can be applied to both **real-domain** and **Fourier-domain** models.
+!!! tip
+
+    The following steps can be applied to both **real-domain** and **Fourier-domain** models.
 
 ## 1. Generate 2D Embeddings for Real-Domain Images
 
@@ -67,7 +69,7 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
 
 !!! note
 
-  This produces a 2D projection of the learned Fourier-domain embeddings, highlighting frequency-based variation across micrographs.
+    This produces a 2D projection of the learned Fourier-domain embeddings, highlighting frequency-based variation across micrographs.
 
 ## 3. Project Precomputed Embeddings
 

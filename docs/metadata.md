@@ -4,7 +4,9 @@ This section describes how to prepare the **metadata table** used for prismPYP t
 
 You can build metadata using either **nextPYP preprocessing outputs** or **CryoSPARC outputs**.
 
-> 💡 The resulting metadata table consolidates microscope parameters, CTF statistics, and motion information across all micrographs in your dataset.
+!!! info
+
+   The resulting metadata table consolidates microscope parameters, CTF statistics, and motion information across all micrographs in your dataset.
 
 ## 1. Test Data and Results
 
@@ -62,13 +64,15 @@ mkdir -p output_dir
       --cryosparc-path example_data/J7_exposures_accepted_exported.cs
    ```
 
-   > You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
+   !!! note
+   
+      You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
 
 === "cryoSPARC"
 
    To build metadata directly from **CryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
 
-   > For the test dataset (EMPIAR-10379), the deposited data already contains aligned micrographs, so you can skip motion correction.
+   For the test dataset (EMPIAR-10379), the deposited data already contains aligned micrographs, so you can skip motion correction.
 
    a. Export the outputs of the following jobs and note their locations:
       - **Import Micrographs** → `J1`

@@ -35,7 +35,9 @@ Install the core package and dependencies with GPU support:
 python -m pip install -e . --extra-index-url https://download.pytorch.org/whl/cu121
 ```
 
-> This ensures PyTorch is installed with the correct CUDA 12.1 build.
+!!! note
+
+    This ensures PyTorch is installed with the correct CUDA 12.1 build.
 
 Then install **FAISS-GPU** (via Conda, since pip wheels for Python 3.12 are unsupported):
 
@@ -48,7 +50,9 @@ conda install -c pytorch -c conda-forge faiss-gpu=1.9.0
 
 For the best performance, Phoenix should be installed and run **locally** (not on a remote cluster).
 
-> 💡 Phoenix provides an intuitive interface to explore embeddings, filter high-quality micrographs, and export subsets for further refinement.
+!!! info
+
+    Phoenix provides an intuitive interface to explore embeddings, filter high-quality micrographs, and export subsets for further refinement.
 
 Install Phoenix using either the provided Conda environment file or `pip` (make sure Conda and pip are installed in your local environment).
 
