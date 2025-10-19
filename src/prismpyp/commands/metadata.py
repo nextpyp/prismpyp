@@ -17,7 +17,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     parser.add_argument('--pkl-path', type=str, 
                         help='Path to the pkl files')
     parser.add_argument('--cryosparc-path', type=str, default=None, 
-                        help='Path to CryoSPARC Curate Exposure job exported .cs file (optional)')
+                        help='Path to cryoSPARC Curate Exposure job exported .cs file (optional)')
     parser.add_argument('--output-file', type=str, help='Output file name')
 
     return parser
@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument('pkl_path', type=str, 
                         help='Path to the pkl files')
     parser.add_argument('--cryosparc_path', type=str, default=None, 
-                        help='Path to CryoSPARC Curate Exposure job exported .cs file (optional)')
+                        help='Path to cryoSPARC Curate Exposure job exported .cs file (optional)')
     parser.add_argument('output_file', type=str, help='Output file name')
     return parser.parse_args()
 """

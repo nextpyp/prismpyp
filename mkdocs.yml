@@ -9,7 +9,7 @@ nav:
       - Prerequisites: prerequisites.md
       - Installation: env_setup.md
   - Tutorial:
-    - Formatting Experiment Metadata: metadata.md
+    - Preparing Metadata: metadata.md
     - Model Training: train.md
     - 2D Embedding Generation: eval2d.md
     - 3D Embedding Generation: eval3d.md

@@ -24,8 +24,8 @@ usage: prismpyp metadata_cryosparc [-h]
 
 | Argument | Description |
 |-----------|--------------|
-| `--patch-ctf-file` | Path to CryoSPARC Patch CTF Estimation job exported `.cs` file |
-| `--ctffind-file` | Path to CryoSPARC CTFFIND job exported `.cs` file |
+| `--patch-ctf-file` | Path to cryoSPARC Patch CTF Estimation job exported `.cs` file |
+| `--ctffind-file` | Path to cryoSPARC CTFFIND job exported `.cs` file |
 | `--ctffind-dir` | Path to directory containing CTFFIND output `.mrc` files |
 | `--imported-dir` | Path to directory containing imported micrographs |
 | `--output-dir` | Output directory to save metadata and generated `.webp` images |

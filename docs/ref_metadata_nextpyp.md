@@ -23,6 +23,6 @@ usage: prismpyp metadata_nextpyp [-h]
 | Argument | Description |
 |-----------|--------------|
 | `--pkl-path` | Path to the `.pkl` files |
-| `--cryosparc-path` | Path to CryoSPARC Curate Exposure job exported `.cs` file *(optional)* |
+| `--cryosparc-path` | Path to cryoSPARC Curate Exposure job exported `.cs` file *(optional)* |
 | `--output-dir` | Output directory to save metadata and copied `.webp` files |
 | `--micrographs-list` | Optional path to a text file containing a list of micrograph names (one per line) to filter the output |

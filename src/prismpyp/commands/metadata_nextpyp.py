@@ -20,7 +20,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     parser.add_argument('--pkl-path', type=str, 
                         help='Path to the pkl files')
     parser.add_argument('--cryosparc-path', type=str, default=None, 
-                        help='Path to CryoSPARC Curate Exposure job exported .cs file (optional)')
+                        help='Path to cryoSPARC Curate Exposure job exported .cs file (optional)')
     parser.add_argument('--output-dir', type=str, help='Output file name')
     parser.add_argument('--micrographs-list', type=str, default=None,
                         help='Optional path to a text file containing a list of micrograph names (one per line) to filter the output')

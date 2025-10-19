@@ -60,14 +60,14 @@ You can now access the interactive visualization at [http://localhost:54116/](ht
 
 You can repeat the same steps for Fourier-domain inputs.
 
-### Copy the output files:
+### Copy the output files
 
    ```bash
    cp output_dir/fft/inference/data_for_export.parquet.zip fft/
    cp output_dir/fft/inference/zipped_thumbnail_images.tar.gz fft/
    ```
 
-### Create a folder for the thumbnail images:
+### Create a folder for the thumbnail images
 
    ```bash
    mkdir -p fft/thumbnail_images_dir
@@ -79,7 +79,7 @@ You can repeat the same steps for Fourier-domain inputs.
    tar -xvzf zipped_thumbnail_images.tar.gz -C fft/thumbnail_images_dir
    ```
 
-### Start an HTTP server (you can use `screen` if desired):
+### Start an HTTP server (you can use `screen` if desired)
 
    ```bash
    cd fft
@@ -87,7 +87,7 @@ You can repeat the same steps for Fourier-domain inputs.
    python -m http.server 5004
    ```
 
-### Launch the visualization:
+### Launch the visualization
 
    ```bash
    python visualizer.py \
@@ -96,7 +96,7 @@ You can repeat the same steps for Fourier-domain inputs.
       --which-embedding umap
    ```
 
-## Lasso Selections and Output
+### Lasso Selections and Output
 
 For both domains, interactive **lasso selections** will be saved as downloadable `.parquet` files:
 

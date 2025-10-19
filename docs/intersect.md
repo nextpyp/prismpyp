@@ -8,19 +8,19 @@ This step combines the complementary strengths of real-space and frequency-space
 
     Run this step on a **remote cluster** for large datasets. Transfer the `.parquet` files from your local Phoenix session to the cluster before starting.
 
-## 1. Activate the Environment
+### Activate the Environment
 
 ```bash
 conda activate prismpyp
 ```
 
-## 2. Create an Output Directory
+### Create an Output Directory
 
 ```bash
 mkdir intersection
 ```
 
-## 3. Compute the Intersection
+### Compute the Intersection
 
 Run the following command to take the intersection between real and Fourier domain selections:
 
@@ -46,7 +46,7 @@ Run the following command to take the intersection between real and Fourier doma
 
     Use `--link-type soft` to create symbolic links or `--link-type hard` to copy the files instead.
 
-## 4. Output Files
+### Output Files
 
 The following outputs will be written to the `intersection/` directory:
 
