@@ -96,7 +96,7 @@ You can repeat the same steps for Fourier-domain inputs.
       --which-embedding umap
    ```
 
-### Lasso Selections and Output
+### Lasso Selection and Output
 
 For both domains, interactive **lasso selections** will be saved as downloadable `.parquet` files:
 

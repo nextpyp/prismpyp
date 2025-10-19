@@ -2,7 +2,7 @@
 
 Once the model has finished training, you can generate **static 2D visualizations** of learned feature vectors.  
 
-These embeddings reveal structural patterns across your dataset — highlighting variations in ice type, contamination, or support film quality.
+These embeddings reveal structural patterns across your dataset — highlighting variations in ice type, presence of contamination, and support film coverage.
 
 !!! tip
 

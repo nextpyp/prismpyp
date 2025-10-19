@@ -1,6 +1,6 @@
 # Label-Free Feature Learning
 
-This section describes how to train **SimSiam models** on both **real-domain** and **Fourier-domain** cryo-EM micrographs.
+This section describes how to train **SimSiam models** on both **real-domain** and **Fourier-domain**.
 
 The goal is to learn domain-specific embeddings that capture image-quality features (e.g., vitreous ice, crystalline ice, contaminants, and support film) without using labels.
 
@@ -41,11 +41,11 @@ Train the SimSiam model on **real-space micrograph images**:
 
 !!! tip 
 
-    Adjust the `--batch-size` and `--workers` arguments based on GPU memory and available CPU cores.
+    You may adjust the `--batch-size` and `--workers` arguments based on GPU memory and available CPU cores. See [here](ref_train.md) for other options.
 
 ## 3. Training on Fourier-Domain Images
 
-For **Fourier-space inputs**, use the `--use-fft` flag:
+For **Fourier-space inputs**, we just add the `--use-fft` flag and change the output path:
 
 === "nextPYP"
     ```bash
@@ -82,12 +82,12 @@ During training, **per-batch loss** and **collapse level** are printed in the te
 
 ## 5. Diagnostic Outputs
 
-=== "Model loss"
+=== "Model Loss"
 
     If training converges, the ```total_loss.webp``` plot should look something like this:
     ![loss plot](assets/total_loss.webp)
 
-=== "Collapse level"
+=== "Collapse Level"
 
     If the model successfully learned to extract meaningful semantics from the input image, the total collapse plot can plateau, decrease, but should not approach 0:
     ![collapse](assets/collapse_level.webp)

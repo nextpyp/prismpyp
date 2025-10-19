@@ -1,16 +1,16 @@
-# Evaluation of Aldolase micrographs from (EMPIAR-10379)
+# Evaluation of Aldolase Micrographs from EMPIAR-10379
 
 This tutorial shows how to analyze 1,118 motion corrected micrographs of rabbit muscle aldolase from [EMPIAR-10379](https://www.ebi.ac.uk/empiar/EMPIAR-10379/).
 
-## 1. Preparing Input Data
+## 1. Prepare Input Data
 
 First, we need to create a **metadata table** used for prismPYP training and embedding generation containing information about microscope parameters, CTF statistics, and motion information for all micrographs in the dataset.
 
-In genreal, you can build metadata using either **nextPYP preprocessing outputs** or **cryoSPARC outputs**, but for this example we will use pre-calculated results.
+In general, you can build metadata using either **nextPYP preprocessing outputs** or **cryoSPARC outputs**, but for this example we will use pre-calculated results.
 
 ### 🧪 Download the Test Data
 
-We will download the `example_data.tar.gz` archive from [Zenodo](https://doi.org/10.5281/zenodo.17161604), which contains micrograph and power-spectrum images plus all the necessary metadata.
+We will download the `example_data.tar.gz` archive from [Zenodo](https://doi.org/10.5281/zenodo.17161604), which contains micrograph and power-spectrum images plus all the necessary metadata:
 
 ```bash
 mkdir example_data
@@ -36,9 +36,9 @@ The [Zenodo entry](https://doi.org/10.5281/zenodo.17161604) also contains the fo
 * ```fft_good_export.parquet```: Data points that have high-quality features in the Fourier domain.
 * ```real_good_export.parquet```: Data points that have high-qualtiy features in the real domain.
 
-By taking the intersection between ```fft_good_export.parquet``` and ```real_good_export.parquet```, you can obtain the 862 high-quality micrographs that we used to obtain a 2.9&nbsp;Å structure of Aldolase.
+By taking the intersection between ```fft_good_export.parquet``` and ```real_good_export.parquet```, you can obtain the 862 high-quality micrographs that we used to obtain a 2.9&nbsp;Å structure of aldolase.
 
-## 2. Build the Metadata Table
+## 2. Build Metadata Table
 
 Before starting, create a directory to store all generated outputs:
 
@@ -91,16 +91,20 @@ mkdir -p output_dir
             --output-dir metadata_from_cryosparc
          ```
 
+      !!! warning
+            
+            Depending on how many micrographs you have, this process may take some time to run.
+
 ---
 
-## 3. Outputs
+## 3. Generated Outputs
 
-Both metadata-building commands will produce a file named `micrograph_metadata.csv`, containing:
+The metadata-building command will produce a file named `micrograph_metadata.csv`, containing:
 
 | Column | Description |
 |---------|--------------|
 | `micrograph_name` | Name of each micrograph |
-| `rel_ice_thickness` | Relative ice thickness (if `--cryosparc-path` is provided) |
+| `rel_ice_thickness` | Relative ice thickness (if `--cryosparc-path` was provided) |
 | `ctf_fit` | CTF fit correlation coefficient |
 | `est_resolution` | Estimated resolution in Å |
 | `avg_motion` | Average beam-induced motion |
@@ -110,7 +114,7 @@ Both metadata-building commands will produce a file named `micrograph_metadata.c
 In addition, the following files are generated:
 
 - `pixel_size.txt` — microscope pixel size for this dataset  
-- `all_micrographs_list.micrographs` — list of all micrographs (no extensions)  
+- `all_micrographs_list.micrographs` — list of all micrographs (without extensions)  
 - `webp/` — directory of `.webp` images for both micrographs and their CTFFIND4-derived power spectra
 <!-- 
 > For the remainder of this tutorial, we’ll assume you’re using the `metadata_from_nextpyp` directory.  
