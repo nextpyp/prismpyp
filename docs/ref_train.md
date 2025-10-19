@@ -26,7 +26,7 @@ usage: prismpyp train [-h]
 
 ## Named Arguments
 
-### Commonly Changed Arguments
+### Commonly Changed
 | Argument | Description | Default |
 |-----------|--------------|----------|
 | `--output-path` | Path to output directory | — |
@@ -38,7 +38,7 @@ usage: prismpyp train [-h]
 | `--resume PATH` | Path to latest checkpoint | `none` |
 | `--dist-url DIST_URL` | URL used to set up distributed training | `tcp://localhost:10058` |
 
-### Less Commonly Changed Arguments
+### Less Commonly Changed
 | Argument | Description | Default |
 |-----------|--------------|----------|
 | `-j`, `--workers` | Number of data loading workers | `1` |

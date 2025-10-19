@@ -91,9 +91,7 @@ mkdir -p output_dir
             --output-dir metadata_from_cryosparc
          ```
 
-      !!! warning
-            
-            Depending on how many micrographs you have, this process may take some time to run.
+      *Depending on how many micrographs you have, this process may take several minutes to run.*
 
 ---
 

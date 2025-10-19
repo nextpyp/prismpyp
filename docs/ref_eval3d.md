@@ -21,7 +21,7 @@ usage: prismpyp eval2d [-h] [--output-path DIR] [--metadata-path METADATA_PATH] 
 
 ## Named Arguments
 
-### Commonly Changed Arguments
+### Commonly Changed
 | Argument | Description | Default |
 |-----------|--------------|----------|
 | `--output-path DIR` | Path to output directory | — |
