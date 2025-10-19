@@ -11,10 +11,4 @@ The framework builds on a [PyTorch implementation of SimSiam](https://github.com
 
 ![Phoenix visualization](assets/phoenix_example.png)
 
-# Citing prismPYP
-
-TBA
-
-# License
-
-The software is developed and maintained by the `Bartesaghi Lab <http://cryoem.cs.duke.edu>`_ at `Duke University <http://www.duke.edu>`_ and released under the [BSD 3-Clause](https://github.com/nextpyp/prismpyp/blob/main/LICENSE) license.
+The software is developed and maintained by the [Bartesaghi Lab](http://cryoem.cs.duke.edu) at [Duke University](http://www.duke.edu) and released under the [BSD 3-Clause](https://github.com/nextpyp/prismpyp/blob/main/LICENSE) license.

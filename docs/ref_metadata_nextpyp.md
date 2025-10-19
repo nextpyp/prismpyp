@@ -4,6 +4,7 @@
 Copy `.webp` files of micrographs and power spectra (as estimated from **CTFFIND4**) from a **nextPYP project** into the metadata directory.
 
 Additionally, this command parses `.pkl` files for pre-processing heuristics, including:
+
 - CTF fit  
 - Estimated resolution  
 - Mean defocus  

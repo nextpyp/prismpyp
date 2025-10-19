@@ -57,9 +57,9 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         metavar='LR', dest='lr',
                         help='initial (base) learning rate (default: 0.05)')
     parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
-                        help='momentum of SGD solver')
+                        help='momentum of SGD solver (default: 0.9)')
     parser.add_argument('--wd', '--weight-decay', default=1e-4, type=float,
-                        metavar='W', dest='weight_decay',
+                        metavar='W', dest='weight_decay (default: 1e-4)',
                         help='weight decay (default: 1e-4)')
     parser.add_argument('-p', '--print-freq', default=10, type=int, metavar='N',
                         help='print frequency (default: 10)')
@@ -74,7 +74,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     parser.add_argument('--dist-url', default='tcp://localhost:10058', type=str,
                         help='url used to set up distributed training (defautl: tcp://localhost:10058)')
     parser.add_argument('--dist-backend', default='nccl', type=str,
-                        help='distributed backend')
+                        help='distributed backend (default: nccl)')
     parser.add_argument('--seed', default=None, type=int,
                         help='seed for initializing training')
     parser.add_argument('--gpu', default=0, type=int, help='GPU id to use (default: 0)')

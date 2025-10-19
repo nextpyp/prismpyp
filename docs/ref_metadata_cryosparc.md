@@ -4,6 +4,7 @@
 Convert micrograph `.mrc` files and power spectra `.mrc` files output by **CTFFIND** into `.webp` images, saving them to a new directory.
 
 Additionally, this command parses the outputs of **Patch CTF Estimation** and **CTFFIND4** to retrieve heuristic metrics, including:
+
 - CTF fit  
 - Estimated resolution  
 - Mean defocus  

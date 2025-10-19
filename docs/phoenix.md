@@ -4,26 +4,26 @@
 
 These instructions assume inference results from **real-domain inputs**.
 
-### a. Copy output files to your local machine:
+### Copy output files to your local machine:
 
    ```bash
    cp output_dir/real/inference/data_for_export.parquet.zip real/
    cp output_dir/real/inference/zipped_thumbnail_images.tar.gz real/
    ```
 
-### b. Create a folder for the thumbnail images:
+### Create a folder for the thumbnail images:
 
    ```bash
    mkdir -p real/thumbnail_images
    ```
 
-### c. Extract thumbnails:
+### Extract thumbnails:
 
    ```bash
    tar -xvzf zipped_thumbnail_images.tar.gz -C real/thumbnail_images
    ```
 
-### d. Start a local HTTP server to host thumbnails:
+### Start a local HTTP server to host thumbnails:
 
    ```bash
    cd real
@@ -31,7 +31,7 @@ These instructions assume inference results from **real-domain inputs**.
    python -m http.server 5004
    ```
 
-### e. In another terminal, download and launch the visualizer:
+### In another terminal, download and launch the visualizer:
 
    ```bash
    wget https://github.com/nextpyp/prismpyp/blob/main/scripts/visualizer.py
@@ -60,26 +60,26 @@ You can now access the interactive visualization at [http://localhost:54116/](ht
 
 You can repeat the same steps for Fourier-domain inputs.
 
-### a. Copy the output files:
+### Copy the output files:
 
    ```bash
    cp output_dir/fft/inference/data_for_export.parquet.zip fft/
    cp output_dir/fft/inference/zipped_thumbnail_images.tar.gz fft/
    ```
 
-### b. Create a folder for the thumbnail images:
+### Create a folder for the thumbnail images:
 
    ```bash
    mkdir -p fft/thumbnail_images_dir
    ```
 
-### c. Extract thumbnails:
+### Extract thumbnails:
 
    ```bash
    tar -xvzf zipped_thumbnail_images.tar.gz -C fft/thumbnail_images_dir
    ```
 
-### d. Start an HTTP server (you can use `screen` if desired):
+### Start an HTTP server (you can use `screen` if desired):
 
    ```bash
    cd fft
@@ -87,7 +87,7 @@ You can repeat the same steps for Fourier-domain inputs.
    python -m http.server 5004
    ```
 
-### e. Launch the visualization:
+### Launch the visualization:
 
    ```bash
    python visualizer.py \
@@ -96,7 +96,7 @@ You can repeat the same steps for Fourier-domain inputs.
       --which-embedding umap
    ```
 
-## 3. Lasso Selections and Output
+## Lasso Selections and Output
 
 For both domains, interactive **lasso selections** will be saved as downloadable `.parquet` files:
 
