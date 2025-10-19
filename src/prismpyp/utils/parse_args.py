@@ -34,7 +34,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
         and callable(models.__dict__[name]))
 
     # Positional arguments
-    parser.add_argument('--micrographs-list', metavar='DIR', help='list of micrographs')
+    # parser.add_argument('--micrographs-list', metavar='DIR', help='list of micrographs')
     parser.add_argument('--output-path', metavar='DIR', help='path to output directory')
     parser.add_argument('--metadata-path', metavar='METADATA_PATH', help='path to metadata file')
     parser.add_argument('--embedding-path', metavar='EMBEDDING_PATH', nargs='?', default=None,
@@ -50,8 +50,6 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='number of data loading workers (default: 32)')
     parser.add_argument('--epochs', default=100, type=int, metavar='N',
                         help='number of total epochs to run')
-    parser.add_argument('--rounds', default=1, type=int, metavar='N',
-                        help='number of rounds of label reassignment to run for weakly-supervised learning')
     parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                         help='manual epoch number (useful on restarts)')
     parser.add_argument('-b', '--batch-size', default=512, type=int, metavar='N',
@@ -70,8 +68,6 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='path to latest checkpoint (default: none)')
     parser.add_argument('--feature-extractor-weights', default='', type=str, metavar='PATH',
                         help='path to pre-trained feature extractor weights (default: none)')
-    parser.add_argument('--classifier-weights', default='', type=str, metavar='PATH',
-                        help='path to pre-trained classifier weights (default: none)')
     parser.add_argument('--world-size', default=-1, type=int,
                         help='number of nodes for distributed training')
     parser.add_argument('--rank', default=-1, type=int,
@@ -103,12 +99,8 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help="pixel size of the image")
     parser.add_argument("--size", type=int, 
                         help="size of the image in pixels, before downsampling")
-    parser.add_argument("--conf-thresh", type=float, default=0.7, 
-                        help="confidence threshold for filtering")
     
     # Additional configurations
-    parser.add_argument('--add-datetime', action='store_true',
-                        help='add datetime to output directory')
     parser.add_argument('--evaluate', action='store_true',
                         help='evaluate model on validation set')
 
