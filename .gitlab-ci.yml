@@ -1,8 +1,8 @@
-image: python:3.12
+image: python:3.8.8
 
 before_script:
     - pip install mkdocs-material
-    - pip install . # install the prismpyp package to generate cli docs
+    # - pip install . # install the prismpyp package to generate cli docs
 
 docs:
   stage: deploy
