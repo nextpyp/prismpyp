@@ -64,6 +64,9 @@ If you haven’t yet produced embeddings, you can create them during the 3D visu
 
 Add the `--use-fft` flag to process Fourier-domain data.
 
+!!! warning 
+    As in model training and 2D evaluation, if you are running multiple jobs at the same time (e.g., evaluating on real domain and Fourier domain images simultaneously), you will need to provide *different* `--dist-url` arguments for each job so that they do not try to access the same port.
+
 ## 3. Generate Thumbnails for Visualization
 
 If this is your first time running `prismpyp eval3d`, you may want to generate **zipped image thumbnails** for interactive rendering:

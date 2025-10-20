@@ -65,6 +65,9 @@ For **Fourier-space inputs**, we just add the `--use-fft` flag and change the ou
       --use-fft
     ```
 
+!!! warning 
+    In (multi-)distributed processing, the `--dist-url` argument is used for processes to communicate with each other. If you are running multiple jobs at the same time (e.g., training on real domain and Fourier domain images simultaneously), you will need to provide *different* `--dist-url` arguments for each job so that they do not try to access the same port.
+
 ## 4. Notes on Checkpoints
 
 If you’d rather start from scratch or use your own pretrained model, omit the `--resume` flag or point it to a different `.pth.tar` checkpoint.

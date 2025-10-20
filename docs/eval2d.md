@@ -95,6 +95,9 @@ If you have already generated embeddings, you can skip the inference step and di
 
 Include the `--use-fft` flag if projecting **Fourier-domain** embeddings.
 
+!!! warning 
+    As in model training, if you are running multiple jobs at the same time (e.g., evaluating on real domain and Fourier domain images simultaneously), you will need to provide *different* `--dist-url` arguments for each job so that they do not try to access the same port.
+
 ## 4. Output Files
 
 Each inference run creates an `inference/` directory inside your chosen output path, containing:
