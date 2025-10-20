@@ -15,6 +15,7 @@ Perform inference on the trained **real-domain** model:
 === "nextPYP"
     ```bash
     prismpyp eval2d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
@@ -25,6 +26,7 @@ Perform inference on the trained **real-domain** model:
 === "cryoSPARC"
     ```bash
     prismpyp eval2d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
@@ -44,6 +46,7 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
 === "nextPYP"
     ```bash
     prismpyp eval2d \
+      --evaluate \
       --output-path output_dir/fft \
       --metadata-path metadata_from_nextpyp \
       --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
@@ -55,6 +58,7 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
 === "cryoSPARC"
     ```bash
     prismpyp eval2d \
+      --evaluate \
       --output-path output_dir/fft \
       --metadata-path metadata_from_cryosparc \
       --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
@@ -74,6 +78,7 @@ If you have already generated embeddings, you can skip the inference step and di
 === "nextPYP"
     ```bash
     prismpyp eval2d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
       --embedding-path output_dir/real/inference/embeddings.pth \
@@ -85,6 +90,7 @@ If you have already generated embeddings, you can skip the inference step and di
 === "cryoSPARC"
     ```bash
     prismpyp eval2d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
       --embedding-path output_dir/real/inference/embeddings.pth \

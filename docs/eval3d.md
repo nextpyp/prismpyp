@@ -15,6 +15,7 @@ If you already generated 2D embeddings, you can skip re-computation and directly
 === "nextPYP"
     ```bash
     prismpyp eval3d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
       --embedding-path output_dir/real/inference/embeddings.pth \
@@ -26,6 +27,7 @@ If you already generated 2D embeddings, you can skip re-computation and directly
 === "cryoSPARC"
     ```bash
     prismpyp eval3d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
       --embedding-path output_dir/real/inference/embeddings.pth \
@@ -45,6 +47,7 @@ If you haven’t yet produced embeddings, you can create them during the 3D visu
 === "nextPYP"
     ```bash
     prismpyp eval3d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
@@ -55,6 +58,7 @@ If you haven’t yet produced embeddings, you can create them during the 3D visu
 === "cryoSPARC"
     ```bash
     prismpyp eval3d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
       --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
@@ -74,6 +78,7 @@ If this is your first time running `prismpyp eval3d`, you may want to generate *
 === "nextPYP"
     ```bash
     prismpyp eval3d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_nextpyp \
       --embedding-path output_dir/real/inference/embeddings.pth \
@@ -84,6 +89,7 @@ If this is your first time running `prismpyp eval3d`, you may want to generate *
 === "cryoSPARC"
     ```bash
     prismpyp eval3d \
+      --evaluate \
       --output-path output_dir/real \
       --metadata-path metadata_from_cryosparc \
       --embedding-path output_dir/real/inference/embeddings.pth \
