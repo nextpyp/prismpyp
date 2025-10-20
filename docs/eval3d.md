@@ -12,29 +12,16 @@ Here, you can manually inspect micrographs within clusters, identify distinct re
 
 If you already generated 2D embeddings, you can skip re-computation and directly visualize them in 3D:
 
-=== "nextPYP"
-    ```bash
-    prismpyp eval3d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_nextpyp \
-      --embedding-path output_dir/real/inference/embeddings.pth \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10
-    ```
-
-=== "cryoSPARC"
-    ```bash
-    prismpyp eval3d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_cryosparc \
-      --embedding-path output_dir/real/inference/embeddings.pth \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10
-    ```
+```bash
+prismpyp eval3d \
+  --evaluate \
+  --output-path output_dir/real \
+  --metadata-path metadata \
+  --embedding-path output_dir/real/inference/embeddings.pth \
+  --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+  --n-clusters 10 \
+  --num-neighbors 10
+```
 
 !!! tip
     
@@ -44,27 +31,15 @@ If you already generated 2D embeddings, you can skip re-computation and directly
 
 If you haven’t yet produced embeddings, you can create them during the 3D visualization process:
 
-=== "nextPYP"
-    ```bash
-    prismpyp eval3d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_nextpyp \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10
-    ```
-
-=== "cryoSPARC"
-    ```bash
-    prismpyp eval3d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_cryosparc \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10
-    ```
+```bash
+prismpyp eval3d \
+  --evaluate \
+  --output-path output_dir/real \
+  --metadata-path metadata \
+  --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+  --n-clusters 10 \
+  --num-neighbors 10
+```
 
 Add the `--use-fft` flag to process Fourier-domain data.
 
@@ -75,27 +50,15 @@ Add the `--use-fft` flag to process Fourier-domain data.
 
 If this is your first time running `prismpyp eval3d`, you may want to generate **zipped image thumbnails** for interactive rendering:
 
-=== "nextPYP"
-    ```bash
-    prismpyp eval3d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_nextpyp \
-      --embedding-path output_dir/real/inference/embeddings.pth \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --zip-images
-    ```
-
-=== "cryoSPARC"
-    ```bash
-    prismpyp eval3d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_cryosparc \
-      --embedding-path output_dir/real/inference/embeddings.pth \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --zip-images
-    ```
+```bash
+prismpyp eval3d \
+  --evaluate \
+  --output-path output_dir/real \
+  --metadata-path metadata \
+  --embedding-path output_dir/real/inference/embeddings.pth \
+  --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+  --zip-images
+```
 
 !!! warning
 

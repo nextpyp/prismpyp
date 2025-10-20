@@ -12,27 +12,15 @@ These embeddings reveal structural patterns across your dataset — highlighting
 
 Perform inference on the trained **real-domain** model:
 
-=== "nextPYP"
-    ```bash
-    prismpyp eval2d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_nextpyp \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10
-    ```
-
-=== "cryoSPARC"
-    ```bash
-    prismpyp eval2d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_cryosparc \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10
-    ```
+```bash
+prismpyp eval2d \
+    --evaluate \
+    --output-path output_dir/real \
+    --metadata-path metadata \
+    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+    --n-clusters 10 \
+    --num-neighbors 10
+```
 
 !!! tip
 
@@ -43,29 +31,16 @@ Perform inference on the trained **real-domain** model:
 
 For Fourier-domain embeddings, include the `--use-fft` flag:
 
-=== "nextPYP"
-    ```bash
-    prismpyp eval2d \
-      --evaluate \
-      --output-path output_dir/fft \
-      --metadata-path metadata_from_nextpyp \
-      --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10 \
-      --use-fft
-    ```
-
-=== "cryoSPARC"
-    ```bash
-    prismpyp eval2d \
-      --evaluate \
-      --output-path output_dir/fft \
-      --metadata-path metadata_from_cryosparc \
-      --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10 \
-      --use-fft
-    ```
+```bash
+prismpyp eval2d \
+    --evaluate \
+    --output-path output_dir/fft \
+    --metadata-path metadata \
+    --feature-extractor-weights output_dir/fft/checkpoints/model_best.pth.tar \
+    --n-clusters 10 \
+    --num-neighbors 10 \
+    --use-fft
+```
 
 !!! note
 
@@ -75,29 +50,16 @@ For Fourier-domain embeddings, include the `--use-fft` flag:
 
 If you have already generated embeddings, you can skip the inference step and directly project them to 2D:
 
-=== "nextPYP"
-    ```bash
-    prismpyp eval2d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_nextpyp \
-      --embedding-path output_dir/real/inference/embeddings.pth \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10
-    ```
-
-=== "cryoSPARC"
-    ```bash
-    prismpyp eval2d \
-      --evaluate \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_cryosparc \
-      --embedding-path output_dir/real/inference/embeddings.pth \
-      --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
-      --n-clusters 10 \
-      --num-neighbors 10
-    ```
+```bash
+prismpyp eval2d \
+    --evaluate \
+    --output-path output_dir/real \
+    --metadata-path metadata \
+    --embedding-path output_dir/real/inference/embeddings.pth \
+    --feature-extractor-weights output_dir/real/checkpoints/model_best.pth.tar \
+    --n-clusters 10 \
+    --num-neighbors 10
+```
 
 Include the `--use-fft` flag if projecting **Fourier-domain** embeddings.
 
