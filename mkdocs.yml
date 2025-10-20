@@ -9,20 +9,20 @@ nav:
       - Prerequisites: prerequisites.md
       - Installation: env_setup.md
   - Tutorial:
-    - Formatting Experiment Metadata: metadata.md
+    - Preparing Metadata: metadata.md
     - Model Training: train.md
     - 2D Embedding Generation: eval2d.md
     - 3D Embedding Generation: eval3d.md
     - Interactive Visualization (Phoenix): phoenix.md
     - Dual-Domain Filtering: intersect.md
   - Commands Reference:
-    - metadata_nextpyp Command: ref_metadata_nextpyp.md
-    - metadata_cryosparc Command: ref_metadata_cryosparc.md
-    - train Command: ref_train.md
-    - eval2d Command: ref_eval2d.md
-    - eval3d Command: ref_eval3d.md
-    - phoenix Command: ref_phoenix.md
-    - intersect Command: ref_intersect.md
+    - metadata_nextpyp: ref_metadata_nextpyp.md
+    - metadata_cryosparc: ref_metadata_cryosparc.md
+    - train: ref_train.md
+    - eval2d: ref_eval2d.md
+    - eval3d: ref_eval3d.md
+    - phoenix: ref_phoenix.md
+    - intersect: ref_intersect.md
 markdown_extensions:
   - abbr
   - admonition

@@ -1,13 +1,44 @@
-# Gathering Input Data and Building Metadata
+# Evaluation of Aldolase Micrographs from EMPIAR-10379
 
-This section describes how to prepare the **metadata table** used for prismPYP training and embedding generation.  
-You can build metadata using either **NextPYP preprocessing outputs** or **CryoSPARC outputs**.
+This tutorial shows how to analyze 1,118 motion corrected micrographs of rabbit muscle aldolase from [EMPIAR-10379](https://www.ebi.ac.uk/empiar/EMPIAR-10379/).
 
-> 💡 The resulting metadata table consolidates microscope parameters, CTF statistics, and motion information across all micrographs in your dataset.
+## 1. Prepare Input Data
 
----
+First, we need to create a **metadata table** used for prismPYP training and embedding generation containing information about microscope parameters, CTF statistics, and motion information for all micrographs in the dataset.
 
-## 1. Build the Metadata Table
+In general, you can build metadata using either **nextPYP preprocessing outputs** or **cryoSPARC outputs**, but for this example we will use pre-calculated results.
+
+### 🧪 Download the Test Data
+
+We will download the `example_data.tar.gz` archive from [Zenodo](https://doi.org/10.5281/zenodo.17161604), which contains micrograph and power-spectrum images plus all the necessary metadata:
+
+```bash
+mkdir example_data
+tar -xvzf example_data.tar.gz -C example_data
+```
+
+This command extracts the data into an `example_data/` folder containing:
+
+```
+example_data/
+    ├── pkl/                      # metadata from nextPYP preprocessing
+    ├── webp/                     # 512×512 images (micrographs + power spectra)
+    ├── J7_exposures_accepted_exported.cs
+    ├── sp-preprocessing-*.micrographs
+    └── .pyp_config.toml
+```
+
+### 📦 Intermediate Results
+
+The [Zenodo entry](https://doi.org/10.5281/zenodo.17161604) also contains the following files:
+
+* ```model_weights.tar.gz```: Trained model weights for the real domain (```real_model_best.pth.tar```) and the Fourier domain (```fft_model_best.pth.tar```) inputs.
+* ```fft_good_export.parquet```: Data points that have high-quality features in the Fourier domain.
+* ```real_good_export.parquet```: Data points that have high-qualtiy features in the real domain.
+
+By taking the intersection between ```fft_good_export.parquet``` and ```real_good_export.parquet```, you can obtain the 862 high-quality micrographs that we used to obtain a 2.9&nbsp;Å structure of aldolase.
+
+## 2. Build Metadata Table
 
 Before starting, create a directory to store all generated outputs:
 
@@ -15,64 +46,63 @@ Before starting, create a directory to store all generated outputs:
 mkdir -p output_dir
 ```
 
+=== "nextPYP"
+
+      - Create an output directory for nextPYP-derived metadata:
+         ```bash
+         mkdir -p metadata_from_nextpyp
+         ```
+
+      - Run the following command to assemble metadata from nextPYP preprocessing results:
+         ```bash
+         prismpyp metadata_nextpyp \
+            --pkl-path example_data/pkl \
+            --output-dir metadata_from_nextpyp \
+            --cryosparc-path example_data/J7_exposures_accepted_exported.cs
+         ```
+
+      You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
+
+=== "cryoSPARC"
+
+      To build metadata directly from **cryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
+
+      For the test dataset (EMPIAR-10379), the deposited data already contains motion corrected micrographs, so you can skip motion correction.
+
+      - Export the outputs of the following jobs and note their locations:
+
+         - **Import Micrographs** → `J1`
+         - **Patch CTF Estimation** → `J2`
+         - **CTFFIND4** → `J3`
+         - cryoSPARC project directory → `/cryosparc/output/dir`
+
+      - Create the metadata directory:
+         ```bash
+         mkdir -p metadata_from_cryosparc
+         ```
+
+      - Build the metadata table:
+         ```bash
+         prismpyp metadata_cryosparc \
+            --imported-dir "/cryosparc/output/dir/J1/imported" \
+            --patch-ctf-file "/cryosparc/output/dir/J2/J2_passthrough_exposures_accepted.cs" \
+            --ctffind-dir "/cryosparc/output/dir/J3/ctffind_output" \
+            --ctffind-file "/cryosparc/output/dir/exports/groups J3_exposures_success/J3_exposures_success_exported.cs" \
+            --output-dir metadata_from_cryosparc
+         ```
+
+      *Depending on how many micrographs you have, this process may take several minutes to run.*
+
 ---
 
-## 2. Using Preprocessing Outputs from NextPYP
+## 3. Generated Outputs
 
-1. Create an output directory for NextPYP-derived metadata:
-   ```bash
-   mkdir -p metadata_from_nextpyp
-   ```
-
-2. Run the following command to assemble metadata from NextPYP preprocessing results:
-   ```bash
-   prismpyp metadata_nextpyp \
-      --pkl-path example_data/pkl \
-      --output-dir metadata_from_nextpyp \
-      --cryosparc-path example_data/J7_exposures_accepted_exported.cs
-   ```
-
-   > You can omit `--cryosparc-path` if you do not need **relative ice thickness** visualization.
-
----
-
-## 3. Using CryoSPARC Outputs
-
-To build metadata directly from **CryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
-
-> For the test dataset (EMPIAR-10379), the deposited data already contains aligned micrographs, so you can skip motion correction.
-
-1. Export the outputs of the following jobs and note their locations:
-   - **Import Micrographs** → `J1`
-   - **Patch CTF Estimation** → `J2`
-   - **CTFFIND4** → `J3`
-   - CryoSPARC project directory → `/cryosparc/output/dir`
-
-2. Create the metadata directory:
-   ```bash
-   mkdir -p metadata_from_cryosparc
-   ```
-
-3. Build the metadata table:
-   ```bash
-   prismpyp metadata_cryosparc \
-      --imported-dir "/cryosparc/output/dir/J1/imported" \
-      --patch-ctf-file "/cryosparc/output/dir/J2/J2_passthrough_exposures_accepted.cs" \
-      --ctffind-dir "/cryosparc/output/dir/J3/ctffind_output" \
-      --ctffind-file "/cryosparc/output/dir/exports/groups J3_exposures_success/J3_exposures_success_exported.cs" \
-      --output-dir metadata_from_cryosparc
-   ```
-
----
-
-## 4. Code Outputs
-
-Both metadata-building commands will produce a file named `micrograph_metadata.csv`, containing:
+The metadata-building command will produce a file named `micrograph_metadata.csv`, containing:
 
 | Column | Description |
 |---------|--------------|
 | `micrograph_name` | Name of each micrograph |
-| `rel_ice_thickness` | Relative ice thickness (if `--cryosparc-path` is provided) |
+| `rel_ice_thickness` | Relative ice thickness (if `--cryosparc-path` was provided) |
 | `ctf_fit` | CTF fit correlation coefficient |
 | `est_resolution` | Estimated resolution in Å |
 | `avg_motion` | Average beam-induced motion |
@@ -82,13 +112,8 @@ Both metadata-building commands will produce a file named `micrograph_metadata.c
 In addition, the following files are generated:
 
 - `pixel_size.txt` — microscope pixel size for this dataset  
-- `all_micrographs_list.micrographs` — list of all micrographs (no extensions)  
+- `all_micrographs_list.micrographs` — list of all micrographs (without extensions)  
 - `webp/` — directory of `.webp` images for both micrographs and their CTFFIND4-derived power spectra
 <!-- 
 > For the remainder of this tutorial, we’ll assume you’re using the `metadata_from_nextpyp` directory.  
 > You can easily switch to another dataset by setting `--metadata-path` to `metadata_from_nextpyp` or `metadata_from_cryosparc`, depending on your source. -->
-
----
-
-### Next Steps
-➡️ [Next: Model Traiing](train.md)

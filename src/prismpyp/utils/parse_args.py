@@ -46,8 +46,8 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='model architecture: ' +
                             ' | '.join(model_names) +
                             ' (default: resnet50)')
-    parser.add_argument('-j', '--workers', default=32, type=int, metavar='N',
-                        help='number of data loading workers (default: 32)')
+    parser.add_argument('-j', '--workers', default=1, type=int, metavar='N',
+                        help='number of data loading workers (default: 1)')
     parser.add_argument('--epochs', default=100, type=int, metavar='N',
                         help='number of total epochs to run')
     parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
@@ -56,11 +56,11 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='mini-batch size (default: 512), total for all GPUs')
     parser.add_argument('--lr', '--learning-rate', default=0.05, type=float,
                         metavar='LR', dest='lr',
-                        help='initial (base) learning rate')
+                        help='initial (base) learning rate (default: 0.05)')
     parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
-                        help='momentum of SGD solver')
+                        help='momentum of SGD solver (default: 0.9)')
     parser.add_argument('--wd', '--weight-decay', default=1e-4, type=float,
-                        metavar='W', dest='weight_decay',
+                        metavar='W', dest='weight_decay (default: 1e-4)',
                         help='weight decay (default: 1e-4)')
     parser.add_argument('-p', '--print-freq', default=10, type=int, metavar='N',
                         help='print frequency (default: 10)')
@@ -68,27 +68,27 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='path to latest checkpoint (default: none)')
     parser.add_argument('--feature-extractor-weights', default='', type=str, metavar='PATH',
                         help='path to pre-trained feature extractor weights (default: none)')
-    parser.add_argument('--world-size', default=-1, type=int,
-                        help='number of nodes for distributed training')
-    parser.add_argument('--rank', default=-1, type=int,
-                        help='node rank for distributed training')
-    parser.add_argument('--dist-url', default='tcp://224.66.41.62:23456', type=str,
-                        help='url used to set up distributed training')
+    parser.add_argument('--world-size', default=1, type=int,
+                        help='number of nodes for distributed training (default: 1)')
+    parser.add_argument('--rank', default=0, type=int,
+                        help='node rank for distributed training (default: 0)')
+    parser.add_argument('--dist-url', default='tcp://localhost:10058', type=str,
+                        help='url used to set up distributed training (defautl: tcp://localhost:10058)')
     parser.add_argument('--dist-backend', default='nccl', type=str,
-                        help='distributed backend')
+                        help='distributed backend (default: nccl)')
     parser.add_argument('--seed', default=None, type=int,
                         help='seed for initializing training')
-    parser.add_argument('--gpu', default=None, type=int, help='GPU id to use')
-    parser.add_argument('--multiprocessing-distributed', action='store_true',
-                        help='use multi-processing distributed training')
+    parser.add_argument('--gpu', default=0, type=int, help='GPU id to use (default: 0)')
+    parser.add_argument('--multiprocessing-distributed', default=True, action='store_true',
+                        help='use multi-processing distributed training (default: True)')
 
     # SimSiam-specific configurations
-    parser.add_argument('--dim', default=2048, type=int,
-                        help='feature dimension (default: 2048)')
-    parser.add_argument('--pred-dim', default=512, type=int,
-                        help='hidden dimension of the predictor (default: 512)')
-    parser.add_argument('--fix-pred-lr', action='store_true',
-                        help='fix learning rate for the predictor')
+    parser.add_argument('--dim', default=512, type=int,
+                        help='feature dimension (default: 512)')
+    parser.add_argument('--pred-dim', default=256, type=int,
+                        help='hidden dimension of the predictor (default: 256)')
+    parser.add_argument('--fix-pred-lr', default=True, action='store_true',
+                        help='fix learning rate for the predictor (default: True)')
 
     # Dataset-specific configurations
     parser.add_argument('--use-fft', action='store_true', 
@@ -101,8 +101,8 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help="size of the image in pixels, before downsampling")
     
     # Additional configurations
-    parser.add_argument('--evaluate', action='store_true',
-                        help='evaluate model on validation set')
+    parser.add_argument('--evaluate', default=True, action='store_true',
+                        help='evaluate model on validation set (default: True)')
 
     # KMeans configurations
     parser.add_argument('--n-clusters', default=100, type=int,
@@ -111,8 +111,8 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     # UMap configurations
     parser.add_argument('--num-neighbors', default=30, type=int,
                         help='number of neighbors for UMap')
-    parser.add_argument('--min-dist-umap', default=0.3, type=float,
-                        help='minimum distance for UMap')
+    parser.add_argument('--min-dist-umap', default=0, type=float,
+                        help='minimum distance for UMap (default: 0)')
     parser.add_argument('--n-components', default=2, type=int,
                         help='number of components for UMap')
     

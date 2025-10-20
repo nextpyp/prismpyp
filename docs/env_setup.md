@@ -2,8 +2,6 @@
 
 This section describes how to prepare your environment for running **prismPYP**.  
 
----
-
 ## 1. Install Conda
 
 Download and install [**Miniconda**](https://docs.conda.io/en/latest/miniconda.html) (recommended) or [**Anaconda**](https://www.anaconda.com/).
@@ -13,22 +11,12 @@ Verify your installation:
 conda --version
 ```
 
----
-
 ## 2. Clone the prismPYP Repository
 
-```bash
-git clone git@github.com:nextpyp/prismpyp.git
-cd prismpyp
-```
-
-If you don’t have SSH access set up, you can also clone via HTTPS:
 ```bash
 git clone https://github.com/nextpyp/prismpyp.git
 cd prismpyp
 ```
-
----
 
 ## 3. Create and Activate the prismPYP Environment
 
@@ -39,8 +27,6 @@ conda create -n prismpyp -c conda-forge python=3.12 pip
 conda activate prismpyp
 ```
 
----
-
 ## 4. Install prismPYP and Dependencies
 
 Install the core package and dependencies with GPU support:
@@ -49,7 +35,9 @@ Install the core package and dependencies with GPU support:
 python -m pip install -e . --extra-index-url https://download.pytorch.org/whl/cu121
 ```
 
-> This ensures PyTorch is installed with the correct CUDA 12.1 build.
+!!! note
+
+    This ensures PyTorch is installed with the correct CUDA 12.1 build.
 
 Then install **FAISS-GPU** (via Conda, since pip wheels for Python 3.12 are unsupported):
 
@@ -57,39 +45,35 @@ Then install **FAISS-GPU** (via Conda, since pip wheels for Python 3.12 are unsu
 conda install -c pytorch -c conda-forge faiss-gpu=1.9.0
 ```
 
----
+## 5. Create and Install the Phoenix Environment
+[Phoenix](https://phoenix.arize.com/) enables **interactive 3D visualization and manual selection** of micrographs directly within the embedding space.  
 
-## 5. Create and Install the Pheonix Environment
-Phoenix enables **interactive 3D visualization and manual selection** of micrographs directly within the embedding space.  
 For the best performance, Phoenix should be installed and run **locally** (not on a remote cluster).
 
-> 💡 Phoenix provides an intuitive interface to explore embeddings, filter high-quality micrographs, and export subsets for further refinement.
+!!! info
 
-Install Phoenix using either the provided Conda environment file or `pip`.
+    Phoenix provides an intuitive interface to explore embeddings, filter high-quality micrographs, and export subsets for further refinement.
 
-### Option A — Conda YAML Installation
+Install Phoenix using either the provided Conda environment file or `pip` (make sure Conda and pip are installed in your local environment).
 
-```bash
-wget https://github.com/nextpyp/prismpyp/blob/main/phoenix.yml -O phoenix.yml
-conda env create -f phoenix.yml -n phoenix
-conda activate phoenix
-```
+=== "Conda YAML Installation"
 
-### Option B — Pip Installation
+    ```bash
+    wget https://github.com/nextpyp/prismpyp/blob/main/phoenix.yml -O phoenix.yml
+    conda env create -f phoenix.yml -n phoenix
+    conda activate phoenix
+    ```
 
-```bash
-conda create -n phoenix -c conda-forge python=3.8 pip
-conda activate phoenix
-wget https://github.com/nextpyp/prismpyp/blob/main/requirements-phoenix.txt -O requirements-phoenix.txt
-python -m pip install -r requirements-phoenix.txt
-```
+=== "Pip Installation"
 
----
+    ```bash
+    conda create -n phoenix -c conda-forge python=3.8 pip
+    conda activate phoenix
+    wget https://github.com/nextpyp/prismpyp/blob/main/requirements-phoenix.txt -O requirements-phoenix.txt
+    python -m pip install -r requirements-phoenix.txt
+    ```
+
 
 Your environments are now ready for use!
-Continue to the next step to learn how to **gather and organize input data** for prismPYP.
 
----
-
-### Next Steps
-➡️ [Gathering Input Data →](metadata.md)
+Continue to the next step to learn how to **prepare and organize input data** for prismPYP.
