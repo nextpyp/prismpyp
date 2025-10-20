@@ -79,8 +79,8 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     parser.add_argument('--seed', default=None, type=int,
                         help='seed for initializing training')
     parser.add_argument('--gpu', default=0, type=int, help='GPU id to use (default: 0)')
-    parser.add_argument('--multiprocessing-distributed', default=True, action='store_true',
-                        help='use multi-processing distributed training (default: True)')
+    parser.add_argument('--multiprocessing-distributed', default=False, action='store_true',
+                        help='use multi-processing distributed training (default: False)')
 
     # SimSiam-specific configurations
     parser.add_argument('--dim', default=512, type=int,
@@ -101,8 +101,8 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help="size of the image in pixels, before downsampling")
     
     # Additional configurations
-    parser.add_argument('--evaluate', default=True, action='store_true',
-                        help='evaluate model on validation set (default: True)')
+    parser.add_argument('--evaluate', default=False, action='store_true',
+                        help='evaluate model on validation set (default: False)')
 
     # KMeans configurations
     parser.add_argument('--n-clusters', default=100, type=int,
