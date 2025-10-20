@@ -127,4 +127,29 @@ These visualizations are useful for spotting image-quality clusters or distinct 
     And the UMAP distribution for Fourier domain embeddings could look like this:  
     ![UMAP for power spectra](assets/thumbnail_plot_umap_ps.webp)
 
+The nearest neighbors plots are useful for exploring similar images in the original dimensions (512) of the embedding space.
+
+=== "Real domain"
+
+    The nearest neighbors plots for real domain embeddings may look something like this:
+    ![Nearest neighbors real](assets/nearest_neighbors_1_mg.webp)
+
+=== "Fourier domain"
+
+    And the nearest neighbors plots for Fourier domain embeddings may look something like this:
+    ![Nearest neighbors FFT](assets/nearest_neighbors_4_ps.webp)
+
+Lastly, you can see the clustering of data points *only* by looking at the scatter plot. Here, points are colored by class membership.
+
+=== "Real domain"
+
+    The nearest neighbors plots for real domain embeddings may look something like this:
+    ![Scatter real](assets/scatter_plot_UMAP_mg.webp)
+
+=== "Fourier domain"
+
+    And the nearest neighbors plots for Fourier domain embeddings may look something like this:
+    ![Scatter FFT](assets/scatter_plot_UMAP_ps.webp)
+
+
 Your 2D embeddings are now ready for exploration and validation!
