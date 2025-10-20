@@ -85,8 +85,6 @@ mkdir -p output_dir
 
       *Depending on how many micrographs you have, this process may take several minutes to run.*
 
----
-
 ## 3. Generated Outputs
 
 The metadata-building command will produce a file named `micrograph_metadata.csv`, containing:

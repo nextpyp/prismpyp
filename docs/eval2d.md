@@ -77,41 +77,42 @@ Each inference run creates an `inference/` directory inside your chosen output p
 | `scatter_plot_<method>.webp` | 2D scatter plot (PCA, UMAP, or t-SNE projection) |
 | `thumbnail_plot_<method>_<ps or mg>.webp` | Same as above, but displays micrograph (`mg`) or power spectrum (`ps`) thumbnails instead of points |
 
-These visualizations are useful for spotting image-quality clusters or distinct artifact types.
+The following visualizations are useful for spotting image-quality clusters or distinct artifact types.
+
+### UMAP Distributions
+
+The UMAP distributions for real and Fourier domain embeddings should look like this:  
 
 === "Real domain"
 
-    The UMAP distribution for real domain embeddings should look like this:  
     ![UMAP for micrographs](assets/thumbnail_plot_umap_mg.webp)
 
 === "Fourier domain"
 
-    And the UMAP distribution for Fourier domain embeddings could look like this:  
     ![UMAP for power spectra](assets/thumbnail_plot_umap_ps.webp)
 
-The nearest neighbors plots are useful for exploring similar images in the original dimensions (512) of the embedding space.
+### Nearest Neighbors
+
+The nearest neighbors plots are useful for exploring similar images in the original dimensions (512) of the embedding space. They may look something like this:
 
 === "Real domain"
 
-    The nearest neighbors plots for real domain embeddings may look something like this:
     ![Nearest neighbors real](assets/nearest_neighbors_1_mg.webp)
 
 === "Fourier domain"
 
-    And the nearest neighbors plots for Fourier domain embeddings may look something like this:
     ![Nearest neighbors FFT](assets/nearest_neighbors_4_ps.webp)
+
+### Clustering
 
 Lastly, you can see the clustering of data points *only* by looking at the scatter plot. Here, points are colored by class membership.
 
 === "Real domain"
 
-    The nearest neighbors plots for real domain embeddings may look something like this:
     ![Scatter real](assets/scatter_plot_UMAP_mg.webp)
 
 === "Fourier domain"
 
-    And the nearest neighbors plots for Fourier domain embeddings may look something like this:
     ![Scatter FFT](assets/scatter_plot_UMAP_ps.webp)
-
 
 Your 2D embeddings are now ready for exploration and validation!
