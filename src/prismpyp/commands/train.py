@@ -79,7 +79,7 @@ def main(args):
 
     if args.dist_url == "env://" and args.world_size == -1:
         args.world_size = int(os.environ["WORLD_SIZE"])
-
+    
     args.distributed = args.world_size > 1 or args.multiprocessing_distributed
 
     ngpus_per_node = torch.cuda.device_count()
@@ -96,6 +96,12 @@ def main(args):
 
 
 def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
+    # Write all args to a .yaml file
+    if not args.multiprocessing_distributed or (args.multiprocessing_distributed 
+                                                and args.rank % ngpus_per_node == 0):
+        with open(os.path.join(args.output_path, 'training_config.yaml'), 'w') as file:
+            yaml.dump(vars(args), file)
+    
     writer = SummaryWriter(log_dir=os.path.join(tensorboard_dir, run_name))
     args.gpu = gpu
 
@@ -354,12 +360,6 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
                                                 and args.rank % ngpus_per_node == 0):
         plot(epoch_losses, args, 'Total Loss', 'Total Loss', 'total_loss.webp')
         plot(collapse_level, args, 'Collapse Level', 'Collapse Level', 'collapse_level.webp')
-        
-    # Write all args to a .yaml file
-    if not args.multiprocessing_distributed or (args.multiprocessing_distributed 
-                                                and args.rank % ngpus_per_node == 0):
-        with open(os.path.join(args.output_path, 'training_config.yaml'), 'w') as file:
-            yaml.dump(vars(args), file)
             
 
 def plot(arr, args, label, title, save_title):
