@@ -80,201 +80,245 @@ def main(args):
         main_worker(args.gpu, ngpus_per_node, args)
         
 def main_worker(gpu, ngpus_per_node, args):
+    import os, builtins, shutil, concurrent.futures
+    import torch
+    import torch.distributed as dist
+    import torch.backends.cudnn as cudnn
+    import torch.nn as nn
+    from torchvision import transforms
+    from PIL import Image
+
     args.gpu = gpu
 
-    # suppress printing if not master
+    # figure out ranks early
+    if args.dist_url == "env://" and args.rank == -1:
+        args.rank = int(os.environ.get("RANK", 0))
+    if args.multiprocessing_distributed:
+        args.rank = args.rank * ngpus_per_node + gpu
+
+    is_dist = bool(args.distributed)
+    is_main_process = (not args.multiprocessing_distributed) or (args.rank % ngpus_per_node == 0)
+
+    # silence non-master prints for cleaner logs
     if args.multiprocessing_distributed and args.gpu != 0:
-        def print_pass(*args):
-            pass
-        builtins.print = print_pass
+        def _print_noop(*_a, **_k): pass
+        builtins.print = _print_noop
 
-    if args.gpu is not None:
-        print("Use GPU: {} for inference".format(args.gpu))
+    model = None
+    test_loader = None
 
-    if args.distributed:
-        if args.dist_url == "env://" and args.rank == -1:
-            args.rank = int(os.environ["RANK"])
-        if args.multiprocessing_distributed:
-            # For multiprocessing distributed training, rank needs to be the
-            # global rank among all the processes
-            args.rank = args.rank * ngpus_per_node + gpu
-        dist.init_process_group(backend=args.dist_backend, init_method=args.dist_url,
-                                world_size=args.world_size, rank=args.rank)
-        torch.distributed.barrier()
-    
-    # Create model
-    print("=> creating model '{}'".format(args.arch))
-    model = simsiam_builder.SimSiam(
-        args.arch,
-        args.dim, args.pred_dim,
-        use_checkpoint=False,
-        pretrained=False)
-    
-    if args.gpu is not None:
-        torch.cuda.set_device(args.gpu)
-        model = model.cuda(args.gpu)
-    
-    # Load pre-trained
-    if args.feature_extractor_weights:
-        if os.path.isfile(args.feature_extractor_weights):
-            print("=> loading checkpoint '{}'".format(args.feature_extractor_weights))
-            # checkpoint = torch.load(args.pretrained, map_location="cpu")
-            checkpoint = torch.load(args.feature_extractor_weights)
+    try:
+        if args.gpu is not None:
+            print(f"Use GPU: {args.gpu} for inference")
 
-            model.load_state_dict(checkpoint['state_dict'], strict=False)
-            
-            args.start_epoch = 0
-            # assert set(msg.missing_keys) == {"fc.weight", "fc.bias"}
+        if is_dist:
+            dist.init_process_group(
+                backend=args.dist_backend,
+                init_method=args.dist_url,
+                world_size=args.world_size,
+                rank=args.rank,
+                timeout=torch.timedelta(minutes=10),
+            )
+            if args.gpu is not None:
+                torch.cuda.set_device(args.gpu)
+            try:
+                dist.barrier()
+            except Exception:
+                pass
 
-            print("=> loaded pre-trained model '{}'".format(args.feature_extractor_weights))
-        else:
-            print("=> no checkpoint found at '{}'".format(args.feature_extractor_weights))
-    
-    if args.distributed:
-        # For multiprocessing distributed, DistributedDataParallel constructor
-        # should always set the single device scope, otherwise,
-        # DistributedDataParallel will use all available devices.
+        # ----- build model -----
+        print("=> creating model '{}'".format(args.arch))
+        model = simsiam_builder.SimSiam(
+            args.arch,
+            args.dim, args.pred_dim,
+            use_checkpoint=False,
+            pretrained=False
+        )
+
         if args.gpu is not None:
             torch.cuda.set_device(args.gpu)
-            model.cuda(args.gpu)
-            # When using a single GPU per process and per
-            # DistributedDataParallel, we need to divide the batch size
-            # ourselves based on the total number of GPUs we have
-            args.batch_size = int(args.batch_size / ngpus_per_node)
-            args.workers = int((args.workers + ngpus_per_node - 1) / ngpus_per_node)
-            model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
+            model = model.cuda(args.gpu)
+
+        # load weights
+        if args.feature_extractor_weights:
+            if os.path.isfile(args.feature_extractor_weights):
+                print("=> loading checkpoint '{}'".format(args.feature_extractor_weights))
+                checkpoint = torch.load(args.feature_extractor_weights, map_location="cpu")
+                model.load_state_dict(checkpoint['state_dict'], strict=False)
+                args.start_epoch = 0
+                print("=> loaded pre-trained model '{}'".format(args.feature_extractor_weights))
+            else:
+                print("=> no checkpoint found at '{}'".format(args.feature_extractor_weights))
+
+        # wrap for DDP if requested
+        if is_dist:
+            if args.gpu is not None:
+                torch.cuda.set_device(args.gpu)
+                model.cuda(args.gpu)
+                args.batch_size = max(1, int(args.batch_size // ngpus_per_node))
+                args.workers = int((args.workers + ngpus_per_node - 1) // ngpus_per_node)
+                model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=False)
+            else:
+                model.cuda()
+                model = torch.nn.parallel.DistributedDataParallel(model, find_unused_parameters=False)
+        elif args.gpu is not None:
+            torch.cuda.set_device(args.gpu)
+            model = model.cuda(args.gpu)
         else:
-            model.cuda()
-            # DistributedDataParallel will divide and allocate batch_size to all
-            # available GPUs if device_ids are not set
-            model = torch.nn.parallel.DistributedDataParallel(model)
-    elif args.gpu is not None:
-        torch.cuda.set_device(args.gpu)
-        model = model.cuda(args.gpu)
-    else:
-        # DataParallel will divide and allocate batch_size to all available GPUs
-        if args.arch.startswith('alexnet') or args.arch.startswith('vgg'):
-            model.features = torch.nn.DataParallel(model.features)
-            model.cuda()
-        else:
-            model = torch.nn.DataParallel(model).cuda()
-        
-    # Load inference dataset
-    
-    if args.use_fft:
+            # fallback to DP for multi-GPU single process
+            if args.arch.startswith('alexnet') or args.arch.startswith('vgg'):
+                model.features = torch.nn.DataParallel(model.features).cuda()
+            else:
+                model = torch.nn.DataParallel(model).cuda()
+
+        cudnn.benchmark = True
+
+        # ----- dataset -----
         augmentations = [
             transforms.Resize((224, 224)),
             transforms.ToTensor(),
         ]
-    else:
-        augmentations = [
-            transforms.Resize((224, 224)),
-            transforms.ToTensor(),
-        ]
-    
-    trainfiles = os.path.join(args.metadata_path, 'all_micrographs_list.micrographs')
-    assert os.path.exists(trainfiles), f"Micrographs list file {trainfiles} does not exist."
-    
-    test_dataset = MRCDataset(
-        trainfiles, 
-        transform=transforms.Compose(augmentations),
-        is_fft=args.use_fft,
-        webp_dir=os.path.join(args.metadata_path, 'webp'),
-        metadata_path=os.path.join(args.metadata_path, 'micrograph_metadata.csv'),
-    )
-        
-    test_loader = torch.utils.data.DataLoader(
-        test_dataset, batch_size=args.batch_size, shuffle=False,
-        num_workers=args.workers, pin_memory=True)
-        
-    if args.output_path and (not args.distributed or args.rank % ngpus_per_node == 0):
-        output_path = os.path.join(args.output_path, 'inference')
-        if not os.path.exists(output_path):
+
+        trainfiles = os.path.join(args.metadata_path, 'all_micrographs_list.micrographs')
+        assert os.path.exists(trainfiles), f"Micrographs list file {trainfiles} does not exist."
+
+        test_dataset = MRCDataset(
+            trainfiles,
+            transform=transforms.Compose(augmentations),
+            is_fft=args.use_fft,
+            webp_dir=os.path.join(args.metadata_path, 'webp'),
+            metadata_path=os.path.join(args.metadata_path, 'micrograph_metadata.csv'),
+        )
+
+        # no workers for safest teardown; if you raise workers, keep persistent_workers False
+        test_loader = torch.utils.data.DataLoader(
+            test_dataset, batch_size=args.batch_size, shuffle=False,
+            num_workers=0, pin_memory=True, persistent_workers=False
+        )
+
+        # prepare output dir once
+        output_path = None
+        if args.output_path and (not is_dist or is_main_process):
+            output_path = os.path.join(args.output_path, 'inference')
             os.makedirs(output_path, exist_ok=True)
-        if args.distributed:
-            dist.barrier(device_ids=[args.gpu])
-        
-    data_for_export = {}
-    
-    if args.evaluate:
-        if args.embedding_path is None:
-            all_embeddings = validate(test_loader, model, args)
-            filepath = os.path.join(output_path, 'embeddings.pth')
-            torch.save(all_embeddings, filepath)
-            print(f"Embeddings saved to {filepath}")
-        else:
-            all_embeddings = torch.load(args.embedding_path)
-        
-        # Convert embeddings to numpy array
-        all_embeddings = all_embeddings.cpu().numpy()
-        normed_embeddings = normalize(all_embeddings, axis=1)
-        
-        # Do KMeans clustering on the embeddings
-        actual_assignments = kmeans_clustering(args, normed_embeddings)
-        data_for_export['cluster_id'] = actual_assignments
-        
-        pca_reducer = PCA(n_components=100)
-        pca_fit = pca_reducer.fit_transform(normed_embeddings)
-        
-        umap_reducer = umap.UMAP(n_components=3, n_neighbors=args.num_neighbors, min_dist=args.min_dist_umap, random_state=args.seed)
-        umap_fit = umap_reducer.fit_transform(normed_embeddings)
-        data_for_export["umap_fit_x"] = umap_fit[:, 0]
-        data_for_export["umap_fit_y"] = umap_fit[:, 1]
-        data_for_export["umap_fit_z"] = umap_fit[:, 2]
-        
-        if len(normed_embeddings) > 1000:
-            tsne_reducer = TSNE(n_components=3, perplexity=args.num_neighbors, verbose=1, random_state=args.seed, n_iter_without_progress=1000)
-            tsne_fit = tsne_reducer.fit_transform(normed_embeddings)
-            data_for_export["tsne_fit_x"] = tsne_fit[:, 0]
-            data_for_export["tsne_fit_y"] = tsne_fit[:, 1]
-            data_for_export["tsne_fit_z"] = tsne_fit[:, 2]
-        else:
-            print("Skipping t-SNE since there are less than 1000 samples.")
-            
-        # Save metadata in prep for exporting
-        data_for_export['image_thumbnails'] = []
-        data_for_export['micrograph_name'] = []
-        for idx in test_dataset.file_paths:
-            data_for_export['image_thumbnails'].append(idx)
-            data_for_export['micrograph_name'].append(os.path.basename(idx))
-            
-        data_for_export_df = pd.DataFrame(data_for_export)
-        data_for_export_df = data_for_export_df.merge(test_dataset.metadata, on='micrograph_name', how='inner')
-        data_for_export_df['embeddings'] = normed_embeddings.tolist()
-        print(data_for_export_df.columns)
-        
-        # Save data_for_export as zip file
-        if args.output_path and (not args.distributed or args.rank % ngpus_per_node == 0):
-            path_to_save = os.path.join(output_path, 'data_for_export.parquet')
-            data_for_export_df.to_parquet(path_to_save, compression='gzip')
-            print(f"Data for export saved to {path_to_save}")
-        
-        thumbnail_dir = os.path.join(output_path, 'thumbnail_images')
-        if os.path.exists(thumbnail_dir):
-            shutil.rmtree(thumbnail_dir)
-        os.makedirs(thumbnail_dir)
-        
-        # Save images to zip file
-        def process_with_webp(img_path):
-            basename = img_path #os.path.basename(img_path)
-            ctf_file = os.path.join(webp_dir, basename + '_ctffit.webp')
-            mg_file = os.path.join(webp_dir, basename + '.webp')
-            
-            if os.path.exists(ctf_file) and os.path.exists(mg_file):
-                ctf_img = Image.open(ctf_file)
-                mg_img = Image.open(mg_file)
-                crop_and_stitch_imgs(ctf_img, mg_img, output_path, basename)
+        if is_dist:
+            try: dist.barrier()
+            except Exception: pass
 
-        if args.zip_images:
-            webp_dir = os.path.join(args.metadata_path, 'webp')
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.map(process_with_webp, test_dataset.file_paths)
+        data_for_export = {}
 
-            if args.output_path and (not args.distributed or args.rank % ngpus_per_node == 0):
-                dest = os.path.join(output_path, 'zipped_thumbnail_images')
-                shutil.make_archive(dest, 'gztar', thumbnail_dir)
-                print(f"Thumbnail images saved to {dest}")
-                shutil.rmtree(thumbnail_dir)
+        # ----- inference and embedding export -----
+        if args.evaluate:
+            if args.embedding_path is None:
+                all_embeddings = validate(test_loader, model, args)  # expected to handle DDP inside if needed
+                if output_path is not None:
+                    filepath = os.path.join(output_path, 'embeddings.pth')
+                    torch.save(all_embeddings, filepath)
+                    print(f"Embeddings saved to {filepath}")
+            else:
+                all_embeddings = torch.load(args.embedding_path)
+
+            # to numpy
+            all_embeddings = all_embeddings.cpu().numpy()
+            normed_embeddings = normalize(all_embeddings, axis=1)
+
+            # clustering and reducers
+            actual_assignments = kmeans_clustering(args, normed_embeddings)
+            data_for_export['cluster_id'] = actual_assignments
+
+            pca_reducer = PCA(n_components=100)
+            pca_fit = pca_reducer.fit_transform(normed_embeddings)  # pca_fit not saved, fine unless you want it
+
+            umap_reducer = umap.UMAP(n_components=3, n_neighbors=args.num_neighbors, min_dist=args.min_dist_umap, random_state=args.seed)
+            umap_fit = umap_reducer.fit_transform(normed_embeddings)
+            data_for_export["umap_fit_x"] = umap_fit[:, 0]
+            data_for_export["umap_fit_y"] = umap_fit[:, 1]
+            data_for_export["umap_fit_z"] = umap_fit[:, 2]
+
+            if len(normed_embeddings) > 1000:
+                tsne_reducer = TSNE(n_components=3, perplexity=args.num_neighbors, verbose=1, random_state=args.seed, n_iter_without_progress=1000)
+                tsne_fit = tsne_reducer.fit_transform(normed_embeddings)
+                data_for_export["tsne_fit_x"] = tsne_fit[:, 0]
+                data_for_export["tsne_fit_y"] = tsne_fit[:, 1]
+                data_for_export["tsne_fit_z"] = tsne_fit[:, 2]
+            else:
+                print("Skipping t-SNE since there are less than 1000 samples.")
+
+            # pack metadata for export
+            data_for_export['image_thumbnails'] = []
+            data_for_export['micrograph_name'] = []
+            for idx in test_dataset.file_paths:
+                data_for_export['image_thumbnails'].append(idx)
+                data_for_export['micrograph_name'].append(os.path.basename(idx))
+
+            data_for_export_df = pd.DataFrame(data_for_export)
+            data_for_export_df = data_for_export_df.merge(test_dataset.metadata, on='micrograph_name', how='inner')
+            data_for_export_df['embeddings'] = normed_embeddings.tolist()
+            print(data_for_export_df.columns)
+
+            if output_path is not None and (not is_dist or is_main_process):
+                path_to_save = os.path.join(output_path, 'data_for_export.parquet')
+                data_for_export_df.to_parquet(path_to_save, compression='gzip')
+                print(f"Data for export saved to {path_to_save}")
+
+            # optional thumbnails bundle
+            if args.zip_images and output_path is not None:
+                thumbnail_dir = os.path.join(output_path, 'thumbnail_images')
+                if os.path.exists(thumbnail_dir):
+                    shutil.rmtree(thumbnail_dir)
+                os.makedirs(thumbnail_dir, exist_ok=True)
+
+                def process_with_webp(img_path):
+                    basename = img_path
+                    webp_dir = os.path.join(args.metadata_path, 'webp')
+                    ctf_file = os.path.join(webp_dir, basename + '_ctffit.webp')
+                    mg_file = os.path.join(webp_dir, basename + '.webp')
+                    if os.path.exists(ctf_file) and os.path.exists(mg_file):
+                        ctf_img = Image.open(ctf_file)
+                        mg_img = Image.open(mg_file)
+                        crop_and_stitch_imgs(ctf_img, mg_img, output_path, basename)
+
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    executor.map(process_with_webp, test_dataset.file_paths)
+
+                if not is_dist or is_main_process:
+                    dest = os.path.join(output_path, 'zipped_thumbnail_images')
+                    shutil.make_archive(dest, 'gztar', thumbnail_dir)
+                    print(f"Thumbnail images saved to {dest}")
+                shutil.rmtree(thumbnail_dir, ignore_errors=True)
+
+        # final sync before teardown
+        if is_dist:
+            try: dist.barrier()
+            except Exception: pass
+
+    except KeyboardInterrupt:
+        if is_main_process:
+            print("Caught KeyboardInterrupt. Cleaning up...")
+        raise
+    finally:
+        # quiet CUDA work then destroy process group
+        try:
+            if model is not None:
+                try: model.cpu()
+                except Exception: pass
+                del model
+            if torch.cuda.is_available():
+                try: torch.cuda.synchronize()
+                except Exception: pass
+                try: torch.cuda.empty_cache()
+                except Exception: pass
+        except Exception:
+            pass
+
+        if is_dist and dist.is_initialized():
+            try: dist.barrier()
+            except Exception: pass
+            try: dist.destroy_process_group()
+            except Exception: pass
+
+        return
+
 
 
 def crop_and_stitch_imgs(image1, image2, output_path, basename):

@@ -254,6 +254,7 @@ def main_worker(gpu, ngpus_per_node, args):
 def plot_projections(projection, actual_assignments, title, path_to_save, cmap, args, ngpus_per_node, num_neighbors=None, min_dist_umap=None):
     plt.scatter(projection[:, 0], projection[:, 1], c=actual_assignments, cmap=cmap, s=10, alpha=0.8)
     plt.title(title)
+    plt.gca().legend()
     num_neighbors = args.num_neighbors if num_neighbors is None else num_neighbors
     min_dist_umap = args.min_dist_umap if min_dist_umap is None else min_dist_umap
     title = title.split(" ")[0]
