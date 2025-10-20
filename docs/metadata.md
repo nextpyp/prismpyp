@@ -40,18 +40,14 @@ By taking the intersection between ```fft_good_export.parquet``` and ```real_goo
 
 ## 2. Build Metadata Table
 
-Before starting, create a directory to store all generated outputs:
+Before starting, create directories to store the metadata and all generated outputs:
 
 ```bash
+mkdir -p metadata
 mkdir -p output_dir
 ```
 
 === "nextPYP"
-
-      - Create an output directory for nextPYP-derived metadata:
-         ```bash
-         mkdir -p metadata_from_nextpyp
-         ```
 
       - Run the following command to assemble metadata from nextPYP preprocessing results:
          ```bash
@@ -65,9 +61,7 @@ mkdir -p output_dir
 
 === "cryoSPARC"
 
-      To build metadata directly from **cryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
-
-      For the test dataset (EMPIAR-10379), the deposited data already contains motion corrected micrographs, so you can skip motion correction.
+      > To build metadata directly from **cryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs. For EMPIAR-10379, the deposited data already contains motion corrected micrographs, so you can skip motion correction.
 
       - Export the outputs of the following jobs and note their locations:
 
@@ -75,11 +69,6 @@ mkdir -p output_dir
          - **Patch CTF Estimation** → `J2`
          - **CTFFIND4** → `J3`
          - cryoSPARC project directory → `/cryosparc/output/dir`
-
-      - Create the metadata directory:
-         ```bash
-         mkdir -p metadata_from_cryosparc
-         ```
 
       - Build the metadata table:
          ```bash
