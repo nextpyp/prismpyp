@@ -35,6 +35,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
 
     # Positional arguments
     # parser.add_argument('--micrographs-list', metavar='DIR', help='list of micrographs')
+    parser.add_argument('--output-path', metavar='DIR', help='path to output directory')
     parser.add_argument('--metadata-path', metavar='METADATA_PATH', help='path to metadata file')
     parser.add_argument('--embedding-path', metavar='EMBEDDING_PATH', nargs='?', default=None,
                         help='optional path to precomputed embeddings')
