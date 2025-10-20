@@ -96,271 +96,326 @@ def main(args):
 
 
 def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
-    # Write all args to a .yaml file
-    if not args.multiprocessing_distributed or (args.multiprocessing_distributed 
-                                                and args.rank % ngpus_per_node == 0):
-        with open(os.path.join(args.output_path, 'training_config.yaml'), 'w') as file:
-            yaml.dump(vars(args), file)
-    
-    writer = SummaryWriter(log_dir=os.path.join(tensorboard_dir, run_name))
+    import os, math, yaml, builtins
+    import numpy as np
+    import torch
+    import torch.nn as nn
+    import torch.distributed as dist
+    import torch.backends.cudnn as cudnn
+    from torch.utils.tensorboard import SummaryWriter
+    from torchvision import transforms
+
+    # identify ranks early
     args.gpu = gpu
+    if args.dist_url == "env://" and args.rank == -1:
+        args.rank = int(os.environ.get("RANK", 0))
+    if args.multiprocessing_distributed:
+        args.rank = args.rank * ngpus_per_node + gpu
+    is_dist = bool(args.distributed)
+    is_main_process = (not args.multiprocessing_distributed) or (args.rank % ngpus_per_node == 0)
 
-    # suppress printing if not master
-    if args.multiprocessing_distributed and args.gpu != 0:
-        def print_pass(*args):
-            pass
-        builtins.print = print_pass
+    writer = None
+    model = None
+    train_loader = None
+    train_sampler = None
 
-    if args.gpu is not None:
-        print("Use GPU: {} for training".format(args.gpu))
+    try:
+        # only main process writes the config and logs to TB
+        if is_main_process:
+            os.makedirs(os.path.join(args.output_path, "checkpoints"), exist_ok=True)
+            with open(os.path.join(args.output_path, "training_config.yaml"), "w") as f:
+                yaml.dump(vars(args), f)
 
-    if args.distributed:
-        if args.dist_url == "env://" and args.rank == -1:
-            args.rank = int(os.environ["RANK"])
-        if args.multiprocessing_distributed:
-            # For multiprocessing distributed training, rank needs to be the
-            # global rank among all the processes
-            args.rank = args.rank * ngpus_per_node + gpu
-        dist.init_process_group(backend=args.dist_backend, init_method=args.dist_url,
-                                world_size=args.world_size, rank=args.rank)
-        torch.distributed.barrier(device_ids=[args.gpu])
-    
-    # create model
-    assert 'resnet' in args.arch, "Only ResNet models are supported."
-    print("=> creating model '{}'".format(args.arch))
-    if args.resume is not None or args.pretrained:
-        is_pretrained = True
-    else:
-        is_pretrained = False
-    model = simsiam_builder.SimSiam(
-        args.arch,
-        args.dim, args.pred_dim,
-        use_checkpoint=True,
-        pretrained=is_pretrained)
+        if is_main_process:
+            writer = SummaryWriter(log_dir=os.path.join(tensorboard_dir, run_name))
 
-    # infer learning rate before changing batch size
-    init_lr = args.lr * args.batch_size / 256
+        # silence non-master prints to keep logs readable
+        if args.multiprocessing_distributed and args.gpu != 0:
+            def _print_noop(*_a, **_k): pass
+            builtins.print = _print_noop
 
-    if args.distributed:
-        # Apply SyncBN
-        model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-        # For multiprocessing distributed, DistributedDataParallel constructor
-        # should always set the single device scope, otherwise,
-        # DistributedDataParallel will use all available devices.
         if args.gpu is not None:
+            print(f"Use GPU: {args.gpu} for training")
+        
+        if is_dist:
+            dist.init_process_group(
+                backend=args.dist_backend,
+                init_method=args.dist_url,
+                world_size=args.world_size,
+                rank=args.rank,
+                timeout=torch.timedelta(minutes=10),
+            )
+            print(f"Initialized distributed process group: rank {args.rank}/{args.world_size}.")
+            # ensure CUDA device is set before any collective work
+            if args.gpu is not None:
+                torch.cuda.set_device(args.gpu)
+            print("Done 2")
+            
+            try:
+                dist.barrier()
+            except Exception:
+                print("A rank lagged during initial barrier.")
+                pass  # do not fail if a rank lagged during warmup
+        
+        # build model
+        assert 'resnet' in args.arch, "Only ResNet models are supported."
+        print(f"=> creating model '{args.arch}'")
+        is_pretrained = bool(args.resume is not None or args.pretrained)
+
+        model = simsiam_builder.SimSiam(
+            args.arch,
+            args.dim, args.pred_dim,
+            use_checkpoint=True,
+            pretrained=is_pretrained,
+        )
+
+        init_lr = args.lr * args.batch_size / 256.0
+
+        if is_dist:
+            model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
+            if args.gpu is not None:
+                torch.cuda.set_device(args.gpu)
+                model.cuda(args.gpu)
+                # shard batch and workers per process
+                args.batch_size = max(1, int(args.batch_size // ngpus_per_node))
+                args.workers = int((args.workers + ngpus_per_node - 1) // ngpus_per_node)
+                model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=False)
+            else:
+                model.cuda()
+                model = torch.nn.parallel.DistributedDataParallel(model, find_unused_parameters=False)
+        elif args.gpu is not None:
             torch.cuda.set_device(args.gpu)
-            model.cuda(args.gpu)
-            # When using a single GPU per process and per
-            # DistributedDataParallel, we need to divide the batch size
-            # ourselves based on the total number of GPUs we have
-            args.batch_size = int(args.batch_size / ngpus_per_node)
-            args.workers = int((args.workers + ngpus_per_node - 1) / ngpus_per_node)
-            model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
+            model = model.cuda(args.gpu)
         else:
-            model.cuda()
-            # DistributedDataParallel will divide and allocate batch_size to all
-            # available GPUs if device_ids are not set
-            model = torch.nn.parallel.DistributedDataParallel(model)
-    elif args.gpu is not None:
-        torch.cuda.set_device(args.gpu)
-        model = model.cuda(args.gpu)
-        # comment out the following line for debugging
-        # raise NotImplementedError("Only DistributedDataParallel is supported.")
-    else:
-        # AllGather implementation (batch shuffle, queue update, etc.) in
-        # this code only supports DistributedDataParallel.
-        raise NotImplementedError("Only DistributedDataParallel is supported.")
-    print(model) # print model after SyncBatchNorm
+            raise NotImplementedError("Only DistributedDataParallel is supported.")
 
-    # define loss function (criterion) and optimizer
-    criterion = nn.CosineSimilarity(dim=1).cuda(args.gpu)
+        print(model)  # after SyncBN
 
-    if args.fix_pred_lr:
-        if isinstance(model, torch.nn.DataParallel) or \
-            isinstance(model, torch.nn.parallel.DistributedDataParallel):
-            optim_params = [{'params': model.module.backbone.parameters(), 'fix_lr': False},
-                            {'params': model.module.reducer.parameters(), 'fix_lr': False},
-                            {'params': model.module.projector.parameters(), 'fix_lr': False},
-                            {'params': model.module.predictor.parameters(), 'fix_lr': True}]
+        criterion = nn.CosineSimilarity(dim=1).cuda(args.gpu if args.gpu is not None else 0)
+
+        if args.fix_pred_lr:
+            if isinstance(model, (torch.nn.DataParallel, torch.nn.parallel.DistributedDataParallel)):
+                optim_params = [
+                    {'params': model.module.backbone.parameters(),  'fix_lr': False},
+                    {'params': model.module.reducer.parameters(),   'fix_lr': False},
+                    {'params': model.module.projector.parameters(), 'fix_lr': False},
+                    {'params': model.module.predictor.parameters(), 'fix_lr': True},
+                ]
+            else:
+                optim_params = [
+                    {'params': model.backbone.parameters(),  'fix_lr': False},
+                    {'params': model.reducer.parameters(),   'fix_lr': False},
+                    {'params': model.projector.parameters(), 'fix_lr': False},
+                    {'params': model.predictor.parameters(), 'fix_lr': True},
+                ]
         else:
-            optim_params = [{'params': model.backbone.parameters(), 'fix_lr': False},
-                            {'params': model.reducer.parameters(), 'fix_lr': False},
-                            {'params': model.projector.parameters(), 'fix_lr': False},
-                            {'params': model.predictor.parameters(), 'fix_lr': True}]
-    else:
-        optim_params = model.parameters()
+            optim_params = model.parameters()
 
-    optimizer = torch.optim.SGD(optim_params, init_lr,
-                                momentum=args.momentum,
-                                weight_decay=args.weight_decay)
+        optimizer = torch.optim.SGD(
+            optim_params, init_lr,
+            momentum=args.momentum,
+            weight_decay=args.weight_decay,
+        )
 
-    cudnn.benchmark = True
+        cudnn.benchmark = True
 
-    # Data loading code
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                     std=[0.229, 0.224, 0.225])
-    
-    trainfiles = os.path.join(args.metadata_path, 'all_micrographs_list.micrographs')
-    assert os.path.exists(trainfiles), f".micrographs list does not exist at {args.metadata_path}."
-    
-    # MoCo v2's aug: similar to SimCLR https://arxiv.org/abs/2002.05709
-    # Load pixel size from metadata folder
-    with open(os.path.join(args.metadata_path, 'pixel_size.txt'), 'r') as f:
-        pixel_size = float(f.readline().strip())
-    
+        # -------- dataset and loader --------
+        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                         std=[0.229, 0.224, 0.225])
 
-    if args.use_fft:
-        augmentation = [
-            transforms.Resize((224, 224)),  # Resize image to 224x224
-            cryst_xforms.HPF(
-                pixel_size=pixel_size * (224/512), 
-                cutoff=20 * (224/512), 
-                prob=0.5
-            ),
-            cryst_xforms.RandomCLAHEOrSharpen(prob_clahe=0.3, prob_sharpen=0.3),
-            transforms.RandomResizedCrop(224, (0.9, 1)),  # Keep image the same dimension
-            transforms.RandomHorizontalFlip(0.5),
-            transforms.RandomVerticalFlip(0.5),
-            transforms.ToTensor(),
-            # cryst_xforms.RandomRadialMask(prob=0.5),
-            cryst_xforms.RandomRadialStretch(prob=0.5)
-            # normalize,
-        ]
-    else:
-        augmentation = [
-            transforms.RandomResizedCrop(224, scale=(0.8, 1)),
-            # cryst_xforms.HistogramEqualization(),
-            transforms.RandomHorizontalFlip(0.5),
-            transforms.RandomVerticalFlip(0.5),
-            transforms.RandomRotation(60),
-            transforms.ColorJitter(brightness=0.2, 
-                                    contrast=0.2, 
-                                    saturation=0.2, 
-                                    hue=0.2),  # not strengthened
-            simsiam_loader.GaussianBlur([.1, .5]),
-            transforms.ToTensor(),
-        ]
-    
-    train_dataset = MRCDataset(
-        mrc_dir=trainfiles, 
-        transform=simsiam_loader.TwoCropsTransform(transforms.Compose(augmentation)),
-        webp_dir=os.path.join(args.metadata_path, 'webp'),
-        is_fft=args.use_fft,
-        metadata_path=os.path.join(args.metadata_path, 'micrograph_metadata.csv'),
-        pixel_size=pixel_size
-    )
+        trainfiles = os.path.join(args.metadata_path, 'all_micrographs_list.micrographs')
+        assert os.path.exists(trainfiles), f".micrographs list does not exist at {args.metadata_path}."
 
-    if args.distributed:
-        train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
-    else:
-        train_sampler = None
+        with open(os.path.join(args.metadata_path, 'pixel_size.txt'), 'r') as f:
+            pixel_size = float(f.readline().strip())
 
-    train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=args.batch_size, shuffle=(train_sampler is None),
-        num_workers=0, pin_memory=False, sampler=train_sampler, drop_last=True)
-    
-    epoch_losses = []
-    collapse_level = []
-    
-    best_loss = float('inf')
-    best_collapse_level = float('inf')
-    is_best = False
-    is_lowest_collapse = False
-    is_last = False
-    
-    # For early stopping
-    patience = args.epochs
-    epochs_no_improve = 0
-    avg_output_std = 0
-    w = 0.9
-    for epoch in range(args.start_epoch, args.epochs):
-        if args.distributed:
-            train_sampler.set_epoch(epoch)
-        adjust_learning_rate(optimizer, init_lr, epoch, args)
-
-        # train for one epoch
-        epoch_loss, this_avg_output_std = train(train_loader, model, criterion, optimizer, epoch, w, args, writer)
-        avg_output_std = w * avg_output_std + (1 - w) * this_avg_output_std
-        epoch_losses.append(np.mean(np.array(epoch_loss), axis=None))
-        
-        # calculate collapse
-        this_collapse_level = max(0.0, 1 - math.sqrt(args.dim) * avg_output_std)
-        print("[Epoch: {}] Collapse Level: {}/1.00".format(epoch, this_collapse_level))
-        collapse_level.append(this_collapse_level)
-        
-        if writer is not None:
-            # Log total loss and collapse level to TensorBoard
-            writer.add_scalar("Collapse/Level", this_collapse_level, epoch)
-            
-        this_loss = np.mean(np.array(epoch_loss), axis=None)
-        if this_loss < best_loss:
-            best_loss = this_loss
-            is_best = True
-            epochs_no_improve = 0
+        if args.use_fft:
+            augmentation = [
+                transforms.Resize((224, 224)),
+                cryst_xforms.HPF(pixel_size=pixel_size * (224/512), cutoff=20 * (224/512), prob=0.5),
+                cryst_xforms.RandomCLAHEOrSharpen(prob_clahe=0.3, prob_sharpen=0.3),
+                transforms.RandomResizedCrop(224, (0.9, 1.0)),
+                transforms.RandomHorizontalFlip(0.5),
+                transforms.RandomVerticalFlip(0.5),
+                transforms.ToTensor(),
+                cryst_xforms.RandomRadialStretch(prob=0.5),
+            ]
         else:
-            epochs_no_improve += 1
-        
-        if epoch == args.epochs - 1:
-            is_last = True
-            
-        if this_collapse_level < best_collapse_level:
-            best_collapse_level = this_collapse_level
-            is_lowest_collapse = True
-        
-        
-        # Save best epoch
-        if not args.multiprocessing_distributed or (args.multiprocessing_distributed
-                and args.rank % ngpus_per_node == 0):
-            filename = os.path.join(args.output_path, 'checkpoints', 'checkpoint_{:04d}.pth.tar'.format(epoch))
-            save_checkpoint({
-                'epoch': epoch + 1,
-                'arch': args.arch,
-                'state_dict': model.state_dict(),
-                'optimizer' : optimizer.state_dict(),
-            }, is_best=is_best, is_last=is_last, is_lowest_collapse=is_lowest_collapse, filename=filename)
-            
-            # Record which epoch was the best and which has the lowest collapse
-            if is_best:
-                best_epoch = epoch
-                with open(os.path.join(args.output_path, 'checkpoints', 'best_epoch.txt'), 'w') as f:
-                    f.write(f"Best epoch: {best_epoch}, loss: {best_loss}, collapse level: {this_collapse_level}")
-            if is_lowest_collapse:
-                best_collapse_epoch = epoch
-                with open(os.path.join(args.output_path, 'checkpoints', 'best_collapse_epoch.txt'), 'w') as f:
-                    f.write(f"Best collapse epoch: {best_collapse_epoch}, loss: {this_loss}, collapse level: {best_collapse_level}")
-        
-        if epochs_no_improve >= patience:
-            # Wait for all processes to reach this point
-            if args.distributed:
-                torch.distributed.barrier(device_ids=[args.gpu])
-        
-            print(f'Early stopping at epoch {epoch}.')
-            filename = os.path.join(args.output_path, 'checkpoints', 'checkpoint_{:04d}.pth.tar'.format(epoch))
-            # Save checkpoint before exiting
-            save_checkpoint({
-                'epoch': epoch + 1,
-                'arch': args.arch,
-                'state_dict': model.state_dict(),
-                'optimizer' : optimizer.state_dict(),
-            }, is_best=False, is_last=True, is_lowest_collapse=False, filename=filename)
-            
-            # Wait for all processes to reach this point
-            if args.distributed:
-                torch.distributed.barrier(device_ids=[args.gpu])
-            break
-    
-    # Ensure all processes reach this point
-    if args.distributed:
-        torch.distributed.barrier(device_ids=[args.gpu])
-    
-    # Close tensorboard
-    writer.close()
+            augmentation = [
+                transforms.RandomResizedCrop(224, scale=(0.8, 1.0)),
+                transforms.RandomHorizontalFlip(0.5),
+                transforms.RandomVerticalFlip(0.5),
+                transforms.RandomRotation(60),
+                transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),
+                simsiam_loader.GaussianBlur([.1, .5]),
+                transforms.ToTensor(),
+            ]
 
-    if not args.multiprocessing_distributed or (args.multiprocessing_distributed 
-                                                and args.rank % ngpus_per_node == 0):
-        plot(epoch_losses, args, 'Total Loss', 'Total Loss', 'total_loss.webp')
-        plot(collapse_level, args, 'Collapse Level', 'Collapse Level', 'collapse_level.webp')
-            
+        train_dataset = MRCDataset(
+            mrc_dir=trainfiles,
+            transform=simsiam_loader.TwoCropsTransform(transforms.Compose(augmentation)),
+            webp_dir=os.path.join(args.metadata_path, 'webp'),
+            is_fft=args.use_fft,
+            metadata_path=os.path.join(args.metadata_path, 'micrograph_metadata.csv'),
+            pixel_size=pixel_size,
+        )
+
+        if is_dist:
+            train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset, shuffle=True, drop_last=True)
+        else:
+            train_sampler = None
+
+        # keep workers=0 or set persistent_workers=False if you raise workers
+        train_loader = torch.utils.data.DataLoader(
+            train_dataset,
+            batch_size=args.batch_size,
+            shuffle=(train_sampler is None),
+            num_workers=0,
+            pin_memory=False,
+            sampler=train_sampler,
+            drop_last=True,
+            persistent_workers=False if args.workers else False,
+        )
+
+        # -------- training loop --------
+        epoch_losses = []
+        collapse_level = []
+        best_loss = float('inf')
+        best_collapse_level = float('inf')
+        is_best = False
+        is_lowest_collapse = False
+        is_last = False
+
+        patience = args.epochs
+        epochs_no_improve = 0
+        avg_output_std = 0.0
+        w = 0.9
+
+        for epoch in range(args.start_epoch, args.epochs):
+            if is_dist and train_sampler is not None:
+                train_sampler.set_epoch(epoch)
+
+            adjust_learning_rate(optimizer, init_lr, epoch, args)
+
+            epoch_loss, this_avg_output_std = train(train_loader, model, criterion, optimizer, epoch, w, args, writer if is_main_process else None)
+            avg_output_std = w * avg_output_std + (1 - w) * this_avg_output_std
+            epoch_losses.append(float(np.mean(np.array(epoch_loss))))
+            this_collapse_level = max(0.0, 1 - math.sqrt(args.dim) * avg_output_std)
+            if is_main_process:
+                print(f"[Epoch: {epoch}] Collapse Level: {this_collapse_level}/1.00")
+            collapse_level.append(this_collapse_level)
+
+            if writer is not None and is_main_process:
+                writer.add_scalar("Collapse/Level", this_collapse_level, epoch)
+
+            this_loss = float(np.mean(np.array(epoch_loss)))
+            if this_loss < best_loss:
+                best_loss = this_loss
+                is_best = True
+                epochs_no_improve = 0
+            else:
+                epochs_no_improve += 1
+
+            if epoch == args.epochs - 1:
+                is_last = True
+            if this_collapse_level < best_collapse_level:
+                best_collapse_level = this_collapse_level
+                is_lowest_collapse = True
+
+            if is_main_process:
+                filename = os.path.join(args.output_path, 'checkpoints', f'checkpoint_{epoch:04d}.pth.tar')
+                save_checkpoint({
+                    'epoch': epoch + 1,
+                    'arch': args.arch,
+                    'state_dict': model.state_dict(),
+                    'optimizer': optimizer.state_dict(),
+                }, is_best=is_best, is_last=is_last, is_lowest_collapse=is_lowest_collapse, filename=filename)
+
+                if is_best:
+                    with open(os.path.join(args.output_path, 'checkpoints', 'best_epoch.txt'), 'w') as f:
+                        f.write(f"Best epoch: {epoch}, loss: {best_loss}, collapse level: {this_collapse_level}")
+                if is_lowest_collapse:
+                    with open(os.path.join(args.output_path, 'checkpoints', 'best_collapse_epoch.txt'), 'w') as f:
+                        f.write(f"Best collapse epoch: {epoch}, loss: {this_loss}, collapse level: {best_collapse_level}")
+
+            # reset epoch flags
+            is_best = False
+            is_lowest_collapse = False
+
+            if epochs_no_improve >= patience:
+                if is_dist:
+                    try: dist.barrier()
+                    except Exception: pass
+                if is_main_process:
+                    print(f"Early stopping at epoch {epoch}.")
+                    filename = os.path.join(args.output_path, 'checkpoints', f'checkpoint_{epoch:04d}.pth.tar')
+                    save_checkpoint({
+                        'epoch': epoch + 1,
+                        'arch': args.arch,
+                        'state_dict': model.state_dict(),
+                        'optimizer': optimizer.state_dict(),
+                    }, is_best=False, is_last=True, is_lowest_collapse=False, filename=filename)
+                if is_dist:
+                    try: dist.barrier()
+                    except Exception: pass
+                break
+
+        if is_dist:
+            try: dist.barrier()
+            except Exception: pass
+
+        if writer is not None and is_main_process:
+            writer.flush()
+            writer.close()
+            writer = None
+
+        if is_main_process:
+            plot(epoch_losses, args, 'Total Loss', 'Total Loss', 'total_loss.webp')
+            plot(collapse_level, args, 'Collapse Level', 'Collapse Level', 'collapse_level.webp')
+
+        if is_dist:
+            try: dist.barrier()
+            except Exception: pass
+
+    except KeyboardInterrupt:
+        if is_main_process:
+            print("Caught KeyboardInterrupt. Cleaning up...")
+        raise  # let torchrun register nonzero exit
+    finally:
+        # Best-effort quiet down CUDA and DDP before destroying the group
+        try:
+            if model is not None:
+                try:
+                    model.cpu()  # release NCCL buckets
+                except Exception:
+                    pass
+                del model
+            torch.cuda.synchronize() if torch.cuda.is_available() else None
+            torch.cuda.empty_cache() if torch.cuda.is_available() else None
+        except Exception:
+            pass
+
+        # close writer on any leftover path
+        try:
+            if writer is not None:
+                writer.close()
+        except Exception:
+            pass
+
+        # final barrier then destroy process group
+        if is_dist and dist.is_initialized():
+            try:
+                dist.barrier()
+            except Exception:
+                pass
+            try:
+                dist.destroy_process_group()
+            except Exception:
+                pass
+
+        # return explicitly to avoid accidental sys.exit in launchers
+        return
+    
 
 def plot(arr, args, label, title, save_title):
     
