@@ -96,6 +96,37 @@ You can repeat the same steps for Fourier-domain inputs.
       --which-embedding umap
    ```
 
+## Expected Results
+
+When you first launch Phoenix, you will be greeted by a landing page like this:
+![Phoenix landing page](assets/phoenix_landing_page.png)
+
+Click on the `image_embeddings` link (boxed in red) to load the interactive visualization. 
+
+The interactive visualization for this dataset may look as follows:
+
+=== "Real domain"
+
+   ![Phoenix real](assets/phoenix_real.png)
+
+=== "Fourier domain"
+
+   ![Phoenix fft](assets/phoenix_fft.png)
+
+To navigate the embedding space, click on the `Move` box (boxed in red) and click and drag your mouse across the screen. When you're ready to make a selection to view/download points, click the `Select` box (boxed in green).
+
+The `Select` box will allow you to view the micrograph and power spectra thumbnails for the selected subset of points. This may look as follows:
+
+=== "Real domain"
+
+   ![Phoenix real select](assets/phoenix_real_selection.png)
+
+=== "Fourier domain"
+
+   ![Phoenix fft select](assets/phoenix_fft_selection.png)
+
+To download the selection as a `.parquet` file, click on the `Export` box (boxed in red).
+
 ### Lasso Selection and Output
 
 For both domains, interactive **lasso selections** will be saved as downloadable `.parquet` files:
