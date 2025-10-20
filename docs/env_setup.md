@@ -54,24 +54,14 @@ For the best performance, Phoenix should be installed and run **locally** (not o
 
     Phoenix provides an intuitive interface to explore embeddings, filter high-quality micrographs, and export subsets for further refinement.
 
-Install Phoenix using either the provided Conda environment file or `pip` (make sure Conda and pip are installed in your local environment).
+Install Phoenix using `pip` (make sure Conda and pip are installed in your local environment).
 
-=== "Conda YAML Installation"
-
-    ```bash
-    wget https://github.com/nextpyp/prismpyp/blob/main/phoenix.yml -O phoenix.yml
-    conda env create -f phoenix.yml -n phoenix
-    conda activate phoenix
-    ```
-
-=== "Pip Installation"
-
-    ```bash
-    conda create -n phoenix -c conda-forge python=3.8 pip
-    conda activate phoenix
-    wget https://github.com/nextpyp/prismpyp/blob/main/requirements-phoenix.txt -O requirements-phoenix.txt
-    python -m pip install -r requirements-phoenix.txt
-    ```
+```bash
+conda create -n phoenix -c conda-forge python=3.8 pip
+conda activate phoenix
+wget https://github.com/nextpyp/prismpyp/blob/main/requirements-phoenix.txt -O requirements-phoenix.txt
+python -m pip install -r requirements-phoenix.txt
+```
 
 
 Your environments are now ready for use!
