@@ -20,7 +20,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
         pass
     
     parser.add_argument('--patch-ctf-file', type=str, 
-                        help='Path to cryoSPARC Patch CTF Estimation job exported .cs file')
+                        help='Path to cryoSPARC Manually Curate Exposures job exported .cs file')
     parser.add_argument('--ctffind-file', type=str, 
                         help='Path to cryoSPARC CTF Estimation job exported .cs file')
     parser.add_argument('--ctffind-dir', type=str,
