@@ -251,23 +251,63 @@ def main_worker(gpu, ngpus_per_node, args):
         
         return
         
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+import matplotlib.patches as mpatches
+from matplotlib.colors import ListedColormap
+
 def plot_projections(projection, actual_assignments, title, path_to_save, cmap, args, ngpus_per_node, num_neighbors=None, min_dist_umap=None):
-    plt.scatter(projection[:, 0], projection[:, 1], c=actual_assignments, cmap=cmap, s=10, alpha=0.8)
+    # Discretize colors to match classes
+    labels = np.asarray(actual_assignments)
+    unique_labels = np.unique(labels)
+    K = len(unique_labels)
+
+    # build a discrete colormap with K colors sampled from the provided cmap
+    discrete_colors = cmap(np.linspace(0, 1, K))
+    discrete_cmap = ListedColormap(discrete_colors)
+
+    # map each label to an index [0..K-1]
+    label_to_idx = {lab: i for i, lab in enumerate(unique_labels)}
+    color_indices = np.vectorize(label_to_idx.get)(labels)
+
+    # scatter using discrete indices so legend colors match exactly
+    scatter = plt.scatter(
+        projection[:, 0], projection[:, 1],
+        c=color_indices, cmap=discrete_cmap, s=10, alpha=0.8
+    )
+
+    # Legend: one patch per class using the same discrete colors
+    handles = [
+        mpatches.Patch(color=discrete_cmap(i), label=str(lab))
+        for i, lab in enumerate(unique_labels)
+    ]
+    leg = plt.legend(
+        handles=handles, title="Class",
+        loc='upper left', bbox_to_anchor=(1.02, 1), borderaxespad=0.
+    )
+
     plt.title(title)
-    plt.gca().legend()
+
+    # keep your args-derived params (even if unused here)
     num_neighbors = args.num_neighbors if num_neighbors is None else num_neighbors
     min_dist_umap = args.min_dist_umap if min_dist_umap is None else min_dist_umap
-    title = title.split(" ")[0]
-    save_title = f"scatter_plot_{title}.webp"
-    
+
+    base_title = title.split(" ")[0]
+    save_title = f"scatter_plot_{base_title}.webp"
+
     if not args.distributed or args.rank % ngpus_per_node == 0:
-        plt.savefig(os.path.join(path_to_save, save_title))
-        
-        plt.gca().set_title("")  # Remove title
-        plt.axis('off')  # Turn off axes
-        plt.gca().legend().remove()  # Remove legend
-        new_save_title = f"scatter_plot_{title}_no_labels.webp"
+        # labeled version
+        plt.savefig(os.path.join(path_to_save, save_title), bbox_inches='tight')
+
+        # no-label version (axes/title/legend removed)
+        plt.gca().set_title("")
+        plt.axis('off')
+        if leg is not None:
+            leg.remove()
+        new_save_title = f"scatter_plot_{base_title}_no_labels.webp"
         plt.savefig(os.path.join(path_to_save, new_save_title), bbox_inches='tight', pad_inches=0)
+
     plt.clf()
     
 
