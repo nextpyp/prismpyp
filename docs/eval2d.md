@@ -105,7 +105,7 @@ The nearest neighbors plots are useful for exploring similar images in the origi
 
 ### Clustering
 
-Lastly, you can see the clustering of data points *only* by looking at the scatter plot. Here, points are colored by class membership.
+Lastly, you can see the clustering of data points *only* by looking at the scatter plot. Here, points are colored by class membership, as showin in the legend on the right.
 
 === "Real domain"
 
