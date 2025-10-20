@@ -392,7 +392,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
 
         # Legend
         handles = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=cmap(i), markersize=10, label=f'Class {i}') for i in range(K)]
-        ax.legend(handles=handles, loc='upper right', bbox_to_anchor=(1.1, 1.05), title="Classes")
+        # ax.legend(handles=handles, loc='upper right', bbox_to_anchor=(1.1, 1.05), title="Classes")
 
         if is_wandb:
             wandb.log({f"scatter_plot_{method}_{suffix}": wandb.Image(fig)})
@@ -400,7 +400,6 @@ def get_scatter_plot_with_thumbnails_real_fft(
             fig.savefig(f"{path_to_save}/thumbnail_plot_{method}_{suffix}.webp")
             ax.axis('off')
             ax.set_title("")
-            ax.legend().remove()
             fig.savefig(f"{path_to_save}/thumbnail_plot_{method}_{suffix}_no_labels.webp", bbox_inches='tight', pad_inches=0, transparent=True)
 
         plt.close(fig)
@@ -488,7 +487,7 @@ def get_scatter_plot_with_thumbnails(
     handles = []
     for i in range(K):
         handles.append(plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=cmap(i), markersize=10, label=f'Class {i}'))
-    ax.legend(handles=handles, loc='upper right', bbox_to_anchor=(1.1, 1.05), title="Classes")
+    # ax.legend(handles=handles, loc='upper right', bbox_to_anchor=(1.1, 1.05), title="Classes")
     
     # Set aspect ratio and remove unnecessary whitespace
     if is_wandb:
@@ -498,7 +497,6 @@ def get_scatter_plot_with_thumbnails(
         
         ax.axis('off')  # Turn off axes
         ax.set_title("")  # Remove title
-        ax.legend().remove()  # Remove legend
         plt.savefig(f"{path_to_save}/thumbnail_plot_{method}_no_labels.webp", bbox_inches='tight', pad_inches=0)
     plt.clf()
 
