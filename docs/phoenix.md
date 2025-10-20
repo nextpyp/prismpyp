@@ -101,7 +101,7 @@ Launch the visualization
 When you first launch Phoenix, you will be greeted by a landing page like this:
 ![Phoenix landing page](assets/phoenix_landing_page.png)
 
-Click on the `image_embeddings` link (boxed in red) to load the interactive visualization. 
+Click on the `image_embeddings` link (red outline) to load the interactive visualization. 
 
 The interactive visualization for this dataset may look as follows:
 
@@ -113,7 +113,7 @@ The interactive visualization for this dataset may look as follows:
 
     ![Phoenix fft](assets/phoenix_fft.png)
 
-To navigate the embedding space, click on the `Move` box (boxed in red) and click and drag your mouse across the screen. When you're ready to make a selection to view/download points, click the `Select` box (boxed in green).
+To navigate the embedding space, click on the `Move` box (red outline) and click and drag your mouse across the screen. When you're ready to make a selection to view/download points, click the `Select` box (green outline).
 
 The `Select` box will allow you to view the micrograph and power spectra thumbnails for the selected subset of points. This may look as follows:
 
@@ -125,7 +125,7 @@ The `Select` box will allow you to view the micrograph and power spectra thumbna
 
     ![Phoenix fft select](assets/phoenix_fft_selection.png)
 
-To download the selection as a `.parquet` file, click on the `Export` box (boxed in red).
+To download the selection as a `.parquet` file, click on the `Export` box (red outline).
 
 ## Lasso Selection and Output
 
