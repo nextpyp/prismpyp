@@ -65,7 +65,7 @@ mkdir -p output_dir
 
 === "cryoSPARC"
 
-      To build metadata directly from **cryoSPARC** outputs, you’ll need data from the `Import`, `Patch CTF Estimation`, and `CTFFIND4` jobs.
+      To build metadata directly from **cryoSPARC** outputs, you’ll need data from the `Import`, `Manually Curate Exposures` (with outputs of `Patch CTF Estimation` as the inputted micrographs), and `CTFFIND4` jobs.
 
       For the test dataset (EMPIAR-10379), the deposited data already contains motion corrected micrographs, so you can skip motion correction.
 
@@ -74,6 +74,7 @@ mkdir -p output_dir
          - **Import Micrographs** → `J1`
          - **Patch CTF Estimation** → `J2`
          - **CTFFIND4** → `J3`
+         - **Manually Curate Exposures` → `J4`
          - cryoSPARC project directory → `/cryosparc/output/dir`
 
       - Create the metadata directory:
@@ -85,7 +86,7 @@ mkdir -p output_dir
          ```bash
          prismpyp metadata_cryosparc \
             --imported-dir "/cryosparc/output/dir/J1/imported" \
-            --patch-ctf-file "/cryosparc/output/dir/J2/J2_passthrough_exposures_accepted.cs" \
+            --patch-ctf-file "/cryosparc/output/dir/exports/groups/J4_exposures_accepted/J4_exposures_accepted_exported.cs" \
             --ctffind-dir "/cryosparc/output/dir/J3/ctffind_output" \
             --ctffind-file "/cryosparc/output/dir/exports/groups J3_exposures_success/J3_exposures_success_exported.cs" \
             --output-dir metadata_from_cryosparc
