@@ -21,23 +21,13 @@ If you prefer to train from scratch, you can omit the `--resume` flag in the com
 
 Train the SimSiam model on **real-space micrograph images**:
 
-=== "nextPYP"
-    ```bash
-    prismpyp train \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_nextpyp \
-      --resume pretrained_weights/checkpoint_0099.pth.tar \
-      --rank 0
-    ```
-
-=== "cryoSPARC"
-    ```bash
-    prismpyp train \
-      --output-path output_dir/real \
-      --metadata-path metadata_from_cryosparc \
-      --resume pretrained_weights/checkpoint_0099.pth.tar \
-      --rank 0
-    ```
+```bash
+prismpyp train \
+  --output-path output_dir/real \
+  --metadata-path metadata \
+  --resume pretrained_weights/checkpoint_0099.pth.tar \
+  --rank 0
+```
 
 !!! tip 
 
@@ -47,23 +37,13 @@ Train the SimSiam model on **real-space micrograph images**:
 
 For **Fourier-space inputs**, we just add the `--use-fft` flag and change the output path:
 
-=== "nextPYP"
-    ```bash
-    prismpyp train \
-      --output-path output_dir/fft \
-      --metadata-path metadata_from_nextpyp \
-      --resume pretrained_weights/checkpoint_0099.pth.tar \
-      --use-fft
-    ```
-
-=== "cryoSPARC"
-    ```bash
-    prismpyp train \
-      --output-path output_dir/fft \
-      --metadata-path metadata_from_cryosparc \
-      --resume pretrained_weights/checkpoint_0099.pth.tar \
-      --use-fft
-    ```
+```bash
+prismpyp train \
+  --output-path output_dir/fft \
+  --metadata-path metadata \
+  --resume pretrained_weights/checkpoint_0099.pth.tar \
+  --use-fft
+```
 
 ## 4. Notes on Checkpoints
 

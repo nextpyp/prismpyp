@@ -57,7 +57,7 @@ mkdir -p output_dir
          ```bash
          prismpyp metadata_nextpyp \
             --pkl-path example_data/pkl \
-            --output-dir metadata_from_nextpyp \
+            --output-dir metadata \
             --cryosparc-path example_data/J7_exposures_accepted_exported.cs
          ```
 
@@ -88,7 +88,7 @@ mkdir -p output_dir
             --patch-ctf-file "/cryosparc/output/dir/J2/J2_passthrough_exposures_accepted.cs" \
             --ctffind-dir "/cryosparc/output/dir/J3/ctffind_output" \
             --ctffind-file "/cryosparc/output/dir/exports/groups J3_exposures_success/J3_exposures_success_exported.cs" \
-            --output-dir metadata_from_cryosparc
+            --output-dir metadata
          ```
 
       *Depending on how many micrographs you have, this process may take several minutes to run.*
@@ -114,6 +114,3 @@ In addition, the following files are generated:
 - `pixel_size.txt` — microscope pixel size for this dataset  
 - `all_micrographs_list.micrographs` — list of all micrographs (without extensions)  
 - `webp/` — directory of `.webp` images for both micrographs and their CTFFIND4-derived power spectra
-<!-- 
-> For the remainder of this tutorial, we’ll assume you’re using the `metadata_from_nextpyp` directory.  
-> You can easily switch to another dataset by setting `--metadata-path` to `metadata_from_nextpyp` or `metadata_from_cryosparc`, depending on your source. -->
