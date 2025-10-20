@@ -24,23 +24,13 @@ mkdir intersection
 
 Run the following command to take the intersection between real and Fourier domain selections:
 
-=== "nextPYP"
-    ```bash
-    prismpyp intersect \
-    --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
-    --output-folder intersection \
-    --link-type soft \
-    --data-path metadata_from_nextpyp/webp
-    ```
-
-=== "cryoSPARC"
-    ```bash
-    prismpyp intersect \
-    --parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
-    --output-folder intersection \
-    --link-type soft \
-    --data-path metadata_from_cryosparc/webp
-    ```
+```bash
+prismpyp intersect \
+--parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
+--output-folder intersection \
+--link-type soft \
+--data-path metadata/webp
+```
 
 !!! tip
 

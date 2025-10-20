@@ -1,4 +1,4 @@
-# `prismpyp eval2d`
+# `prismpyp eval3d`
 
 ## Purpose
 Generate metadata for visualizing the embeddings interactively in 3D.
@@ -11,7 +11,7 @@ This command can:
 
 ## Usage
 ```bash
-usage: prismpyp eval2d [-h] [--output-path DIR] [--metadata-path METADATA_PATH] [--embedding-path [EMBEDDING_PATH]] [-a ARCH] [-j N] [--epochs N]
+usage: prismpyp eval3d [-h] [--output-path DIR] [--metadata-path METADATA_PATH] [--embedding-path [EMBEDDING_PATH]] [-a ARCH] [-j N] [--epochs N]
                        [--start-epoch N] [-b N] [--lr LR] [--momentum M] [--wd W] [-p N] [--resume PATH] [--feature-extractor-weights PATH]
                        [--world-size WORLD_SIZE] [--rank RANK] [--dist-url DIST_URL] [--dist-backend DIST_BACKEND] [--seed SEED] [--gpu GPU]
                        [--multiprocessing-distributed] [--dim DIM] [--pred-dim PRED_DIM] [--fix-pred-lr] [--use-fft] [--downsample DOWNSAMPLE]

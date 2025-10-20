@@ -40,24 +40,20 @@ By taking the intersection between ```fft_good_export.parquet``` and ```real_goo
 
 ## 2. Build Metadata Table
 
-Before starting, create a directory to store all generated outputs:
+Before starting, create directories to store the metadata and all generated outputs:
 
 ```bash
+mkdir -p metadata
 mkdir -p output_dir
 ```
 
 === "nextPYP"
 
-      - Create an output directory for nextPYP-derived metadata:
-         ```bash
-         mkdir -p metadata_from_nextpyp
-         ```
-
       - Run the following command to assemble metadata from nextPYP preprocessing results:
          ```bash
          prismpyp metadata_nextpyp \
             --pkl-path example_data/pkl \
-            --output-dir metadata_from_nextpyp \
+            --output-dir metadata \
             --cryosparc-path example_data/J7_exposures_accepted_exported.cs
          ```
 
@@ -77,11 +73,6 @@ mkdir -p output_dir
          - **Manually Curate Exposures` → `J4`
          - cryoSPARC project directory → `/cryosparc/output/dir`
 
-      - Create the metadata directory:
-         ```bash
-         mkdir -p metadata_from_cryosparc
-         ```
-
       - Build the metadata table:
          ```bash
          prismpyp metadata_cryosparc \
@@ -89,7 +80,7 @@ mkdir -p output_dir
             --patch-ctf-file "/cryosparc/output/dir/exports/groups/J4_exposures_accepted/J4_exposures_accepted_exported.cs" \
             --ctffind-dir "/cryosparc/output/dir/J3/ctffind_output" \
             --ctffind-file "/cryosparc/output/dir/exports/groups J3_exposures_success/J3_exposures_success_exported.cs" \
-            --output-dir metadata_from_cryosparc
+            --output-dir metadata
          ```
 
       *Depending on how many micrographs you have, this process may take several minutes to run.*
@@ -115,6 +106,3 @@ In addition, the following files are generated:
 - `pixel_size.txt` — microscope pixel size for this dataset  
 - `all_micrographs_list.micrographs` — list of all micrographs (without extensions)  
 - `webp/` — directory of `.webp` images for both micrographs and their CTFFIND4-derived power spectra
-<!-- 
-> For the remainder of this tutorial, we’ll assume you’re using the `metadata_from_nextpyp` directory.  
-> You can easily switch to another dataset by setting `--metadata-path` to `metadata_from_nextpyp` or `metadata_from_cryosparc`, depending on your source. -->
