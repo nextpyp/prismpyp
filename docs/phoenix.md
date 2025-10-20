@@ -4,26 +4,26 @@
 
 These instructions assume inference results from **real-domain inputs**.
 
-### Copy output files to your local machine:
+Copy output files to your local machine:
 
    ```bash
    cp output_dir/real/inference/data_for_export.parquet.zip real/
    cp output_dir/real/inference/zipped_thumbnail_images.tar.gz real/
    ```
 
-### Create a folder for the thumbnail images:
+Create a folder for the thumbnail images:
 
    ```bash
    mkdir -p real/thumbnail_images
    ```
 
-### Extract thumbnails:
+Extract thumbnails:
 
    ```bash
    tar -xvzf zipped_thumbnail_images.tar.gz -C real/thumbnail_images
    ```
 
-### Start a local HTTP server to host thumbnails:
+Start a local HTTP server to host thumbnails:
 
    ```bash
    cd real
@@ -31,7 +31,7 @@ These instructions assume inference results from **real-domain inputs**.
    python -m http.server 5004
    ```
 
-### In another terminal, download and launch the visualizer:
+In another terminal, download and launch the visualizer:
 
    ```bash
    wget https://github.com/nextpyp/prismpyp/blob/main/scripts/visualizer.py
@@ -60,26 +60,26 @@ You can now access the interactive visualization at [http://localhost:54116/](ht
 
 You can repeat the same steps for Fourier-domain inputs.
 
-### Copy the output files
+Copy the output files
 
    ```bash
    cp output_dir/fft/inference/data_for_export.parquet.zip fft/
    cp output_dir/fft/inference/zipped_thumbnail_images.tar.gz fft/
    ```
 
-### Create a folder for the thumbnail images
+Create a folder for the thumbnail images
 
    ```bash
    mkdir -p fft/thumbnail_images_dir
    ```
 
-### Extract thumbnails:
+Extract thumbnails:
 
    ```bash
    tar -xvzf zipped_thumbnail_images.tar.gz -C fft/thumbnail_images_dir
    ```
 
-### Start an HTTP server (you can use `screen` if desired)
+Start an HTTP server (you can use `screen` if desired)
 
    ```bash
    cd fft
@@ -87,7 +87,7 @@ You can repeat the same steps for Fourier-domain inputs.
    python -m http.server 5004
    ```
 
-### Launch the visualization
+Launch the visualization
 
    ```bash
    python visualizer.py \
@@ -107,11 +107,11 @@ The interactive visualization for this dataset may look as follows:
 
 === "Real domain"
 
-   ![Phoenix real](assets/phoenix_real.png)
+    ![Phoenix real](assets/phoenix_real.png)
 
 === "Fourier domain"
 
-   ![Phoenix fft](assets/phoenix_fft.png)
+    ![Phoenix fft](assets/phoenix_fft.png)
 
 To navigate the embedding space, click on the `Move` box (boxed in red) and click and drag your mouse across the screen. When you're ready to make a selection to view/download points, click the `Select` box (boxed in green).
 
@@ -119,15 +119,15 @@ The `Select` box will allow you to view the micrograph and power spectra thumbna
 
 === "Real domain"
 
-   ![Phoenix real select](assets/phoenix_real_selection.png)
+    ![Phoenix real select](assets/phoenix_real_selection.png)
 
 === "Fourier domain"
 
-   ![Phoenix fft select](assets/phoenix_fft_selection.png)
+    ![Phoenix fft select](assets/phoenix_fft_selection.png)
 
 To download the selection as a `.parquet` file, click on the `Export` box (boxed in red).
 
-### Lasso Selection and Output
+## Lasso Selection and Output
 
 For both domains, interactive **lasso selections** will be saved as downloadable `.parquet` files:
 
