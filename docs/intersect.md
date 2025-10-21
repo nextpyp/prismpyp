@@ -30,23 +30,7 @@ prismpyp intersect \
 --output-folder intersection \
 --link-type soft \
 --webp-path metadata/webp
---mrc-path 
 ```
-
-### Generate .mrc Files For Re-Uploading to CryoSPARC or nextPYP
-
-Assuming that you have the original .mrc files that were pre-processed in either nextPYP or cryoSPARC at a path `/path/to/mrcs`, you can also use the `intersect` command to symlink or copy the subset of good micrographs as `.mrc` files for re-uploading into nextPYP or cryoSPARC by specifying the `--mrc-path` argument:
-
-```bash
-prismpyp intersect \
---parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
---output-folder intersection \
---link-type soft \
---webp-path metadata/webp
---mrc-path /path/to/mrcs
-```
-
-This will write the good subset's `.mrc` files to the `intersection` folder.
 
 !!! tip
 
@@ -61,6 +45,5 @@ The following outputs will be written to the `intersection/` directory:
 | `intersection.parquet` | Metadata table containing information for all intersected micrographs |
 | `files_in_common.txt` | List of intersected file names |
 | `files` | The `.webp` file for the actual intersected micrographs (either symlinked or copied) |
-| `mrcs` | The `.mrc` file for the actual intersected micrographs (either symlinked or copied) |
 
 This subset represents the most consistent and high-quality micrographs across both domains, suitable for subsequent refinement or reconstruction workflows.

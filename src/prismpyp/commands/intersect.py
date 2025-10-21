@@ -19,8 +19,6 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='Link type (hard or soft)')
     parser.add_argument("--webp-path", type=str, 
                         help="Path to where the original .webp files are")
-    parser.add_argument("--mrc-path", type=str, default=None,
-                        help="Path to where the original .mrc files are")
  
     return parser
 
@@ -71,28 +69,14 @@ def main(args):
             if args.link_type == 'hard':
                 os.link(os.path.join(args.webp_path, filename), new_path)
             else:
-                os.symlink(os.path.join(args.webp_path, filename), new_path)
+                if not os.path.exists(new_path):
+                    os.symlink(os.path.join(args.webp_path, filename), new_path)
+                else:
+                    print("Symlink already exists: ", new_path)
     
     with open(os.path.join(args.output_folder, 'files_in_common.txt'), 'w') as f:
         for item in list_of_files:
             f.write("%s\n" % item)
-            
-    if args.mrc_path is not None:
-        new_mrc_dir = os.path.join(args.output_folder, "mrcs")
-        os.makedirs(new_mrc_dir, exist_ok=True)
-        
-        with open(os.path.join(args.output_folder, 'files_in_common.txt'), 'w') as f:
-            for item in list_of_files:
-                mrc_filename = item.replace('.webp', '.mrc')
-                mrc_path = os.path.join(args.mrc_path, mrc_filename)
-                new_path = os.path.join(args.output_folder, "mrcs", mrc_filename)
-                if os.path.exists(mrc_path):
-                    if args.link_type == 'hard':
-                        os.link(os.path.join(args.mrc_path, filename), new_path)
-                    else:
-                        os.symlink(os.path.join(args.mrc_path, filename), new_path)
-                else:
-                    print("MRC file not found: ", mrc_path)
             
 if __name__ == "__main__":
     main(add_args().parse_args())

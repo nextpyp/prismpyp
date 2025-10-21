@@ -12,7 +12,6 @@ usage: prismpyp intersect [-h]
                           [--output-folder OUTPUT_FOLDER] 
                           [--link-type {hard,soft}]
                           [--webp-path WEBP_PATH]
-                          [--mrc-path MRC_PATH]
 ```
 
 ## Named Arguments
@@ -23,5 +22,3 @@ usage: prismpyp intersect [-h]
 | `--output-folder OUTPUT_FOLDER` | Path to output folder for saving intersection results | — |
 | `--link-type {hard,soft}` | Type of filesystem link to create for intersected micrographs (`hard` or `soft`) | — |
 | `--webp-path WEBP_PATH` | Path to directory containing the original `.webp` files | — |
-| `--mrc-path MRC_PATH` | Path to directory containing the original `.mrc` files. If excluded, then the good subset of `.mrc` files will **not** be generated | — |
-
