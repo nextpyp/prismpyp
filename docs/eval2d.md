@@ -93,14 +93,14 @@ The UMAP distributions for real and Fourier domain embeddings should look like t
 
 ### Nearest Neighbors
 
-The nearest neighbors plots are useful for exploring similar images in the original dimensions (512) of the embedding space. They may look something like this:
+The nearest neighbors plots are useful for exploring similar images in the original dimensions (512) of the embedding space. The example image is plotted in the top left, and the 8-closest embedding vectors to the example vector are plotted in order of increasing distance (left --> right and top --> down) from the example image. They may look something like this:
 
 === "Real domain"
-
+    The example image here shows a micrograph (right half) with high-quality features (no contaminants, support film, or crystalline ice) in the real domain. The nearest neighbors also look like the example image, and we can conclude that they share high-quality features in common.
     ![Nearest neighbors real](assets/nearest_neighbors_mg.webp)
 
 === "Fourier domain"
-
+    The example image here shows a power spectrum (left half) with high-quality features (no water ring, Thon rings extending to high resolution) in the Fourier domain, and captured at lower defocus. The nearest neighbors also show power spectra with high-quality features which look to be acquired at similarly low defocus.
     ![Nearest neighbors FFT](assets/nearest_neighbors_ps.webp)
 
 ### Clustering
