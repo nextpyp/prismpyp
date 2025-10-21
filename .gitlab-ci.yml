@@ -15,4 +15,4 @@ docs:
   only:
     # only run this CI pipeline on master
     refs:
-      - website
+      - cryosparc_reupload
