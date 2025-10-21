@@ -97,11 +97,11 @@ The nearest neighbors plots are useful for exploring similar images in the origi
 
 === "Real domain"
 
-    ![Nearest neighbors real](assets/nearest_neighbors_1_mg.webp)
+    ![Nearest neighbors real](assets/nearest_neighbors_mg.webp)
 
 === "Fourier domain"
 
-    ![Nearest neighbors FFT](assets/nearest_neighbors_4_ps.webp)
+    ![Nearest neighbors FFT](assets/nearest_neighbors_ps.webp)
 
 ### Clustering
 
