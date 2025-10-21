@@ -17,9 +17,9 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='Output folder')
     parser.add_argument('--link-type', type=str, choices=['hard', 'soft'], 
                         help='Link type (hard or soft)')
-    parser.add_argument("--data-path", type=str, 
+    parser.add_argument("--webp-path", type=str, 
                         help="Path to where the original .webp files are")
-    parser.add_argument("--mrc-dir", type=str, default=None,
+    parser.add_argument("--mrc-path", type=str, default=None,
                         help="Path to where the original .mrc files are")
  
     return parser
@@ -63,34 +63,34 @@ def main(args):
         
         list_of_files.append(filename)
         
-        # Search for filename in data_path
-        if not os.path.exists(os.path.join(args.data_path, filename)):
+        # Search for filename in webp_path
+        if not os.path.exists(os.path.join(args.webp_path, filename)):
             print("File not found: ", filename)
         else:
             new_path = os.path.join(args.output_folder, "files", filename)
             if args.link_type == 'hard':
-                os.link(os.path.join(args.data_path, filename), new_path)
+                os.link(os.path.join(args.webp_path, filename), new_path)
             else:
-                os.symlink(os.path.join(args.data_path, filename), new_path)
+                os.symlink(os.path.join(args.webp_path, filename), new_path)
     
     with open(os.path.join(args.output_folder, 'files_in_common.txt'), 'w') as f:
         for item in list_of_files:
             f.write("%s\n" % item)
             
-    if args.mrc_dir is not None:
+    if args.mrc_path is not None:
         new_mrc_dir = os.path.join(args.output_folder, "mrcs")
         os.makedirs(new_mrc_dir, exist_ok=True)
         
         with open(os.path.join(args.output_folder, 'files_in_common.txt'), 'w') as f:
             for item in list_of_files:
                 mrc_filename = item.replace('.webp', '.mrc')
-                mrc_path = os.path.join(args.mrc_dir, mrc_filename)
+                mrc_path = os.path.join(args.mrc_path, mrc_filename)
                 new_path = os.path.join(args.output_folder, "mrcs", mrc_filename)
                 if os.path.exists(mrc_path):
                     if args.link_type == 'hard':
-                        os.link(os.path.join(args.data_path, filename), new_path)
+                        os.link(os.path.join(args.mrc_path, filename), new_path)
                     else:
-                        os.symlink(os.path.join(args.data_path, filename), new_path)
+                        os.symlink(os.path.join(args.mrc_path, filename), new_path)
                 else:
                     print("MRC file not found: ", mrc_path)
             
