@@ -100,7 +100,7 @@ The nearest neighbors plots are useful for exploring similar images in the origi
     ![Nearest neighbors real](assets/nearest_neighbors_mg.webp)
 
 === "Fourier domain"
-    The example image here shows a power spectrum (left half) with high-quality features (no water ring, Thon rings extending to high resolution) in the Fourier domain, and captured at lower defocus. The nearest neighbors also show power spectra with high-quality features which look to be acquired at similarly low defocus.
+    The example image here shows a power spectrum (left half) with low-quality features (no Thon rings, likely acquired over an empty hole) in the Fourier domain. The nearest neighbors also show power spectra with similar low-quality features.
     ![Nearest neighbors FFT](assets/nearest_neighbors_ps.webp)
 
 ### Clustering
