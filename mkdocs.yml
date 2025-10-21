@@ -23,6 +23,8 @@ nav:
     - eval3d: ref_eval3d.md
     - phoenix: ref_phoenix.md
     - intersect: ref_intersect.md
+    - upload_nextpyp: ref_upload_nextpyp.md
+    - upload_cryosparc: ref_upload_cryosparc.md
 markdown_extensions:
   - abbr
   - admonition
