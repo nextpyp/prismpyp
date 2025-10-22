@@ -3,6 +3,8 @@ site_name: ""
 site_url: "https://laura-he.github.io/prismpyp/"
 site_dir: public
 repo_url: "https://github.com/nextpyp/prismpyp"
+repo_name: "nextpyp/prismpyp"
+edit_uri: "blob/main/docs/"
 nav:
   - Home: index.md
   - Getting Started:
@@ -78,7 +80,7 @@ theme:
   name: material
   features:
     - announce.dismiss
-    - content.action.edit
+    # - content.action.edit
     - content.action.view
     - content.code.annotate
     - content.code.copy
