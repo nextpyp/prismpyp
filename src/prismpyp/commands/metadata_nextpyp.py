@@ -71,6 +71,8 @@ def build_table(path_to_pkls, path_to_cs_file, output_dir):
         with open(pixel_size_file, 'w') as f:
             f.write(str(pixel_size) + '\n')
     
+    first = True
+    
     pkl_files = os.listdir(path_to_pkls)
     dbase = {}
     for pkl_file in tqdm(pkl_files, desc="Processing pkl files"):
@@ -82,6 +84,14 @@ def build_table(path_to_pkls, path_to_cs_file, output_dir):
         except Exception as e:
             print(f"Error reading {filename}: {e}")
             continue
+            
+        if first:
+            pixel_size = pkl['ctf'].loc['pixel_size'].values[0]
+            pixel_size_file = os.path.join(output_dir, 'pixel_size.txt')
+            with open(pixel_size_file, 'w') as f:
+                f.write(str(pixel_size) + '\n')
+            first = False
+            
         ctf_fit = pkl['ctf'].loc['cc'].values[0]
         est_resolution = pkl['ctf'].loc['cccc'].values[0]
         avg_motion = calculate_avg_motion(pkl)
