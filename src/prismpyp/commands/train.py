@@ -46,7 +46,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from functools import wraps  # new import
 
-def print_time(elapsed, epoch=None):
+def print_training_time(elapsed, epoch=None):
     elapsed_hours = int(elapsed // 3600)
     elapsed_minutes = int((elapsed % 3600) // 60)
     elapsed_seconds = elapsed % 60
@@ -375,7 +375,7 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
                         'optimizer': optimizer.state_dict(),
                     }, is_best=False, is_last=True, is_lowest_collapse=False, filename=filename)
                     early_stopping_time = time.perf_counter() - start_time
-                    print_time(early_stopping_time, epoch=None)
+                    print_training_time(early_stopping_time, epoch=None)
                 if is_dist:
                     try: dist.barrier()
                     except Exception: pass
@@ -383,7 +383,7 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
         
         total_elapsed = time.perf_counter() - start_time
         if is_main_process:
-            print_time(total_elapsed, epoch=None)
+            print_training_time(total_elapsed, epoch=None)
             
         if is_dist:
             try: dist.barrier()

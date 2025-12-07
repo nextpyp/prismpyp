@@ -46,6 +46,21 @@ import wandb
 
 import concurrent.futures
 
+def print_inference_time(elapsed, n_images=None):
+    elapsed_hours = int(elapsed // 3600)
+    elapsed_minutes = int((elapsed % 3600) // 60)
+    elapsed_seconds = elapsed % 60
+         
+    if elapsed_hours > 0:
+        print(f"[eval3d] Inference finished in {elapsed_hours}h {elapsed_minutes}m {elapsed_seconds:.1f}s")
+    elif elapsed_minutes > 0:
+        print(f"[eval3d] Inference finished in {elapsed_minutes}m {elapsed_seconds:.1f}s")
+    else:
+        print(f"[eval3d] Inference finished in {elapsed:.1f}s")
+    if n_images is not None and elapsed > 0:
+        images_per_second = n_images / elapsed
+        print(f"[eval3d] Processed {n_images} images at {images_per_second:.2f} images/s.")
+
 def main(args):
     
     if args.seed is not None:
@@ -208,9 +223,12 @@ def main_worker(gpu, ngpus_per_node, args):
         data_for_export = {}
 
         # ----- inference and embedding export -----
+        start_time = time.perf_counter()
         if args.evaluate:
             if args.embedding_path is None:
                 all_embeddings = validate(test_loader, model, args)  # expected to handle DDP inside if needed
+                elapsed_time = time.perf_counter() - start_time
+                print_inference_time(elapsed_time, n_images=len(test_dataset))
                 if output_path is not None:
                     filepath = os.path.join(output_path, 'embeddings.pth')
                     torch.save(all_embeddings, filepath)
