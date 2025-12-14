@@ -48,6 +48,21 @@ from matplotlib import rcParams as rcp
 # for parameter sweeps
 import wandb
 
+def print_inference_time(elapsed, n_images=None):
+    elapsed_hours = int(elapsed // 3600)
+    elapsed_minutes = int((elapsed % 3600) // 60)
+    elapsed_seconds = elapsed % 60
+         
+    if elapsed_hours > 0:
+        print(f"[eval2d] Inference finished in {elapsed_hours}h {elapsed_minutes}m {elapsed_seconds:.1f}s")
+    elif elapsed_minutes > 0:
+        print(f"[eval2d] Inference finished in {elapsed_minutes}m {elapsed_seconds:.1f}s")
+    else:
+        print(f"[eval2d] Inference finished in {elapsed:.1f}s")
+    if n_images is not None and elapsed > 0:
+        images_per_second = n_images / elapsed
+        print(f"[eval2d] Processed {n_images} images at {images_per_second:.2f} images/s.")
+
 def main(args):
     
     if args.seed is not None:
@@ -198,10 +213,14 @@ def main_worker(gpu, ngpus_per_node, args):
             os.makedirs(output_path, exist_ok=True)
         if args.distributed:
             dist.barrier(device_ids=[args.gpu])
-            
+    
+    start_time = time.perf_counter()   
     if args.evaluate:
         if not args.embedding_path:
             all_embeddings = validate(test_loader, model, args)
+            elapsed_time = time.perf_counter() - start_time
+            print_inference_time(elapsed_time, n_images=len(test_dataset))
+            
             filepath = os.path.join(output_path, 'embeddings.pth')
             torch.save(all_embeddings, filepath)
             print(f"Embeddings saved to {filepath}")
@@ -592,7 +611,7 @@ def validate(val_loader, model, args):
     # switch to evaluate mode
     model.eval()
     all_embeddings = []
-    
+    start_time = time.time()
     with torch.no_grad():
         end = time.time()
         
@@ -620,7 +639,9 @@ def validate(val_loader, model, args):
 
             if i % args.print_freq == 0:
                 progress.display(i)
-
+    end_time = time.time()
+    print(f"Total inference time: {end_time - start_time:.2f} seconds")
+    
     all_embeddings = torch.cat(all_embeddings, dim=0)
 
     return all_embeddings

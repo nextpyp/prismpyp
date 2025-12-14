@@ -44,6 +44,23 @@ from prismpyp.core import fft_transforms as fft_xforms
 # For Tensorboard
 from torch.utils.tensorboard import SummaryWriter
 
+from functools import wraps  # new import
+
+def print_training_time(elapsed, epoch=None):
+    elapsed_hours = int(elapsed // 3600)
+    elapsed_minutes = int((elapsed % 3600) // 60)
+    elapsed_seconds = elapsed % 60
+    if epoch is not None:
+        epoch_string = f"[epoch {epoch}]"
+    else:
+        epoch_string = ""
+    if elapsed_hours > 0:
+        print(f"[train]{epoch_string} finished in {elapsed_hours}h {elapsed_minutes}m {elapsed_seconds:.1f}s")
+    elif elapsed_minutes > 0:
+        print(f"[train]{epoch_string} finished in {elapsed_minutes}m {elapsed_seconds:.1f}s")
+    else:
+        print(f"[train]{epoch_string} finished in {elapsed:.1f}s")
+
 def main(args):
 
     if not os.path.exists(args.output_path):
@@ -291,6 +308,7 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
         avg_output_std = 0.0
         w = 0.9
 
+        start_time = time.perf_counter()
         for epoch in range(args.start_epoch, args.epochs):
             if is_dist and train_sampler is not None:
                 train_sampler.set_epoch(epoch)
@@ -298,6 +316,7 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
             adjust_learning_rate(optimizer, init_lr, epoch, args)
 
             epoch_loss, this_avg_output_std = train(train_loader, model, criterion, optimizer, epoch, w, args, writer if is_main_process else None)
+            
             avg_output_std = w * avg_output_std + (1 - w) * this_avg_output_std
             epoch_losses.append(float(np.mean(np.array(epoch_loss))))
             this_collapse_level = max(0.0, 1 - math.sqrt(args.dim) * avg_output_std)
@@ -355,11 +374,17 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
                         'state_dict': model.state_dict(),
                         'optimizer': optimizer.state_dict(),
                     }, is_best=False, is_last=True, is_lowest_collapse=False, filename=filename)
+                    early_stopping_time = time.perf_counter() - start_time
+                    print_training_time(early_stopping_time, epoch=None)
                 if is_dist:
                     try: dist.barrier()
                     except Exception: pass
                 break
-
+        
+        total_elapsed = time.perf_counter() - start_time
+        if is_main_process:
+            print_training_time(total_elapsed, epoch=None)
+            
         if is_dist:
             try: dist.barrier()
             except Exception: pass
