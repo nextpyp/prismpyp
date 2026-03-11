@@ -29,9 +29,9 @@ def main(args):
             list_of_files = f.readlines()
             
         for item in tqdm(list_of_files, desc="Linking MRC files"):
-            mrc_filename = item.replace('.webp', '.mrc')
+            mrc_filename = item.replace('.webp', '.mrc').strip()
             mrc_path = os.path.join(args.mrc_path, mrc_filename)
-            new_path = os.path.join(args.output_folder, "mrcs", mrc_filename)
+            new_path = os.path.join(new_mrc_dir, mrc_filename)
             if os.path.exists(mrc_path):
                 if args.link_type == 'hard':
                     os.link(os.path.join(args.mrc_path, mrc_path), new_path)

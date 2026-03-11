@@ -62,7 +62,7 @@ Once you have the outputs of prismPYP, you can upload your good subsets back int
 
     ```bash
     prismpyp upload_nextpyp \
-    --output-folder intersection \
+    --intersection-folder intersection \
     --link-type soft \
     --mrc-path /path/to/original/mrcs
     ```
