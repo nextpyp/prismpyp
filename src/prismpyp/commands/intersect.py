@@ -17,9 +17,9 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
                         help='Path to FFT parquet file')
     
     parser.add_argument('--good-real-classes', nargs='+', type=int,
-                        help='Space-separated list of real domain cluster IDs to treat as good (e.g. --real-classes 2 5 7)')
+                        help='Space-separated list of real domain cluster IDs to treat as good (e.g. --good-real-classes 2 5 7)')
     parser.add_argument('--good-fft-classes', nargs='+', type=int,
-                        help='Space-separated list of real domain cluster IDs to treat as good (e.g. --real-classes 2 5 7)')
+                        help='Space-separated list of Fourier domain cluster IDs to treat as good (e.g. --good-fft-classes 1 8 9)')
     
     parser.add_argument('--output-folder', type=str, 
                         help='Output folder')
