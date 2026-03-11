@@ -445,7 +445,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
                 embeddings_2d[idx],
                 pad=0.2
             )
-            # img_box.patch.set_edgecolor(cmap(labels[idx]))
+            img_box.patch.set_edgecolor(cmap(labels[idx]))
             ax.add_artist(img_box)
 
         ax.set_aspect('equal', adjustable='datalim')
@@ -454,7 +454,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
 
         # Legend
         handles = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=cmap(i), markersize=10, label=f'Class {i}') for i in range(K)]
-        # ax.legend(handles=handles, loc='upper right', bbox_to_anchor=(1.1, 1.05), title="Classes")
+        ax.legend(handles=handles, loc='upper right', bbox_to_anchor=(1.1, 1.05), title="Classes")
 
         if is_wandb:
             wandb.log({f"scatter_plot_{method}_{suffix}": wandb.Image(fig)})
