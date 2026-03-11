@@ -119,7 +119,7 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     # Plotting of nearest neighbors configurations
     parser.add_argument('--matrix-num-references', default=5, type=int,
                         help='number of reference images to plot (default: 5)')
-    parser.add_argument('--matrix-num-neighbors', default=9, type=float,
+    parser.add_argument('--matrix-num-neighbors', default=9, type=int,
                         help='number of nearest neighbors to plot (default: 9)')
 
     # Image thumbnail configurations
