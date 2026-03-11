@@ -98,6 +98,15 @@ def main(args):
         
 def main_worker(gpu, ngpus_per_node, args):
     args.gpu = gpu
+    
+    # figure out ranks early
+    if args.dist_url == "env://" and args.rank == -1:
+        args.rank = int(os.environ.get("RANK", 0))
+    if args.multiprocessing_distributed:
+        args.rank = args.rank * ngpus_per_node + gpu
+
+    is_dist = bool(args.distributed)
+    is_main_process = (not args.multiprocessing_distributed) or (args.rank % ngpus_per_node == 0)
 
     # suppress printing if not master
     if args.multiprocessing_distributed and args.gpu != 0:
@@ -214,6 +223,8 @@ def main_worker(gpu, ngpus_per_node, args):
         if args.distributed:
             dist.barrier(device_ids=[args.gpu])
     
+    data_for_export = {}
+    
     start_time = time.perf_counter()   
     if args.evaluate:
         if not args.embedding_path:
@@ -237,6 +248,7 @@ def main_worker(gpu, ngpus_per_node, args):
         # Do KMeans clustering on the embeddings
         actual_assignments = kmeans_clustering(args, normed_embeddings)
         n_clusters = args.n_clusters
+        data_for_export['cluster_id'] = actual_assignments
                 
         # Do UMAP/TSNE/PCA projection on embeddings
         cmap = plt.get_cmap('tab10', n_clusters)
@@ -253,7 +265,9 @@ def main_worker(gpu, ngpus_per_node, args):
         plot_projections(umap_fit, actual_assignments, "UMAP Projection", output_path, cmap, args, ngpus_per_node)
         get_scatter_plot_with_thumbnails_real_fft(args, umap_fit, cmap, actual_assignments, test_dataset, path_to_save=output_path, 
                                         method="umap", K=n_clusters, ngpus_per_node=ngpus_per_node)
-
+        data_for_export["umap_fit_x"] = umap_fit[:, 0]
+        data_for_export["umap_fit_y"] = umap_fit[:, 1]
+        
         if len(normed_embeddings) > 1000:
             tsne_reducer = TSNE(n_components=2, perplexity=args.num_neighbors, verbose=1, random_state=args.seed, n_iter_without_progress=1000)
             tsne_fit = tsne_reducer.fit_transform(normed_embeddings)
@@ -266,6 +280,22 @@ def main_worker(gpu, ngpus_per_node, args):
         plot_nearest_neighbors_matrix(args, normed_embeddings, test_dataset,
                                         path_to_save=output_path, ngpus_per_node=ngpus_per_node)
         
+        # Save info to parquet file
+        data_for_export['image_thumbnails'] = []
+        data_for_export['micrograph_name'] = []
+        for idx in test_dataset.file_paths:
+            data_for_export['image_thumbnails'].append(idx)
+            data_for_export['micrograph_name'].append(os.path.basename(idx))
+
+        data_for_export_df = pd.DataFrame(data_for_export)
+        data_for_export_df = data_for_export_df.merge(test_dataset.metadata, on='micrograph_name', how='inner')
+        data_for_export_df['embeddings'] = normed_embeddings.tolist()
+        
+        if output_path is not None and (not is_dist or is_main_process):
+            path_to_save = os.path.join(output_path, 'data_for_export.parquet')
+            data_for_export_df.to_parquet(path_to_save, compression='gzip')
+            print(f"Data for export saved to {path_to_save}")
+
         return
         
 import matplotlib.pyplot as plt
@@ -445,7 +475,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
                 embeddings_2d[idx],
                 pad=0.2
             )
-            # img_box.patch.set_edgecolor(cmap(labels[idx]))
+            img_box.patch.set_edgecolor(cmap(labels[idx]))
             ax.add_artist(img_box)
 
         ax.set_aspect('equal', adjustable='datalim')
@@ -454,7 +484,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
 
         # Legend
         handles = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=cmap(i), markersize=10, label=f'Class {i}') for i in range(K)]
-        # ax.legend(handles=handles, loc='upper right', bbox_to_anchor=(1.1, 1.05), title="Classes")
+        ax.legend(handles=handles, loc='upper right', bbox_to_anchor=(1.1, 1.05), title="Classes")
 
         if is_wandb:
             wandb.log({f"scatter_plot_{method}_{suffix}": wandb.Image(fig)})

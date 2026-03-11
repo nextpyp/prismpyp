@@ -7,7 +7,7 @@ These instructions assume inference results from **real-domain inputs**.
 Copy output files to your local machine:
 
    ```bash
-   cp output_dir/real/inference/data_for_export.parquet.zip real/
+   cp output_dir/real/inference/data_for_export.parquet real/
    cp output_dir/real/inference/zipped_thumbnail_images.tar.gz real/
    ```
 
@@ -37,7 +37,7 @@ In another terminal, download and launch the visualizer:
    wget https://github.com/nextpyp/prismpyp/blob/main/scripts/visualizer.py
 
    python visualizer.py \
-      real/data_for_export.parquet.zip \
+      real/data_for_export.parquet \
       --port 5004 \
       --which-embedding umap
    ```
@@ -63,7 +63,7 @@ You can repeat the same steps for Fourier-domain inputs.
 Copy the output files
 
    ```bash
-   cp output_dir/fft/inference/data_for_export.parquet.zip fft/
+   cp output_dir/fft/inference/data_for_export.parquet fft/
    cp output_dir/fft/inference/zipped_thumbnail_images.tar.gz fft/
    ```
 
@@ -91,7 +91,7 @@ Launch the visualization
 
    ```bash
    python visualizer.py \
-      fft/data_for_export.parquet.zip \
+      fft/data_for_export.parquet \
       --port 5004 \
       --which-embedding umap
    ```

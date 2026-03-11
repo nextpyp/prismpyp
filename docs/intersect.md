@@ -22,15 +22,33 @@ mkdir intersection
 
 ### Compute the Intersection
 
-Run the following command to take the intersection between real and Fourier domain selections:
+We can specify the good images in both domains by either using the interactively-selected output of Phoenix, or by specifying class IDs.
 
-```bash
-prismpyp intersect \
---parquet-files output_dir/fft/fft_good_export.parquet output_dir/real/real_good_export.parquet \
---output-folder intersection \
---link-type soft \
---webp-path metadata/webp
-```
+=== "By Phoenix Parquet File"
+
+    ```bash
+    prismpyp intersect \
+    --real-parquet-file output_dir/real/real_good_export.parquet \
+    --fft-parquet-file output_dir/fft/fft_good_export.parquet \
+    --output-folder intersection \
+    --link-type soft \
+    --webp-path metadata/webp
+    ```
+
+=== "By Class ID"
+
+    Note that you must provide a *space-separated* list of *good* classes for which clusters to keep during the intersection. The cluster ID can be determined from the 2D UMAP plots.
+
+    ```bash
+    prismpyp intersect \
+    --real-parquet-file output_dir/real/inference/data_for_export.parquet \
+    --fft-parquet-file output_dir/fft/inference/data_for_export.parquet \
+    --good-real-classes 0 1 2 3 \ # Change these to your classes
+    --good-fft-classes 0 1 2 3 \ # Change these to your classes
+    --output-folder intersection \
+    --link-type soft \
+    --webp-path metadata/webp
+    ```
 
 !!! tip
 

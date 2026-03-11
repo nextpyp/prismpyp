@@ -70,7 +70,7 @@ At the end of visualization, the following files will be created in `/path/to/ou
 
 | File | Description |
 |------|--------------|
-| `data_for_export.parquet.zip` | Metadata table with micrograph names, embeddings, and CTF/defocus/ice thickness metrics |
+| `data_for_export.parquet` | Metadata table with micrograph names, embeddings, and CTF/defocus/ice thickness metrics |
 | `zipped_thumbnail_images.tar.gz` | Composite thumbnails combining micrograph and power spectrum for interactive visualization |
 
 Your 3D embeddings are now ready for interactive inspection in **Phoenix** — the visualization tool described in the next section.
