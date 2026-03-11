@@ -395,8 +395,8 @@ def main_worker(gpu, ngpus_per_node, args, tensorboard_dir, run_name):
             writer = None
 
         if is_main_process:
-            plot(epoch_losses, args, 'Total Loss', 'Total Loss', 'total_loss.webp')
-            plot(collapse_level, args, 'Collapse Level', 'Collapse Level', 'collapse_level.webp')
+            plot(epoch_losses, args, 'Total Loss', 'Total Loss', 'total_loss.svgz' if args.svgz else 'total_loss.webp')
+            plot(collapse_level, args, 'Collapse Level', 'Collapse Level', 'collapse_level.svgz' if args.svgz else 'collapse_level.webp')
 
         if is_dist:
             try: dist.barrier()

@@ -119,6 +119,11 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     # Image thumbnail configurations
     parser.add_argument('--zip-images', action='store_true', default=False,
                         help='save zipped image thumbnails')
+    
+    # Image format configuration
+    parser.add_argument('--svgz', action='store_true', default=False,
+                        help='save plots as svgz instead of webp')
+    
     return parser
 
 def get_args():

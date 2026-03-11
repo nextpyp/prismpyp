@@ -314,6 +314,8 @@ def plot_projections(projection, actual_assignments, title, path_to_save, cmap, 
 
     base_title = title.split(" ")[0]
     save_title = f"scatter_plot_{base_title}.webp"
+    if args.svgz:
+        save_title = save_title.replace('.webp','.svgz')
 
     if not args.distributed or args.rank % ngpus_per_node == 0:
         # labeled version
@@ -325,6 +327,8 @@ def plot_projections(projection, actual_assignments, title, path_to_save, cmap, 
         if leg is not None:
             leg.remove()
         new_save_title = f"scatter_plot_{base_title}_no_labels.webp"
+        if args.svgz:
+            new_save_title = new_save_title.replace('.webp','.svgz')
         plt.savefig(os.path.join(path_to_save, new_save_title), bbox_inches='tight', pad_inches=0)
 
     plt.clf()
@@ -457,10 +461,16 @@ def get_scatter_plot_with_thumbnails_real_fft(
         if is_wandb:
             wandb.log({f"scatter_plot_{method}_{suffix}": wandb.Image(fig)})
         elif not args.distributed or args.rank % ngpus_per_node == 0:
-            fig.savefig(f"{path_to_save}/thumbnail_plot_{method}_{suffix}.webp")
+            thumbnail_plot_file = f"{path_to_save}/thumbnail_plot_{method}_{suffix}.webp"
+            if args.svgz:
+                thumbnail_plot_file = thumbnail_plot_file.replace('.webp','.svgz')
+            fig.savefig(thumbnail_plot_file)
             ax.axis('off')
             ax.set_title("")
-            fig.savefig(f"{path_to_save}/thumbnail_plot_{method}_{suffix}_no_labels.webp", bbox_inches='tight', pad_inches=0, transparent=True)
+            thumbnail_plot_no_labels_file =f"{path_to_save}/thumbnail_plot_{method}_{suffix}_no_labels.webp"
+            if args.svgz:
+                thumbnail_plot_no_labels_file = thumbnail_plot_no_labels_file.replace('.webp','.svgz')
+            fig.savefig(thumbnail_plot_no_labels_file, bbox_inches='tight', pad_inches=0, transparent=True)
 
         plt.close(fig)
     
