@@ -263,9 +263,7 @@ def main_worker(gpu, ngpus_per_node, args):
         else:
             print("Skipping t-SNE plot since there are less than 1000 samples.")
         
-        for i in range(5):
-            random_idx = random.randint(0, len(test_dataset) - 1)
-            plot_nearest_neighbors_3x3(args, normed_embeddings, test_dataset, example_idx=random_idx, i=i, 
+        plot_nearest_neighbors_matrix(args, normed_embeddings, test_dataset,
                                         path_to_save=output_path, ngpus_per_node=ngpus_per_node)
         
         return
@@ -607,6 +605,52 @@ def plot_nearest_neighbors_3x3(args, embeddings, test_dataset, example_idx, i, p
         if not args.distributed or args.rank % ngpus_per_node == 0:
             plt.savefig(f"{path_to_save}/nearest_neighbors_{i + 1}.webp")
         
+
+def plot_nearest_neighbors_matrix(args, embeddings, test_dataset, path_to_save=None, ngpus_per_node=1):
+    
+    """Plots example images and their nearest neighbors."""
+    
+    number_of_sample_images = args.matrix_num_references
+    number_of_neighbors = args.matrix_num_neighbors
+
+    fig, ax = plt.subplots(number_of_sample_images, number_of_neighbors, figsize=(number_of_neighbors * 2, number_of_sample_images * 2))
+
+    row_number = 0
+    for i in range(number_of_sample_images):
+
+        example_idx = random.randint(0, len(test_dataset) - 1)
+        
+        # Calculate distances to the sample image
+        distances = embeddings - embeddings[example_idx]
+        distances = np.power(distances, 2).sum(-1).squeeze()
+        nearest_neighbors = np.argsort(distances)[:number_of_neighbors]
+
+        for i, plot_idx in enumerate(nearest_neighbors):
+            webp_dir = os.path.join(args.metadata_path, 'webp')
+            img_path = test_dataset.file_paths[plot_idx]
+            basename = img_path #os.path.basename(img_path)
+            ctf_file = os.path.join(webp_dir, basename + '_ctffit.webp')
+            mg_file = os.path.join(webp_dir, basename + '.webp')
+            
+            ctf_img = Image.open(ctf_file)
+            mg_img = Image.open(mg_file)
+            img = crop_and_stitch_imgs(ctf_img, mg_img)
+
+            ax[row_number,i].imshow(img, cmap='gray')
+            ax[row_number,i].axis('off')
+            if i == 0:
+                ax[row_number,i].set_title(f"Sample image {example_idx}")
+            if row_number == 0 and i > 0:
+                ax[row_number,i].set_title(f"{i}-nearest")
+
+        row_number += 1
+
+    fig.tight_layout()
+
+    if path_to_save:
+        if not args.distributed or args.rank % ngpus_per_node == 0:
+            fig.savefig(f"{path_to_save}/nearest_neighbors_matrix.svgz", bbox_inches='tight', pad_inches=0.1)
+
         
 def validate(val_loader, model, args):
     batch_time = AverageMeter('Time', ':6.3f')

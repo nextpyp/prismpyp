@@ -116,6 +116,12 @@ def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.Argument
     parser.add_argument('--n-components', default=2, type=int,
                         help='number of components for UMap')
     
+    # Plotting of nearest neighbors configurations
+    parser.add_argument('--matrix-num-references', default=5, type=int,
+                        help='number of reference images to plot (default: 5)')
+    parser.add_argument('--matrix-num-neighbors', default=9, type=float,
+                        help='number of nearest neighbors to plot (default: 9)')
+
     # Image thumbnail configurations
     parser.add_argument('--zip-images', action='store_true', default=False,
                         help='save zipped image thumbnails')
