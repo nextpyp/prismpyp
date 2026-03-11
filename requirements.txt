@@ -16,6 +16,7 @@ pyyaml>=6.0
 mrcfile==1.5.4
 toml==0.10.2
 pydantic<2.12
+faiss-gpu-cu12==1.12.0
 
 --extra-index-url https://download.pytorch.org/whl/cu121
 torch==2.4.0+cu121
