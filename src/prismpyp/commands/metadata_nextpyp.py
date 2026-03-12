@@ -7,6 +7,7 @@ import pandas as pd
 import os
 import pickle
 from tqdm import tqdm
+from pathlib import Path
 
 
 def add_args(parser: argparse.ArgumentParser | None = None) -> argparse.ArgumentParser:
@@ -77,8 +78,8 @@ def build_table(path_to_pkls, path_to_cs_file, output_dir):
     dbase = {}
     for pkl_file in tqdm(pkl_files, desc="Processing pkl files"):
         path_to_pkl_file = os.path.join(path_to_pkls, pkl_file)
-        filename = pkl_file.split('.')[0]
-        filename = os.path.basename(pkl_file).split('.')[0]
+        filename = Path(os.path.basename(pkl_file)).stem
+        
         try:
             pkl = pd.read_pickle(path_to_pkl_file)
         except Exception as e:
