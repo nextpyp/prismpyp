@@ -330,8 +330,8 @@ def plot_projections(projection, actual_assignments, title, path_to_save, cmap, 
         for i, lab in enumerate(unique_labels)
     ]
     leg = plt.legend(
-        handles=handles, title="Class",
-        loc='upper left', bbox_to_anchor=(1.02, 1), borderaxespad=0.
+        handles=handles, title="Classes",
+        loc='upper left', bbox_to_anchor=(1.02, 1), borderaxespad=0., ncol=1
     )
 
     plt.title(title)
@@ -357,6 +357,7 @@ def plot_projections(projection, actual_assignments, title, path_to_save, cmap, 
         new_save_title = f"scatter_plot_{base_title}_no_labels.webp"
         if args.svgz:
             new_save_title = new_save_title.replace('.webp','.svgz')
+        plt.tight_layout()
         plt.savefig(os.path.join(path_to_save, new_save_title), bbox_inches='tight', pad_inches=0)
 
     plt.clf()
@@ -447,7 +448,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
     def create_scatter_with_images(img_type="micrograph", suffix="mg"):
         fig, ax = plt.subplots(figsize=(10, 10), dpi=300)
         # ax.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1], c=labels, cmap=cmap, s=10, alpha=0.8)
-        fig.suptitle(f"Scatter Plot ({img_type.capitalize()}s) using {method}, K = {K}")
+        plt.title(f"Scatter Plot ({img_type.capitalize()}s) using {method.upper()}, K = {K}")
 
         for idx in shown_images_idx:
             img_path = test_dataset.file_paths[idx]
@@ -473,9 +474,10 @@ def get_scatter_plot_with_thumbnails_real_fft(
             img_box = osb.AnnotationBbox(
                 osb.OffsetImage(img_array, cmap="gray"),
                 embeddings_2d[idx],
-                pad=0.2
+                pad=0
             )
             img_box.patch.set_edgecolor(cmap(labels[idx]))
+            img_box.patch.set_linewidth(5)
             ax.add_artist(img_box)
 
         ax.set_aspect('equal', adjustable='datalim')
@@ -483,8 +485,11 @@ def get_scatter_plot_with_thumbnails_real_fft(
         ax.set_ylim(embeddings_2d[:, 1].min() - 0.1, embeddings_2d[:, 1].max() + 0.1)
 
         # Legend
-        handles = [plt.Line2D([0], [0], marker='o', color='w', markerfacecolor=cmap(i), markersize=10, label=f'Class {i}') for i in range(K)]
-        ax.legend(handles=handles, loc='upper right', bbox_to_anchor=(1.1, 1.05), title="Classes")
+        handles = [
+            mpatches.Patch(color=cmap(i), label=str(lab))
+            for i, lab in enumerate(range(K))
+        ]
+        ax.legend(handles=handles, loc='upper left', bbox_to_anchor=(1.02, 1), title="Classes", borderaxespad=0, ncol=1)
 
         if is_wandb:
             wandb.log({f"scatter_plot_{method}_{suffix}": wandb.Image(fig)})
@@ -492,7 +497,8 @@ def get_scatter_plot_with_thumbnails_real_fft(
             thumbnail_plot_file = f"{path_to_save}/thumbnail_plot_{method}_{suffix}.webp"
             if args.svgz:
                 thumbnail_plot_file = thumbnail_plot_file.replace('.webp','.svgz')
-            fig.savefig(thumbnail_plot_file)
+            fig.tight_layout()
+            fig.savefig(thumbnail_plot_file, bbox_inches='tight', pad_inches=0)
             ax.axis('off')
             ax.set_title("")
             thumbnail_plot_no_labels_file =f"{path_to_save}/thumbnail_plot_{method}_{suffix}_no_labels.webp"
@@ -504,7 +510,7 @@ def get_scatter_plot_with_thumbnails_real_fft(
     
     # Create both plots
     create_scatter_with_images("micrograph", "mg")
-    create_scatter_with_images("ctf", "ps")
+    create_scatter_with_images("FFT", "ps")
 
 
 def get_scatter_plot_with_thumbnails(
@@ -669,7 +675,7 @@ def plot_nearest_neighbors_matrix(args, embeddings, test_dataset, path_to_save=N
             ax[row_number,i].imshow(img, cmap='gray')
             ax[row_number,i].axis('off')
             if i == 0:
-                ax[row_number,i].set_title(f"Sample image {example_idx}")
+                ax[row_number,i].set_title(f"Image {example_idx:,}")
             if row_number == 0 and i > 0:
                 ax[row_number,i].set_title(f"{i}-nearest")
 
