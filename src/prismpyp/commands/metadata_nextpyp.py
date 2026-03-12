@@ -129,10 +129,10 @@ def build_table(path_to_pkls, path_to_cs_file, output_dir):
     if os.path.exists(webp_dir) and os.path.isdir(webp_dir):
         dest_webp_dir = os.path.join(output_dir, 'webp')
         if os.path.exists(dest_webp_dir):
-            print(f"Warning! Webp directory {dest_webp_dir} already exists. Overwriting...")
-            shutil.rmtree(dest_webp_dir)
-        shutil.copytree(webp_dir, dest_webp_dir)
-        print(f"Copied {webp_dir} to {dest_webp_dir}")
+            print(f"Warning! Webp symlink {dest_webp_dir} already exists. Removing...")
+            os.remove(dest_webp_dir)
+        os.symlink(webp_dir,dest_webp_dir)
+        print(f"Linked {webp_dir} to {dest_webp_dir}")
     else:
         print(f"No webp directory found at {webp_dir}. Skipping copy.")
         
