@@ -34,7 +34,7 @@ Start a local HTTP server to host thumbnails:
 In another terminal, download and launch the visualizer:
 
    ```bash
-   wget https://github.com/nextpyp/prismpyp/blob/main/scripts/visualizer.py
+   wget https://raw.githubusercontent.com/nextpyp/prismpyp/refs/heads/main/scripts/visualizer.py
 
    python visualizer.py \
       real/data_for_export.parquet \
