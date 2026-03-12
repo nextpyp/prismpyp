@@ -59,7 +59,7 @@ Install Phoenix using `pip` (make sure Conda and pip are installed in your local
 ```bash
 conda create -n phoenix -c conda-forge python=3.8 pip
 conda activate phoenix
-wget https://github.com/nextpyp/prismpyp/blob/main/requirements-phoenix.txt -O requirements-phoenix.txt
+wget https://raw.githubusercontent.com/nextpyp/prismpyp/refs/heads/main/requirements-phoenix.txt -O requirements-phoenix.txt
 python -m pip install -r requirements-phoenix.txt
 ```
 
