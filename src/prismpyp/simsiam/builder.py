@@ -4,6 +4,7 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -12,7 +13,14 @@ import torchvision.models as models
 
 def get_resnet50(pretrained):
     if pretrained:
-        model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT, zero_init_residual=True)
+        try:
+            model = models.resnet50(weights=None)
+            model_local_url = os.path.join('/opt/pyp/external/models',"resnet50-11ad3fa6.pth")
+            print(f"Attempting to load resnet50 model from {model_local_url}")
+            state_dict = torch.load(model_local_url)
+            model.load_state_dict(state_dict)
+        except:
+            model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT, zero_init_residual=True)
         for param in model.parameters():
             param.requires_grad = False
     else:

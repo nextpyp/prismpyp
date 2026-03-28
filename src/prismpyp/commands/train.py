@@ -73,12 +73,10 @@ def main(args):
         # return
     
     tensorboard_dir = os.path.join(args.output_path, 'runs')
-    print("TENSORBOARD DIR IS: ", tensorboard_dir)
     if not os.path.exists(tensorboard_dir):
         os.makedirs(tensorboard_dir)
     # Create a unique subdirectory for this run
     run_name = f"run_{time.strftime('%Y%m%d-%H%M%S')}"
-    print("THIS TENSORBOARD DIR IS: " , run_name)
             
     if args.seed is not None:
         random.seed(args.seed)
